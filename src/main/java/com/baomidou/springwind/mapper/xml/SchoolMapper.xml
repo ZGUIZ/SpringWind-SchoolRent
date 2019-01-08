@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.SchoolMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.School">
+		<id column="school_id" property="schoolId" />
+		<result column="school_name" property="schoolName" />
+		<result column="city" property="city" />
+		<result column="province" property="province"/>
+	</resultMap>
+
+	<resultMap id="select2Map" type="com.baomidou.springwind.entity.Select2Bean">
+		<result column="id" property="id"/>
+		<result column="text" property="text"/>
+		<result column="parent" property="parent"/>
+	</resultMap>
+
+	<select id="getCity" resultType="com.baomidou.springwind.entity.Select2Bean" resultMap="select2Map">
+		select city as id,city as text from school
+		<where>
+			<if test="#{province} != null">
+				province = #{province}
+			</if>
+		</where>
+		group by city order by convert(city using gbk) ASC;
+	</select>
+
+	<select id="getProvince" resultType="com.baomidou.springwind.entity.Select2Bean" resultMap="select2Map">
+		select province as id,province as text from school group by province order by convert(province using gbk) ASC;
+	</select>
+
+	<select id="getSchoolForSelect"  resultType="com.baomidou.springwind.entity.Select2Bean" resultMap="select2Map">
+		select school_id as id,school_name as text from school
+		<where>
+			<if test="#{city} != null">
+				city = #{city}
+			</if>
+		</where>
+		group by school_name order by convert(school_name using gbk) ASC;
+	</select>
+
+	<select id="getSchool" resultType="com.baomidou.springwind.entity.School" resultMap="BaseResultMap">
+		select * from school where city = #{city};
+	</select>
+
+	<update id="updateProvince">
+		update school set province = #{province} where city = #{city};
+	</update>
+
+	<select id="queryForPage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select * from school
+		<where>
+			<if test="#{searchString} !=null">
+				school_id like "%"#{searchString}"%" or
+				school_name like "%"#{searchString}"%" or
+				city like "%"#{searchString}"%" or
+				province like "%"#{searchString}"%"
+			</if>
+		</where>
+		limit #{start},#{length}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(school_id) from school
+		<where>
+			<if test="#{searchString} !=null">
+				school_id like "%"#{searchString}"%" or
+				school_name like "%"#{searchString}"%" or
+				city like "%"#{searchString}"%" or
+				province like "%"#{searchString}"%"
+			</if>
+		</where>
+	</select>
+</mapper>

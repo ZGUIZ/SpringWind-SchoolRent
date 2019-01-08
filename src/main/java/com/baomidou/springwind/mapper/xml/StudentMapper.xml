@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.StudentMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.Student">
+		<id column="user_id" property="userId" />
+		<result column="student_id" property="studentId" />
+		<result column="school_id" property="schoolId" />
+		<result column="user_name" property="userName" />
+		<result column="real_name" property="realName" />
+		<result column="password" property="password" />
+		<result column="pay_password" property="payPassword" />
+		<result column="auth_level" property="authLevel" />
+		<result column="credit" property="credit" />
+		<result column="user_icon" property="userIcon" />
+		<result column="telephone" property="telephone" />
+		<result column="email" property="email" />
+		<result column="sex" property="sex" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+	</resultMap>
+
+	<resultMap id="schoolMap" type="com.baomidou.springwind.entity.School">
+		<id column="school_id" property="schoolId" />
+		<result column="school_name" property="schoolName" />
+		<result column="city" property="city" />
+		<result column="province" property="province"/>
+	</resultMap>
+
+	<resultMap id="queryMap" type="com.baomidou.springwind.entity.Student">
+		<id column="user_id" property="userId" />
+		<result column="student_id" property="studentId" />
+		<result column="school_id" property="schoolId" />
+		<result column="user_name" property="userName" />
+		<result column="real_name" property="realName" />
+		<result column="auth_level" property="authLevel" />
+		<result column="credit" property="credit" />
+		<result column="user_icon" property="userIcon" />
+		<result column="telephone" property="telephone" />
+		<result column="email" property="email" />
+		<result column="sex" property="sex" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<association property="school" column="school_id" select="getSchool">
+		</association>
+	</resultMap>
+	<select id="getSchool" resultType="School" resultMap="schoolMap">
+		select * from school where school_id = #{schoolId}
+	</select>
+	<select id="login" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
+		select user_id,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
+		from student
+		where student_id = #{studentId} and password = #{password} and school_id = #{schoolId}
+	</select>
+
+	<select id="queryList" resultType="com.baomidou.springwind.entity.Student" resultMap="queryMap">
+		select user_id,student_id,sex,telephone,email,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
+		from student
+		where status != 3
+	</select>
+
+	<select id="queryForPage" resultType="com.baomidou.springwind.entity.Student" resultMap="queryMap" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select * from student
+		where status != 100
+		<if test="#{searchString} !=null">
+			and (student_id like "%"#{searchString}"%" or
+			user_name like "%"#{searchString}"%" or
+			real_name like "%"#{searchString}"%" or
+			email like "%"#{searchString}"%" or
+			sex like "%"#{searchString}"%" or
+			telephone like "%"#{searchString}"%")
+		</if>
+		limit #{start},#{length}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(user_id) from student
+		<where>
+			<if test="#{searchString} !=null">
+				student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				real_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				sex like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%"
+			</if>
+		</where>
+	</select>
+</mapper>

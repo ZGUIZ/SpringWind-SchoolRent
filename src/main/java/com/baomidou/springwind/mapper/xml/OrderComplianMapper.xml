@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.OrderComplianMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.OrderComplian">
+		<id column="complain_id" property="complainId" />
+		<result column="context" property="context" />
+		<result column="user_id" property="userId" />
+		<result column="status" property="status" />
+		<result column="complain_date" property="complainDate" />
+		<result column="result" property="result" />
+		<result column="idle_id" property="idleId" />
+		<result column="response_person" property="responsePerson" />
+	</resultMap>
+
+</mapper>

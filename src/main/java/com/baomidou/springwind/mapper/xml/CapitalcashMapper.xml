@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.CapitalCashMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.CapitalCash">
+		<id column="cash_id" property="cashId" />
+		<result column="user_id" property="userId" />
+		<result column="capital" property="capital" />
+		<result column="status" property="status" />
+		<result column="request_time" property="requestTime" />
+		<result column="response_time" property="responseTime" />
+		<result column="reponse_person" property="reponsePerson" />
+	</resultMap>
+
+</mapper>
