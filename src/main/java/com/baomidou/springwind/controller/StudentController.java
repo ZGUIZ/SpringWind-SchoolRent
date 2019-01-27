@@ -300,6 +300,7 @@ public class StudentController {
         return JSONObject.toJSONString(result);
     }
 
+
     /**
      * 此方法用于验证邮箱验证码是否正确
      * @param keyValue
