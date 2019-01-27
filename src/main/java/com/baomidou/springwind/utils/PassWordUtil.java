@@ -8,6 +8,16 @@ public class PassWordUtil {
         "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
     };
 
+    public static String getRandomPassword(int length){
+        StringBuffer sb=new StringBuffer();
+        for(int i=0;i<length;i++){
+            Random random=new Random();
+            int value=random.nextInt(str.length);
+            sb.append(str[value]);
+        }
+        return sb.toString();
+    }
+
     public static String getRandomPassword(){
         StringBuffer sb=new StringBuffer();
         for(int i=0;i<10;i++){

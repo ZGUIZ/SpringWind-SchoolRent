@@ -3,10 +3,12 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.springwind.common.EhcacheHelper;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.ISchoolService;
 import com.baomidou.springwind.service.IStudentService;
 import com.baomidou.springwind.utils.DataTablesUtilJson;
+import com.baomidou.springwind.utils.MailUtil;
 import com.baomidou.springwind.utils.PassWordUtil;
 import com.baomidou.springwind.utils.RSAUtil;
 import com.sun.org.apache.regexp.internal.RE;
@@ -267,6 +269,59 @@ public class StudentController {
             e.printStackTrace();
             result.setResult(false);
             result.setMsg(e.getMessage());
+        }
+        return JSONObject.toJSONString(result);
+    }
+
+    private static final String MAIL_MESSAGE_TITLE = "邮箱验证";
+    private static final String MAIL_VAIL_MSG="您的邮箱正在绑定校园租的账号，若非本人操作，请忽略此信息。验证码为：";
+    private static final String MAIL_VALI_CACHE_NAME = "mail_vail_chache_name";
+
+    /**
+     * 此方法用于发送验证邮件到绑定的邮箱
+     * @param address
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value="/sendMailMessage")
+    public String sendMailMessage(String address){
+        Result result = new Result();
+        String str = PassWordUtil.getRandomPassword(6);
+        try {
+            MailUtil.sendMail(address,MAIL_MESSAGE_TITLE,MAIL_VAIL_MSG+str);
+            EhcacheHelper.put(MAIL_VALI_CACHE_NAME,address,str);
+            result.setResult(true);
+            result.setMsg("发送成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("邮件发送异常！");
+        }
+        return JSONObject.toJSONString(result);
+    }
+
+    /**
+     * 此方法用于验证邮箱验证码是否正确
+     * @param keyValue
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/validateMail",method = RequestMethod.POST)
+    public String validateMail(@RequestBody KeyValue keyValue){
+        Result result = new Result();
+        try {
+            Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, keyValue.getKey());
+            if (keyValue.getValue().equals(object)) {
+                result.setResult(true);
+                result.setMsg("验证信息正确");
+            } else{
+                result.setResult(false);
+                result.setMsg("验证信息错误！");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("验证信息错误！");
         }
         return JSONObject.toJSONString(result);
     }
