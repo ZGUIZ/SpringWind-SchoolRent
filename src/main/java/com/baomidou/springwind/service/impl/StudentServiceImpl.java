@@ -93,9 +93,10 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
     }
 
     @Override
-    public Student login(Student student) {
+    public Student login(Student student){
         PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
         String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(student.getPassword()));
+        //String p = RSAUtil.RSADecode(privateKey, student.getPassword().getBytes("utf-8"));
         String p2 = SHA1Util.encode(p);
         student.setPassword(p2);
         Student res= studentMapper.login(student);
