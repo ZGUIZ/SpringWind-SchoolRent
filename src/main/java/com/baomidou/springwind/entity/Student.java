@@ -255,6 +255,7 @@ public class Student extends Model<Student> {
 	public static Student getObjectFromJsonObject(JSONObject object){
 		Student student=new Student();
 		student.setUserId(object.getString("userId"));
+		student.setPassword(object.getString("password"));
 		student.setStudentId("".equals(object.getString("studentId"))? null: object.getString("studentId"));
 		student.setSchoolId("".equals(object.getString("schoolId"))? null: object.getString("schoolId"));
 		student.setUserName("".equals(object.getString("userName"))? null: object.getString("userName"));

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,9 +112,22 @@ public class StudentController {
     @RequestMapping(value="loginMobile",method=RequestMethod.POST)
     public String loginMobile(@RequestBody Student student){
         Result result = new Result();
-        Student s=studentService.login(student);
-        result.setResult(true);
-        result.setData(s);
+        Student s= null;
+        try {
+            s = studentService.login(student);
+            if(s == null){
+                result.setResult(false);
+                result.setMsg("用户名或密码错误！");
+            } else {
+                result.setResult(true);
+                result.setData(s);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+
         return JSONObject.toJSONString(result);
     }
 

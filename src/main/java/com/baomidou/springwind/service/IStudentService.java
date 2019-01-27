@@ -28,7 +28,7 @@ public interface IStudentService extends IService<Student> {
     Integer register(Student student) throws Exception;
 
     Student login(String account,String password);
-    Student login(Student student);
+    Student login(Student student) throws UnsupportedEncodingException;
     List<Student> queryList();
 
     /**
