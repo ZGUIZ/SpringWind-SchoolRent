@@ -9,7 +9,7 @@ import java.util.Properties;
 public class MailUtil {
     private static Session session;
     private static final String from = "615960774@qq.com";
-    private static final String password = "vpeblcbmevpjbbad";
+    private static final String password = "ygperwfzdiwsbccc";
     private static final String company="校园租";
     public static Boolean sendMail(String address,String title,String msg) throws MessagingException, UnsupportedEncodingException {
         Properties properties = System.getProperties();

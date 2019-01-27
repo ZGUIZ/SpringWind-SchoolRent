@@ -77,7 +77,7 @@
 	
 	<mvc:annotation-driven>
 		<!-- 编码转换 -->
-		<mvc:message-converters>
+		<!--<mvc:message-converters>
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
@@ -85,6 +85,45 @@
 						<value>text/html;charset=UTF-8</value>
 						<value>application/json;charset=UTF-8</value>
 					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>-->
+		<mvc:message-converters
+				register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/plain;charset=UTF-8</value>
+						<value>text/html;charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+			<!-- FastJson -->
+			<bean id="fastJsonHttpMessageConverter"
+				  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<!-- 这里顺序不能反，一定先写text/html,不然ie下出现下载提示 -->
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+				<property name="features">
+					<array
+							value-type="com.alibaba.fastjson.serializer.SerializerFeature">
+						<!-- 避免循环引用 -->
+						<value>DisableCircularReferenceDetect</value>
+						<!-- 是否输出值为null的字段 -->
+						<!-- <value>WriteMapNullValue</value>-->
+						<!-- 数值字段如果为null,输出为0,而非null -->
+						<!-- <value>WriteNullNumberAsZero</value>-->
+						<!-- 字符类型字段如果为null,输出为"",而非null -->
+						<value>WriteNullStringAsEmpty</value>
+						<!-- List字段如果为null,输出为[],而非null -->
+						<value>WriteNullListAsEmpty</value>
+						<!-- Boolean字段如果为null,输出为false,而非null -->
+						<!--  <value>WriteNullBooleanAsFalse</value>-->
+					</array>
 				</property>
 			</bean>
 		</mvc:message-converters>
