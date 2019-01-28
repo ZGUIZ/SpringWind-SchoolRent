@@ -275,7 +275,7 @@ public class StudentController {
 
     private static final String MAIL_MESSAGE_TITLE = "邮箱验证";
     private static final String MAIL_VAIL_MSG="您的邮箱正在绑定校园租的账号，若非本人操作，请忽略此信息。验证码为：";
-    private static final String MAIL_VALI_CACHE_NAME = "mail_vail_chache_name";
+    private static final String MAIL_VALI_CACHE_NAME = "captchaCache";
 
     /**
      * 此方法用于发送验证邮件到绑定的邮箱
@@ -300,7 +300,6 @@ public class StudentController {
         return JSONObject.toJSONString(result);
     }
 
-
     /**
      * 此方法用于验证邮箱验证码是否正确
      * @param keyValue
@@ -313,6 +312,7 @@ public class StudentController {
         try {
             Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, keyValue.getKey());
             if (keyValue.getValue().equals(object)) {
+                EhcacheHelper.remove(MAIL_VALI_CACHE_NAME,keyValue.getKey());
                 result.setResult(true);
                 result.setMsg("验证信息正确");
             } else{
