@@ -3,6 +3,7 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.common.EhcacheHelper;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.ISchoolService;
@@ -11,6 +12,7 @@ import com.baomidou.springwind.utils.DataTablesUtilJson;
 import com.baomidou.springwind.utils.MailUtil;
 import com.baomidou.springwind.utils.PassWordUtil;
 import com.baomidou.springwind.utils.RSAUtil;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.sun.org.apache.regexp.internal.RE;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.codec.binary.Base64;
@@ -50,39 +52,49 @@ public class StudentController {
     /**
      * 学生账号注册
      * @param student
-     * @param confirmPassword
      * @return
      */
     @ResponseBody
-    @RequestMapping("/register")
-    public String register(Student student,String confirmPassword){
+    @RequestMapping(value="/register",method = RequestMethod.POST)
+    public String register(@RequestBody Student student){
         Result result=new Result();
+        String confirmPassword = student.getConfirmPassword();
+
         try{
             if(student.getSchoolId() == null || "".equals(student.getSchoolId())){
                 result.setResult(false);
-                result.setMsg("学号不能为空！");
+                result.setMsg("学校不能为空！");
             } else if((student.getPassword() == null || "".equals(student.getPassword()))&(confirmPassword ==null || "".equals(confirmPassword))){
                 result.setResult(false);
                 result.setMsg("密码不能为空！");
-            } else if(!confirmPassword.equals(student.getPassword())){
-                result.setResult(false);
-                result.setMsg("两次输入的密码不一致！");
             } else {
-                Boolean res=studentService.insert(student);
-                if(!res){
+                student.setUserName(URLDecoder.decode(student.getUserName(),"utf-8"));
+                Student s=studentService.studentRegister(student);
+                if(s == null){
                     result.setResult(false);
                     result.setMsg("注册失败，可能该账号已经被注册！");
                 } else{
                     result.setResult(true);
+                    result.setData(s);
                     result.setMsg("注册成功！");
                 }
             }
         } catch (DuplicateKeyException exception){
+            exception.printStackTrace();
             result.setResult(false);
             result.setMsg("该账号已经被注册!");
+        } catch (PassWordNotSameException e){
+            result.setResult(false);
+            result.setMsg("两次输入的密码不一致");
+            e.printStackTrace();
+        } catch (MySQLIntegrityConstraintViolationException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("该邮箱已经被注册!");
         } catch (Exception e){
             result.setResult(false);
             result.setMsg(e.getMessage());
+            e.printStackTrace();
         }
         return JSON.toJSONString(result);
     }
@@ -274,7 +286,7 @@ public class StudentController {
     }
 
     private static final String MAIL_MESSAGE_TITLE = "邮箱验证";
-    private static final String MAIL_VAIL_MSG="您的邮箱正在绑定校园租的账号，若非本人操作，请忽略此信息。验证码为：";
+    private static final String MAIL_VAIL_MSG="您的邮箱正在绑定校园租的账号，若非本人操作，请忽略此信息。此验证码有效时间10分钟，验证码为：";
     private static final String MAIL_VALI_CACHE_NAME = "captchaCache";
 
     /**
@@ -285,9 +297,11 @@ public class StudentController {
     @ResponseBody
     @RequestMapping(value="/sendMailMessage")
     public String sendMailMessage(String address){
+
         Result result = new Result();
         String str = PassWordUtil.getRandomPassword(6);
         try {
+            //address = URLDecoder.decode(address,"utf-8");
             MailUtil.sendMail(address,MAIL_MESSAGE_TITLE,MAIL_VAIL_MSG+str);
             EhcacheHelper.put(MAIL_VALI_CACHE_NAME,address,str);
             result.setResult(true);
@@ -295,7 +309,7 @@ public class StudentController {
         } catch (Exception e) {
             e.printStackTrace();
             result.setResult(false);
-            result.setMsg("邮件发送异常！");
+            result.setMsg("邮件发送异常:"+e.getMessage());
         }
         return JSONObject.toJSONString(result);
     }

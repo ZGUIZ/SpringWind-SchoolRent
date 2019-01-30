@@ -1,6 +1,7 @@
 package com.baomidou.springwind.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.entity.Capital;
 import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Result;
@@ -46,10 +47,11 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
     @Autowired
     private CapitalMapper capitalMapper;
 
+    @Deprecated
     @Transactional
     @Override
     public Integer register(Student student) throws Exception {
-        Date now=new Date();
+        /*Date now=new Date();
         //设置学生信息的基本参数
         String userId=UUID.randomUUID().toString().replace("-","");
         student.setUserId(userId);
@@ -79,8 +81,8 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
 
         if(password != null){
             MailUtil.sendMail(student.getEmail(),mailTitle,mailContext+password);
-        }
-        return row;
+        }*/
+        return -1;
     }
 
     @Override
@@ -147,5 +149,43 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
             studentMapper.updateById(student);
         }
         return true;
+    }
+
+    @Transactional
+    @Override
+    public Student studentRegister(Student student) throws Exception {
+        Date now=new Date();
+        PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
+        String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(student.getPassword()));
+
+        //比较密码和确认密码是否一致
+        String confirm = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(student.getConfirmPassword()));
+        if(!p.equals(confirm)){
+            throw new PassWordNotSameException();
+        }
+
+        String p2 = SHA1Util.encode(p);
+        student.setPassword(p2);
+
+        String userId=UUID.randomUUID().toString().replace("-","");
+        student.setUserId(userId);
+        student.setCreateDate(now);
+
+        int row=studentMapper.insert(student);
+        if(row >0){
+            //初始化账号资金信息
+            Capital capital=new Capital();
+            String capital_id=UUID.randomUUID().toString().replace("-","");
+            capital.setCapitalId(capital_id);
+            capital.setUserId(userId);
+            capital.setUpdateTime(now);
+            int capRow=capitalMapper.insert(capital);
+            if(capRow<=0){
+                throw new Exception("账号初始化失败，请重新注册！");
+            }
+        } else {
+            throw new Exception("学生注册错误！");
+        }
+        return student;
     }
 }

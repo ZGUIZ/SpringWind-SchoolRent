@@ -60,4 +60,6 @@ public interface IStudentService extends IService<Student> {
      * @return
      */
     Boolean delStudent(String jsonList);
+
+    Student studentRegister(Student student) throws Exception;
 }

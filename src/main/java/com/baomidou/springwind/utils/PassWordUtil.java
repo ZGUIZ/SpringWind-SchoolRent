@@ -19,12 +19,12 @@ public class PassWordUtil {
     }
 
     public static String getRandomPassword(){
-        StringBuffer sb=new StringBuffer();
+       /* StringBuffer sb=new StringBuffer();
         for(int i=0;i<10;i++){
             Random random=new Random();
             int value=random.nextInt(str.length);
             sb.append(str[value]);
-        }
-        return sb.toString();
+        }*/
+        return getRandomPassword(10);
     }
 }
