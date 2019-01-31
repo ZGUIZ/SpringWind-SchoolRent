@@ -51,7 +51,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
     @Transactional
     @Override
     public Integer register(Student student) throws Exception {
-        /*Date now=new Date();
+        Date now=new Date();
         //设置学生信息的基本参数
         String userId=UUID.randomUUID().toString().replace("-","");
         student.setUserId(userId);
@@ -64,6 +64,21 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
             student.setPassword(SHA1Util.encode(password));
         }
         int row=studentMapper.insert(student);
+        initCaption(row,userId);
+        if(password != null){
+            MailUtil.sendMail(student.getEmail(),mailTitle,mailContext+password);
+        }
+        return -1;
+    }
+
+    /**
+     * 初始化账号资金信息
+     * @param row
+     * @param userId
+     * @throws Exception
+     */
+    private void initCaption(int row,String userId) throws Exception {
+        Date now=new Date();
         if(row >0){
             //初始化账号资金信息
             Capital capital=new Capital();
@@ -78,11 +93,6 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         } else {
             throw new Exception("学生注册错误！");
         }
-
-        if(password != null){
-            MailUtil.sendMail(student.getEmail(),mailTitle,mailContext+password);
-        }*/
-        return -1;
     }
 
     @Override
@@ -172,7 +182,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         student.setCreateDate(now);
 
         int row=studentMapper.insert(student);
-        if(row >0){
+        /*if(row >0){
             //初始化账号资金信息
             Capital capital=new Capital();
             String capital_id=UUID.randomUUID().toString().replace("-","");
@@ -186,6 +196,9 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         } else {
             throw new Exception("学生注册错误！");
         }
+        */
+        //初始化账号资金信息
+        initCaption(row,userId);
         return student;
     }
 }
