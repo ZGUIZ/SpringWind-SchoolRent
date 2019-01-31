@@ -51,7 +51,7 @@
 	<select id="login" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
 		select user_id,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
 		from student
-		where student_id = #{studentId} and password = #{password} and school_id = #{schoolId}
+		where (email = #{userName} or user_name = #{userName} or telephone = #{userName}) and password = #{password}
 	</select>
 
 	<select id="queryList" resultType="com.baomidou.springwind.entity.Student" resultMap="queryMap">

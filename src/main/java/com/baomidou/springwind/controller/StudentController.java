@@ -90,7 +90,7 @@ public class StudentController {
         } catch (MySQLIntegrityConstraintViolationException e){
             e.printStackTrace();
             result.setResult(false);
-            result.setMsg("该邮箱已经被注册!");
+            result.setMsg("该邮箱或用户名已经被注册!");
         } catch (Exception e){
             result.setResult(false);
             result.setMsg(e.getMessage());
@@ -128,6 +128,7 @@ public class StudentController {
         Result result = new Result();
         Student s= null;
         try {
+            student.setUserName(URLDecoder.decode(student.getUserName(),"utf-8"));
             s = studentService.login(student);
             if(s == null){
                 result.setResult(false);
