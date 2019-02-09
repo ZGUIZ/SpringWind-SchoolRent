@@ -17,4 +17,15 @@
 		<result column="user_id" property="userId" />
 	</resultMap>
 
+	<select id="selectByPage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfoExtend">
+		select idle.*
+		from idle_info idle
+		left join classify on (idle.classify_id = classify.classify_id)
+		<where>
+			<if test="search != null">
+				title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%"
+			</if>
+		</where>
+		limit #{start},#{pageSize}
+	</select>
 </mapper>

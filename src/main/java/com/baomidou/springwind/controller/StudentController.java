@@ -16,6 +16,7 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 import com.sun.org.apache.regexp.internal.RE;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.PrivateKey;
@@ -56,7 +59,7 @@ public class StudentController {
      */
     @ResponseBody
     @RequestMapping(value="/register",method = RequestMethod.POST)
-    public String register(@RequestBody Student student){
+    public String register(HttpServletRequest request,@RequestBody Student student){
         Result result=new Result();
         String confirmPassword = student.getConfirmPassword();
 
@@ -77,6 +80,10 @@ public class StudentController {
                     result.setResult(true);
                     result.setData(s);
                     result.setMsg("注册成功！");
+
+                    //将数据放入session
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute("student",s);
                 }
             }
         } catch (DuplicateKeyException exception){
@@ -124,7 +131,7 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value="loginMobile",method=RequestMethod.POST)
-    public String loginMobile(@RequestBody Student student){
+    public String loginMobile(HttpServletRequest request,@RequestBody Student student){
         Result result = new Result();
         Student s= null;
         try {
@@ -137,6 +144,9 @@ public class StudentController {
                 result.setResult(true);
                 result.setData(s);
             }
+            //将数据放入session
+            HttpSession session = request.getSession(true);
+            session.setAttribute("student",s);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             result.setResult(false);
@@ -340,5 +350,25 @@ public class StudentController {
             result.setMsg("验证信息错误！");
         }
         return JSONObject.toJSONString(result);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getCurrentUser")
+    public Result getCurrentUser(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        Result result = new Result();
+        if(session == null){
+            result.setResult(false);
+            return result;
+        }
+        try {
+            Student student = (Student) session.getAttribute("student");
+            result.setResult(true);
+            result.setData(student);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+        }
+        return result;
     }
 }

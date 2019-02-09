@@ -2,6 +2,7 @@ package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.entity.IdelPic;
 import com.baomidou.springwind.entity.IdleInfo;
+import com.baomidou.springwind.entity.IdleInfoExtend;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.IdelPicMapper;
 import com.baomidou.springwind.mapper.IdleInfoMapper;
@@ -75,5 +76,10 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             idelPicMapper.insert(pic);
         }
         return count;
+    }
+
+    @Override
+    public List<IdleInfo> selectByPage(IdleInfoExtend idleInfo) {
+        return idleInfoMapper.selectByPage(idleInfo);
     }
 }

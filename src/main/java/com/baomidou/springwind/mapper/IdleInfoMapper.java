@@ -2,6 +2,9 @@ package com.baomidou.springwind.mapper;
 
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.springwind.entity.IdleInfoExtend;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-10-30
  */
 public interface IdleInfoMapper extends BaseMapper<IdleInfo> {
-
+    List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
 }

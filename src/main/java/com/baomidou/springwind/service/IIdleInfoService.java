@@ -2,7 +2,10 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.IdleInfoExtend;
 import com.baomidou.springwind.entity.Student;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,4 +26,6 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     boolean addRentInfo(Student student,IdleInfo info) throws Exception;
 
     int addIdleInfo(IdleInfo idleInfo);
+
+    List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
 }

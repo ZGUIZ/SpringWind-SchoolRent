@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.entity.Classify;
 import com.baomidou.springwind.entity.Result;
+import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.ClassifyMapper;
 import com.baomidou.springwind.service.IClassifyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -47,7 +49,7 @@ public class ClassifyController {
 
     @ResponseBody
     @RequestMapping(value="/queryFromIndex")
-    public String queryFromIndex(){
+    public String queryFromIndex(HttpServletRequest request){
         List<Classify> classifies = classifyService.queryFromIndex();
         Result result = new Result();
         result.setResult(true);
