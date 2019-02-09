@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.entity.Classify;
 import com.baomidou.springwind.entity.Result;
 import com.baomidou.springwind.mapper.ClassifyMapper;
+import com.baomidou.springwind.service.IClassifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,13 +27,15 @@ import java.util.List;
 public class ClassifyController {
 
     @Autowired
-    private ClassifyMapper classifyMapper;
+    private IClassifyService classifyService;
+
 
     @RequestMapping("/queryList")
     @ResponseBody
     public String queryList(){
-        List<Classify> classifyMapperList=classifyMapper.selectList(new EntityWrapper<>());
+        List<Classify> classifyMapperList=classifyService.queryAll();
         Result result=new Result();
+        result.setResult(true);
         result.setData(classifyMapperList);
         return JSONObject.toJSONString(result);
     }
@@ -40,6 +43,16 @@ public class ClassifyController {
     @RequestMapping("/toList")
     public String toList(){
         return "classify/classifyList";
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/queryFromIndex")
+    public String queryFromIndex(){
+        List<Classify> classifies = classifyService.queryFromIndex();
+        Result result = new Result();
+        result.setResult(true);
+        result.setData(classifies);
+        return JSONObject.toJSONString(result);
     }
 	
 }

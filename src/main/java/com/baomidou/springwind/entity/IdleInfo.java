@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -83,6 +84,12 @@ public class IdleInfo extends Model<IdleInfo> {
 	 * 标题
 	 */
 	private String title;
+
+	@TableField("address")
+	private String address;
+
+	@TableField(exist = false)
+	private List<IdelPic> picList;
 
 	public String getSchoolId() {
 		return schoolId;
@@ -192,8 +199,25 @@ public class IdleInfo extends Model<IdleInfo> {
 	protected Serializable pkVal() {
 		return this.infoId;
 	}
+	
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public List<IdelPic> getPicList() {
+		return picList;
+	}
+
+	public void setPicList(List<IdelPic> picList) {
+		this.picList = picList;
+	}
 
 	/**
+
 	 * 从JSON数据获取对象
 	 * @param object
 	 * @return

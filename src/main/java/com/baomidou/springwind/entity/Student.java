@@ -50,11 +50,17 @@ public class Student extends Model<Student> {
      * 登录密码
      */
 	private String password;
+
+	@TableField(exist = false)
+	private String confirmPassword;
     /**
      * 支付密码
      */
 	@TableField("pay_password")
 	private String payPassword;
+
+	@TableField(exist = false)
+	private String confirmPayPassword;
     /**
      * 认证等级
      */
@@ -241,6 +247,22 @@ public class Student extends Model<Student> {
 			return "edit";
 		}
 		return beanStatus;
+	}
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
+	public String getConfirmPayPassword() {
+		return confirmPayPassword;
+	}
+
+	public void setConfirmPayPassword(String confirmPayPassword) {
+		this.confirmPayPassword = confirmPayPassword;
 	}
 
 	public void setBeanStatus(String beanStatus) {

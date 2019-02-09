@@ -22,6 +22,10 @@ public class Classify extends Model<Classify> {
 	private String classifyId;
 	@TableField("classify_name")
 	private String classifyName;
+	@TableField("weight")
+	private Integer weight;
+	@TableField("image_url")
+	private String imageUrl;
 
 
 	public String getClassifyId() {
@@ -38,6 +42,22 @@ public class Classify extends Model<Classify> {
 
 	public void setClassifyName(String classifyName) {
 		this.classifyName = classifyName;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	@Override

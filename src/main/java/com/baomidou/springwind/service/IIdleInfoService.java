@@ -21,4 +21,6 @@ public interface IIdleInfoService extends IService<IdleInfo> {
      */
     @Deprecated
     boolean addRentInfo(Student student,IdleInfo info) throws Exception;
+
+    int addIdleInfo(IdleInfo idleInfo);
 }

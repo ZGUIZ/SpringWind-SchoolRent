@@ -1,14 +1,22 @@
 package com.baomidou.springwind.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.entity.IdleInfo;
+import com.baomidou.springwind.entity.Result;
 import com.baomidou.springwind.service.IIdleInfoService;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -37,4 +45,28 @@ public class IdleInfoController {
         return view;
     }
 
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
+    @ResponseBody
+    public String addIdleInfo(@RequestBody IdleInfo idleInfo){
+        try {
+            idleInfo.setTitle(URLDecoder.decode(idleInfo.getTitle(),"utf-8"));
+            idleInfo.setIdelInfo(URLDecoder.decode(idleInfo.getIdelInfo(),"utf-8"));
+            if(idleInfo.getAddress()!=null){
+                idleInfo.setAddress(URLDecoder.decode(idleInfo.getAddress(),"utf-8"));
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        int count = idleInfoService.addIdleInfo(idleInfo);
+        Result result = new Result();
+        if(count > 0){
+            result.setResult(true);
+            result.setMsg("发布成功！");
+            result.setData(idleInfo);
+        } else {
+            result.setResult(false);
+            result.setMsg("发布异常");
+        }
+        return JSONObject.toJSONString(result);
+    }
 }

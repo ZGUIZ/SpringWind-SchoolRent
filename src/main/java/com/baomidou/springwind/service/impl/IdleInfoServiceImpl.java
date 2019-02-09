@@ -1,7 +1,9 @@
 package com.baomidou.springwind.service.impl;
 
+import com.baomidou.springwind.entity.IdelPic;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.mapper.IdelPicMapper;
 import com.baomidou.springwind.mapper.IdleInfoMapper;
 import com.baomidou.springwind.service.IIdleInfoService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -25,6 +28,8 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
 
     @Autowired
     private IdleInfoMapper idleInfoMapper;
+    @Autowired
+    private IdelPicMapper idelPicMapper;
 
     @Deprecated
     @Transactional
@@ -48,5 +53,27 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             }
         }*/
         return false;
+    }
+    @Transactional
+    @Override
+    public int addIdleInfo(IdleInfo idleInfo) {
+        List<IdelPic> idelPics = idleInfo.getPicList();
+        Date now = new Date();
+        idleInfo.setInfoId(UUIDUtil.getUUID());
+        idleInfo.setCreateDate(now);
+        idleInfo.setStatus(0);
+        int count = idleInfoMapper.insert(idleInfo);
+        if (count <= 0){
+            return count;
+        }
+
+        //保存图片信息
+        for(int i = 0;i<idelPics.size();i++){
+            IdelPic pic = idelPics.get(i);
+            pic.setPicId(UUIDUtil.getUUID());
+            pic.setIdelId(idleInfo.getInfoId());
+            idelPicMapper.insert(pic);
+        }
+        return count;
     }
 }

@@ -6,6 +6,15 @@
 	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.Classify">
 		<id column="classify_id" property="classifyId" />
 		<result column="classify_name" property="classifyName" />
+		<result column="weight" property="weight" />
+		<result column="image_url" property="imageUrl"/>
 	</resultMap>
 
+	<select id="queryIndex" resultMap="BaseResultMap">
+		select *
+		from classify
+		where weight is not null
+		order by weight
+		limit 7
+	</select>
 </mapper>

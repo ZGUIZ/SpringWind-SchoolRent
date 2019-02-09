@@ -182,21 +182,6 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         student.setCreateDate(now);
 
         int row=studentMapper.insert(student);
-        /*if(row >0){
-            //初始化账号资金信息
-            Capital capital=new Capital();
-            String capital_id=UUID.randomUUID().toString().replace("-","");
-            capital.setCapitalId(capital_id);
-            capital.setUserId(userId);
-            capital.setUpdateTime(now);
-            int capRow=capitalMapper.insert(capital);
-            if(capRow<=0){
-                throw new Exception("账号初始化失败，请重新注册！");
-            }
-        } else {
-            throw new Exception("学生注册错误！");
-        }
-        */
         //初始化账号资金信息
         initCaption(row,userId);
         return student;
