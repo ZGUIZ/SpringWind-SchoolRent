@@ -13,19 +13,33 @@
 		<result column="retal_type" property="retalType" />
 		<result column="status" property="status" />
 		<result column="create_date" property="createDate" />
+		<result column="title" property="title"/>
 		<result column="end_date" property="endDate" />
 		<result column="user_id" property="userId" />
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="user_name" property="userName" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
+		</association>
+		<collection property="picList" ofType="com.baomidou.springwind.entity.IdelPic" column="info_id">
+			<id column="pic_id" property="picId" />
+			<result column="pic_url" property="picUrl" />
+			<result column="idel_id" property="idelId" />
+		</collection>
 	</resultMap>
 
 	<select id="selectByPage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfoExtend">
-		select idle.*
+		select idle.*, idel_pic.*,student.user_name,student.user_icon,student.credit,student.student_id
 		from idle_info idle
 		left join classify on (idle.classify_id = classify.classify_id)
-		<where>
-			<if test="search != null">
-				title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%"
-			</if>
-		</where>
+		left join idel_pic on (idle.info_id = idel_id)
+		left join student on (idle.user_id = student.user_id)
+		where idle.create_date &lt;= #{createDate} and idle.status = #{status}
+		<if test="search != null">
+			and (title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%")
+		</if>
 		limit #{start},#{pageSize}
 	</select>
 </mapper>

@@ -7,6 +7,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class IdleInfo extends Model<IdleInfo> {
     /**
      * 发布日期
      */
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField("create_date")
 	private Date createDate;
     /**
@@ -90,6 +93,9 @@ public class IdleInfo extends Model<IdleInfo> {
 
 	@TableField(exist = false)
 	private List<IdelPic> picList;
+
+	@TableField(exist = false)
+	private Student student;
 
 	public String getSchoolId() {
 		return schoolId;
@@ -214,6 +220,14 @@ public class IdleInfo extends Model<IdleInfo> {
 
 	public void setPicList(List<IdelPic> picList) {
 		this.picList = picList;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	/**

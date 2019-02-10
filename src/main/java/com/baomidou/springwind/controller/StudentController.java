@@ -147,6 +147,7 @@ public class StudentController {
             //将数据放入session
             HttpSession session = request.getSession(true);
             session.setAttribute("student",s);
+            session.setMaxInactiveInterval(-1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             result.setResult(false);
