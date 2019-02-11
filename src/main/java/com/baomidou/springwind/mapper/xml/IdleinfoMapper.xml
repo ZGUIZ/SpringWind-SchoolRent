@@ -36,10 +36,11 @@
 		left join classify on (idle.classify_id = classify.classify_id)
 		left join idel_pic on (idle.info_id = idel_id)
 		left join student on (idle.user_id = student.user_id)
-		where idle.create_date &lt;= #{createDate} and idle.status = #{status}
+		where idle.create_date &lt;= #{createDate} and idle.status = #{status} and idle.school_id = #{schoolId}
 		<if test="search != null">
 			and (title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%")
 		</if>
+		order by idle.create_date desc
 		limit #{start},#{pageSize}
 	</select>
 </mapper>

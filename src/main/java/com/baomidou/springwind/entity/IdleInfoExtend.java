@@ -6,7 +6,7 @@ public class IdleInfoExtend extends IdleInfo{
     private String search;
 
     public IdleInfoExtend() {
-        pageSize = 15;
+        pageSize = 5;
     }
 
     public int getPage() {
@@ -18,7 +18,7 @@ public class IdleInfoExtend extends IdleInfo{
     }
 
     public int getStart(){
-        return (page-1) * 15;
+        return (page-1) * pageSize;
     }
 
     public int getPageSize(){
