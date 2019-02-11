@@ -50,8 +50,17 @@ public class IdleInfoController {
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ResponseBody
-    public String addIdleInfo(@RequestBody IdleInfo idleInfo){
+    public Result addIdleInfo(HttpServletRequest request,@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        Student student = (Student) request.getSession().getAttribute("student");
+        if(student == null){
+            result.setResult(false);
+            result.setMsg("用户未登录");
+            return result;
+        }
         try {
+            idleInfo.setSchoolId(student.getSchoolId());
+            idleInfo.setUserId(student.getUserId());
             idleInfo.setTitle(URLDecoder.decode(idleInfo.getTitle(),"utf-8"));
             idleInfo.setIdelInfo(URLDecoder.decode(idleInfo.getIdelInfo(),"utf-8"));
             if(idleInfo.getAddress()!=null){
@@ -61,7 +70,6 @@ public class IdleInfoController {
             e.printStackTrace();
         }
         int count = idleInfoService.addIdleInfo(idleInfo);
-        Result result = new Result();
         if(count > 0){
             result.setResult(true);
             result.setMsg("发布成功！");
@@ -70,7 +78,7 @@ public class IdleInfoController {
             result.setResult(false);
             result.setMsg("发布异常");
         }
-        return JSONObject.toJSONString(result);
+        return result;
     }
 
     @RequestMapping(value = "/toList",method = RequestMethod.POST)
