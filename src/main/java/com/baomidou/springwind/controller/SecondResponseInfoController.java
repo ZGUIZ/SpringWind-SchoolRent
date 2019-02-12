@@ -1,13 +1,11 @@
 package com.baomidou.springwind.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.springwind.entity.ResponseInfo;
-import com.baomidou.springwind.entity.ResponseInfoExtend;
 import com.baomidou.springwind.entity.Result;
+import com.baomidou.springwind.entity.SecondResponseInfo;
 import com.baomidou.springwind.entity.Student;
-import com.baomidou.springwind.service.IResponseInfoService;
+import com.baomidou.springwind.service.ISecondResponseInfoService;
+import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,33 +15,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.net.URLDecoder;
-import java.util.List;
+import java.util.Date;
 
 /**
  * <p>
- * 租赁信息回复 前端控制器
+ * 二级回复信息 前端控制器
  * </p>
  *
  * @author Yanghu
- * @since 2018-10-30
+ * @since 2019-02-12
  */
 @Controller
-@RequestMapping("/responseInfo")
-public class ResponseInfoController {
+@RequestMapping("/secondResponseInfo")
+public class SecondResponseInfoController {
 
     @Autowired
-    private IResponseInfoService responseInfoService;
-
+    private ISecondResponseInfoService secondResponseInfoService;
     /**
      * 添加
      * @param request
-     * @param responseInfo
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public Result addResponseInfo(HttpServletRequest request, @RequestBody ResponseInfo responseInfo){
+    public Result addResponseInfo(HttpServletRequest request, @RequestBody SecondResponseInfo secondResponseInfo){
         Result result = new Result();
         HttpSession httpSession = request.getSession();
         if(httpSession == null){
@@ -59,10 +54,14 @@ public class ResponseInfoController {
             return result;
         }
         try{
-            responseInfo.setResponseInfo(URLDecoder.decode(responseInfo.getResponseInfo(),"utf-8"));
-            responseInfo.setUserId(student.getUserId());
-            int count = responseInfoService.addResponseInfo(responseInfo);
-            if(count>0){
+
+            secondResponseInfo.setResponseId(UUIDUtil.getUUID());
+            secondResponseInfo.setUserId(student.getUserId());
+            secondResponseInfo.setStatus(1);
+            secondResponseInfo.setResponseDate(new Date());
+
+            boolean count = secondResponseInfoService.insert(secondResponseInfo);
+            if(count){
                 result.setResult(true);
                 result.setMsg("回复成功！");
             } else {
@@ -73,22 +72,6 @@ public class ResponseInfoController {
             e.printStackTrace();
             result.setResult(false);
             result.setMsg("回复失败");
-        }
-        return result;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/toList",method = RequestMethod.POST)
-    public Result toList(@RequestBody ResponseInfo responseInfo){
-        Result result = new Result();
-        try {
-            responseInfo.setStatus(1);
-            List<ResponseInfo> list = responseInfoService.queryResponseInfo(responseInfo);
-            result.setResult(true);
-            result.setData(list);
-        } catch (Exception e){
-            e.printStackTrace();
-            result.setResult(false);
         }
         return result;
     }

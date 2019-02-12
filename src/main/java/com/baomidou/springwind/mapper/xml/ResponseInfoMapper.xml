@@ -10,6 +10,28 @@
 		<result column="response_info" property="responseInfo" />
 		<result column="response_date" property="responseDate" />
 		<result column="alert_user" property="alertUser" />
+		<collection property="secondResponseInfos" ofType="com.baomidou.springwind.entity.SecondResponseInfo" column="info_id">
+			<id column="second_id" property="responseId" />
+			<result column="second_user" property="userId" />
+			<result column="second_info_id" property="infoId" />
+			<result column="second_response_info" property="responseInfo" />
+			<result column="second_response_date" property="responseDate" />
+			<result column="second_alter_user" property="alterUser" />
+			<result column="second_status" property="status" />
+			<result column="parent_id" property="parentId" />
+		</collection>
 	</resultMap>
+
+	<select id="listByPage" parameterType="com.baomidou.springwind.entity.ResponseInfo" resultMap="BaseResultMap">
+		select response_info.*,
+		  second_response_info.response_id as second_id,second_response_info.user_id as second_user,
+		  second_response_info.info_id as second_info_id,second_response_info.response_info as second_response_info,
+		  second_response_info.response_date as second_response_date,second_response_info.alter_user as second_alter_user,
+		  second_response_info.status as second_status,second_response_info.parent_id as parent_id
+		from response_info
+		left join second_response_info on (response_info.response_id = second_response_info.parent_id and second_response_info.status = 1 and second_response_info.info_id = #{infoId})
+		where response_info.status = 1 and response_info.info_id = #{infoId}
+		order by response_info.response_date,second_response_info.response_date
+	</select>
 
 </mapper>

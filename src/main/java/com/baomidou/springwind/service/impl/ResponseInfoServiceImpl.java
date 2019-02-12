@@ -4,7 +4,12 @@ import com.baomidou.springwind.entity.ResponseInfo;
 import com.baomidou.springwind.mapper.ResponseInfoMapper;
 import com.baomidou.springwind.service.IResponseInfoService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
+import com.baomidou.springwind.utils.UUIDUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +21,24 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ResponseInfoServiceImpl extends BaseServiceImpl<ResponseInfoMapper, ResponseInfo> implements IResponseInfoService {
-	
+
+    @Autowired
+    private ResponseInfoMapper responseInfoMapper;
+
+    @Override
+    public int addResponseInfo(ResponseInfo responseInfo) {
+        responseInfo.setResponseId(UUIDUtil.getUUID());
+        responseInfo.setResponseDate(new Date());
+        responseInfo.setStatus(1);
+        if("".equals(responseInfo.getAlertUser())){
+            responseInfo.setAlertUser(null);
+        }
+        int i = responseInfoMapper.insert(responseInfo);
+        return i;
+    }
+
+    @Override
+    public List<ResponseInfo> queryResponseInfo(ResponseInfo responseInfo) {
+        return responseInfoMapper.listByPage(responseInfo);
+    }
 }

@@ -1,25 +1,23 @@
 package com.baomidou.springwind.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
-import java.util.List;
 
 
 /**
  * <p>
- * 租赁信息回复
+ * 二级回复信息
  * </p>
  *
  * @author Yanghu
- * @since 2018-10-30
+ * @since 2019-02-12
  */
-@TableName("response_info")
-public class ResponseInfo extends Model<ResponseInfo> {
+@TableName("second_response_info")
+public class SecondResponseInfo extends Model<SecondResponseInfo> {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,15 +49,18 @@ public class ResponseInfo extends Model<ResponseInfo> {
     /**
      * 回复某个用户并推送给对方
      */
-	@TableField("alert_user")
-	private String alertUser;
-
-	/**
-	 * 状态
-	 */
+	@TableField("alter_user")
+	private String alterUser;
+    /**
+     * 0:禁止显示  1：正常显示
+     */
 	private Integer status;
+    /**
+     * 父级ID
+     */
+	@TableField("parent_id")
+	private String parentId;
 
-	private List<SecondResponseInfo> secondResponseInfos;
 
 	public String getResponseId() {
 		return responseId;
@@ -101,12 +102,12 @@ public class ResponseInfo extends Model<ResponseInfo> {
 		this.responseDate = responseDate;
 	}
 
-	public String getAlertUser() {
-		return alertUser;
+	public String getAlterUser() {
+		return alterUser;
 	}
 
-	public void setAlertUser(String alertUser) {
-		this.alertUser = alertUser;
+	public void setAlterUser(String alterUser) {
+		this.alterUser = alterUser;
 	}
 
 	public Integer getStatus() {
@@ -117,33 +118,17 @@ public class ResponseInfo extends Model<ResponseInfo> {
 		this.status = status;
 	}
 
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
 	@Override
 	protected Serializable pkVal() {
 		return this.responseId;
 	}
 
-	public List<SecondResponseInfo> getSecondResponseInfos() {
-		return secondResponseInfos;
-	}
-
-	public void setSecondResponseInfos(List<SecondResponseInfo> secondResponseInfos) {
-		this.secondResponseInfos = secondResponseInfos;
-	}
-
-	/**
-	 * 从JSON数据获取对象
-	 * @param object
-	 * @return
-	 */
-	public static ResponseInfo getObjectFromJsonObject(JSONObject object){
-		ResponseInfo info=new ResponseInfo();
-		info.setResponseId(object.getString("responseId"));
-		info.setUserId(object.getString("userId"));
-		info.setResponseInfo(object.getString("responseInfo"));
-		info.setResponseDate(object.getDate("responseDate"));
-		info.setInfoId(object.getString("infoId"));
-		info.setAlertUser(object.getString("alertUser"));
-		info.setStatus(object.getInteger("status"));
-		return info;
-	}
 }
