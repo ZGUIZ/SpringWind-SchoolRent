@@ -61,6 +61,8 @@ public class SecondResponseInfo extends Model<SecondResponseInfo> {
 	@TableField("parent_id")
 	private String parentId;
 
+	@TableField(exist = false)
+	private Student student;
 
 	public String getResponseId() {
 		return responseId;
@@ -124,6 +126,14 @@ public class SecondResponseInfo extends Model<SecondResponseInfo> {
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	@Override

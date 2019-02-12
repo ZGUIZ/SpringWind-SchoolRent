@@ -10,6 +10,11 @@
 		<result column="response_info" property="responseInfo" />
 		<result column="response_date" property="responseDate" />
 		<result column="alert_user" property="alertUser" />
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="user_name" property="userName" />
+			<result column="user_icon" property="userIcon" />
+		</association>
 		<collection property="secondResponseInfos" ofType="com.baomidou.springwind.entity.SecondResponseInfo" column="info_id">
 			<id column="second_id" property="responseId" />
 			<result column="second_user" property="userId" />
@@ -19,6 +24,11 @@
 			<result column="second_alter_user" property="alterUser" />
 			<result column="second_status" property="status" />
 			<result column="parent_id" property="parentId" />
+			<association property="student" javaType="com.baomidou.springwind.entity.Student">
+				<id column="second_user" property="userId" />
+				<result column="second_user_name" property="userName" />
+				<result column="second_user_icon" property="userIcon" />
+			</association>
 		</collection>
 	</resultMap>
 
@@ -27,9 +37,12 @@
 		  second_response_info.response_id as second_id,second_response_info.user_id as second_user,
 		  second_response_info.info_id as second_info_id,second_response_info.response_info as second_response_info,
 		  second_response_info.response_date as second_response_date,second_response_info.alter_user as second_alter_user,
-		  second_response_info.status as second_status,second_response_info.parent_id as parent_id
+		  second_response_info.status as second_status,second_response_info.parent_id as parent_id,
+		  student.user_name,student.user_icon,s1.user_name as second_user_name,s1.user_icon as second_user_icon
 		from response_info
 		left join second_response_info on (response_info.response_id = second_response_info.parent_id and second_response_info.status = 1 and second_response_info.info_id = #{infoId})
+		left join student on (response_info.user_id = student.user_id)
+		left join student s1 on (s1.user_id = second_response_info.user_id)
 		where response_info.status = 1 and response_info.info_id = #{infoId}
 		order by response_info.response_date,second_response_info.response_date
 	</select>

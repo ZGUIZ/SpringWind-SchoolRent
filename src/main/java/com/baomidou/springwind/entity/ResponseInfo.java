@@ -6,6 +6,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class ResponseInfo extends Model<ResponseInfo> {
     /**
      * 回复日期
      */
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField("response_date")
 	private Date responseDate;
     /**
@@ -58,6 +61,9 @@ public class ResponseInfo extends Model<ResponseInfo> {
 	 * 状态
 	 */
 	private Integer status;
+
+	@TableField(exist = false)
+	private Student student;
 
 	private List<SecondResponseInfo> secondResponseInfos;
 
@@ -128,6 +134,14 @@ public class ResponseInfo extends Model<ResponseInfo> {
 
 	public void setSecondResponseInfos(List<SecondResponseInfo> secondResponseInfos) {
 		this.secondResponseInfos = secondResponseInfos;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	/**

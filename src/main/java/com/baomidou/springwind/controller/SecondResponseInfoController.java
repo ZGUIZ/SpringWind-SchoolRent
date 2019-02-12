@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 import java.util.Date;
 
 /**
@@ -54,7 +55,7 @@ public class SecondResponseInfoController {
             return result;
         }
         try{
-
+            secondResponseInfo.setResponseInfo(URLDecoder.decode(secondResponseInfo.getResponseInfo(),"utf-8"));
             secondResponseInfo.setResponseId(UUIDUtil.getUUID());
             secondResponseInfo.setUserId(student.getUserId());
             secondResponseInfo.setStatus(1);
