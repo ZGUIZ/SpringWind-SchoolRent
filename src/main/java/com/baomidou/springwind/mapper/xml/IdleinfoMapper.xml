@@ -16,6 +16,7 @@
 		<result column="title" property="title"/>
 		<result column="end_date" property="endDate" />
 		<result column="user_id" property="userId" />
+		<result column="address" property="address"/>
 		<association property="student" javaType="com.baomidou.springwind.entity.Student">
 			<id column="user_id" property="userId" />
 			<result column="student_id" property="studentId" />
