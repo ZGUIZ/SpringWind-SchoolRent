@@ -10,6 +10,8 @@ public class Result {
      */
     private String msg;
 
+    private Integer code;
+
     private String paramType;
     /**
      * 参数
@@ -46,5 +48,13 @@ public class Result {
 
     public void setParamType(String paramType) {
         this.paramType = paramType;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
     }
 }

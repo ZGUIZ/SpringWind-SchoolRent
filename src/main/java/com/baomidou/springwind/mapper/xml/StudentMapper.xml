@@ -86,4 +86,43 @@
 			</if>
 		</where>
 	</select>
+
+	<resultMap id="BaseInfoMap" type="com.baomidou.springwind.entity.Student">
+		<id column="user_id" property="userId" />
+		<result column="student_id" property="studentId" />
+		<result column="school_id" property="schoolId" />
+		<result column="user_name" property="userName" />
+		<result column="real_name" property="realName" />
+		<result column="credit" property="credit" />
+		<result column="user_icon" property="userIcon" />
+		<result column="telephone" property="telephone" />
+		<result column="email" property="email" />
+		<result column="sex" property="sex" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<association property="school" javaType="com.baomidou.springwind.entity.School">
+			<id column="school_id" property="schoolId" />
+			<result column="school_name" property="schoolName" />
+		</association>
+		<collection property="authPictureList" ofType="com.baomidou.springwind.entity.AuthPicture">
+			<id column="pic_id" property="picId" />
+			<result column="auth_user_id" property="userId" />
+			<result column="a_status" property="status"/>
+			<result column="type" property="type"/>
+		</collection>
+	</resultMap>
+
+	<select id="getBaseInfo" resultMap="BaseInfoMap" parameterType="com.baomidou.springwind.entity.Student">
+		select student.*,school.school_name,auth_picture.type,auth_picture.status,auth_picture.pic_id,auth_picture.status as a_status,auth_picture.type,auth_picture.user_id auth_user_id
+		from student
+		left join school on (student.school_id = school.school_id)
+		left join auth_picture on (auth_picture.user_id = student.user_id)
+		where student.user_id = #{userId}
+	</select>
+
+	<select id="getCurrentUser" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
+		select user_id,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
+		from student
+		where user_id = #{userId}
+	</select>
 </mapper>

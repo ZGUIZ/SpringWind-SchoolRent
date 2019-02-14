@@ -3,7 +3,11 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.kisso.annotation.Action;
+import com.baomidou.kisso.annotation.Login;
+import com.baomidou.kisso.annotation.Permission;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
+import com.baomidou.springwind.Exception.PasswordErrorException;
 import com.baomidou.springwind.common.EhcacheHelper;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.ISchoolService;
@@ -28,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +62,7 @@ public class StudentController {
      * @param student
      * @return
      */
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping(value="/register",method = RequestMethod.POST)
     public String register(HttpServletRequest request,@RequestBody Student student){
@@ -106,6 +112,7 @@ public class StudentController {
         return JSON.toJSONString(result);
     }
 
+    @Permission(action = Action.Skip)
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
     public String login(String account,String password){
@@ -129,6 +136,7 @@ public class StudentController {
         return JSONObject.toJSONString(result);
     }
 
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping(value="loginMobile",method=RequestMethod.POST)
     public String loginMobile(HttpServletRequest request,@RequestBody Student student){
@@ -243,6 +251,7 @@ public class StudentController {
      * 返回性别Select2选项
      * @return
      */
+    @Permission(action = Action.Skip)
     @RequestMapping(value = "/getSex")
     @ResponseBody
     public String getSex(){
@@ -306,6 +315,8 @@ public class StudentController {
      * @param address
      * @return
      */
+    @Login(action = Action.Skip)
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping(value="/sendMailMessage")
     public String sendMailMessage(String address){
@@ -331,6 +342,8 @@ public class StudentController {
      * @param keyValue
      * @return
      */
+    @Login(action = Action.Skip)
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping(value = "/validateMail",method = RequestMethod.POST)
     public String validateMail(@RequestBody KeyValue keyValue){
@@ -364,11 +377,97 @@ public class StudentController {
         }
         try {
             Student student = (Student) session.getAttribute("student");
+            Student curr = studentService.getCurrentUser(student);
+            session.setAttribute("student",curr);
             result.setResult(true);
-            result.setData(student);
+            result.setData(curr);
         } catch (Exception e){
             e.printStackTrace();
             result.setResult(false);
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/getBaseInfo",method = RequestMethod.POST)
+    public Result getBaseInfo(@RequestBody Student student){
+        Result result = new Result();
+        try {
+            Student s = studentService.getBaseInfo(student);
+            result.setResult(true);
+            result.setData(s);
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/hasPayPassWord")
+    public Result hasPayPassword(HttpServletRequest request){
+        Result result = new Result();
+        HttpSession httpSession = request.getSession();
+        Student student = (Student) httpSession.getAttribute("student");
+        boolean res = studentService.hasPayPassword(student);
+        result.setResult(res);
+        result.setCode(500);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/exitLogin")
+    public void exitLogin(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.removeAttribute("student");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateInfo",method = RequestMethod.POST)
+    public Result updateStudent(HttpServletRequest request,@RequestBody Student student){
+        Result result = new Result();
+        try {
+            String userName = student.getUserName();
+            if(userName!=null && !"".equals(userName.trim())){
+                student.setUserName(URLDecoder.decode(userName,"utf-8"));
+            }
+            String realName = student.getRealName();
+            if(realName!=null && !"".equals(realName.trim())){
+                student.setRealName(URLDecoder.decode(realName,"utf-8"));
+            }
+            String sex =student.getSex();
+            if (sex!=null && !"".equals(sex.trim())) {
+                student.setSex(URLDecoder.decode(sex,"utf-8"));
+            }
+            Student s = (Student) request.getSession().getAttribute("student");
+            student.setUserId(s.getUserId());
+            studentService.updateById(student);
+            result.setResult(true);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("修改失败");
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updatePassword",method = RequestMethod.POST)
+    public Result updatePassword(HttpServletRequest request,@RequestBody PassWord passWord){
+        Student s = (Student) request.getSession().getAttribute("student");
+        Result result = new Result();
+        try {
+            boolean res = studentService.updatePassword(s,passWord);
+            result.setResult(res);
+            if(res){
+                result.setMsg("修改成功！");
+            } else {
+                result.setMsg("修改失败！");
+            }
+        } catch (PasswordErrorException pee){
+           result.setMsg("密码错误");
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return result;
     }

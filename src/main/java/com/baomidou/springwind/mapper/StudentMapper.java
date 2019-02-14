@@ -32,4 +32,8 @@ public interface StudentMapper extends BaseMapper<Student> {
      * @return
      */
     Integer getCount(RequestInfo<Student> requestInfo);
+
+    Student getBaseInfo(Student student);
+
+    Student getCurrentUser(Student student);
 }

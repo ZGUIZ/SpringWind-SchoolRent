@@ -7,6 +7,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -108,6 +109,9 @@ public class Student extends Model<Student> {
 
 	@TableField(exist = false)
 	private String beanStatus;
+
+	@TableField(exist = false)
+	private List<AuthPicture> authPictureList;
 
 	public String getUserId() {
 		return userId;
@@ -267,6 +271,14 @@ public class Student extends Model<Student> {
 
 	public void setBeanStatus(String beanStatus) {
 		this.beanStatus = beanStatus;
+	}
+
+	public List<AuthPicture> getAuthPictureList() {
+		return authPictureList;
+	}
+
+	public void setAuthPictureList(List<AuthPicture> authPictureList) {
+		this.authPictureList = authPictureList;
 	}
 
 	/**

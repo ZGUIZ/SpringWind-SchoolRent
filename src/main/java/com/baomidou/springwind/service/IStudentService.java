@@ -1,5 +1,7 @@
 package com.baomidou.springwind.service;
 
+import com.baomidou.springwind.Exception.PasswordErrorException;
+import com.baomidou.springwind.entity.PassWord;
 import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Result;
 import com.baomidou.springwind.entity.Student;
@@ -62,4 +64,20 @@ public interface IStudentService extends IService<Student> {
     Boolean delStudent(String jsonList);
 
     Student studentRegister(Student student) throws Exception;
+
+    /**
+     * 是否有支付密码
+     * @param student
+     * @return
+     */
+    boolean hasPayPassword(Student student);
+
+    boolean updatePassword(Student student, PassWord passWord) throws PasswordErrorException;
+
+    boolean updatePayPassword(Student student, PassWord passWord) throws PasswordErrorException;
+
+    Student getBaseInfo(Student student);
+
+    Student getCurrentUser(Student student);
+
 }

@@ -74,7 +74,15 @@
 		</mvc:interceptor>
 		<bean class="com.baomidou.framework.spring.DataLoadingInterceptor" />
 	</mvc:interceptors>-->
-	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.baomidou.springwind.common.LoginHandlerIntercepter" >
+				<property name="illegalUrl" value="/error/illegalAccess.html"/>
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 	<mvc:annotation-driven>
 		<!-- 编码转换 -->
 		<!--<mvc:message-converters>

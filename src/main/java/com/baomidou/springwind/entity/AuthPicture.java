@@ -46,6 +46,7 @@ public class AuthPicture extends Model<AuthPicture> {
 	 * 类型
 	 */
 	private Integer type;
+
 	private Integer status;
 
 	public String getPicId() {

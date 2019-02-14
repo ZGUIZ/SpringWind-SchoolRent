@@ -2,6 +2,9 @@ package com.baomidou.springwind.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.kisso.annotation.Action;
+import com.baomidou.kisso.annotation.Login;
+import com.baomidou.kisso.annotation.Permission;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.springwind.entity.DatatablesView;
@@ -36,6 +39,7 @@ public class SchoolController {
      * 获得城市列表
      * @return
      */
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/getCity")
     public String getCity(String province){
@@ -43,7 +47,7 @@ public class SchoolController {
         String citiesJson=JSONArray.toJSONString(cities);
         return citiesJson;
     }
-
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("getProvince")
     public String getProvince(){
@@ -56,6 +60,7 @@ public class SchoolController {
      * @param city
      * @return
      */
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/queryList")
     public String getSchool(String city){
@@ -71,6 +76,7 @@ public class SchoolController {
         }
     }
 
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/getSchool")
     public String getSchoolForSelect2(String city){
@@ -78,6 +84,7 @@ public class SchoolController {
         return JSONArray.toJSONString(select2Beans);
     }
 
+    @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/id/{id}")
     public String getSchoolById(@PathVariable("id") String id){

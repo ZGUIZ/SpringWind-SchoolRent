@@ -2,10 +2,8 @@ package com.baomidou.springwind.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
-import com.baomidou.springwind.entity.Capital;
-import com.baomidou.springwind.entity.RequestInfo;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.Exception.PasswordErrorException;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.CapitalMapper;
 import com.baomidou.springwind.mapper.StudentMapper;
 import com.baomidou.springwind.service.IStudentService;
@@ -177,6 +175,15 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         String p2 = SHA1Util.encode(p);
         student.setPassword(p2);
 
+        //比较支付密码
+        String pass = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(student.getPayPassword()));
+        String confrimPay = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(student.getConfirmPayPassword()));
+
+        if(!pass.equals(confrimPay)){
+            throw new PassWordNotSameException();
+        }
+        student.setPayPassword(SHA1Util.encode(pass));
+
         String userId=UUID.randomUUID().toString().replace("-","");
         student.setUserId(userId);
         student.setCreateDate(now);
@@ -185,5 +192,90 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         //初始化账号资金信息
         initCaption(row,userId);
         return student;
+    }
+
+    @Override
+    public boolean hasPayPassword(Student student) {
+        Student s = studentMapper.selectById(student.getStudentId());
+        if(s.getPayPassword()!=null && !"".equals(s.getPassword())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updatePassword(Student student, PassWord passWord) throws PasswordErrorException {
+        boolean flag=false;
+        Student s = studentMapper.selectById(student.getUserId());
+
+        PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
+
+        String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getOldPassword()));
+        p = SHA1Util.encode(p);
+        if (!s.getPassword().equals(p)) {
+            throw new PasswordErrorException("密码错误！");
+        }
+
+        String newPassword = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getNewPassword()));
+        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getOldPassword()));
+
+        if(newPassword == null){
+            throw new PassWordNotSameException();
+        }
+        //比较密码和确认密码是否一致
+        //String confirm = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getOldPassword()));
+
+        if(!newPassword.equals(confirmPassword)){
+            throw new PassWordNotSameException();
+        }
+
+        String np = SHA1Util.encode(newPassword);
+
+        s.setPassword(np);
+        studentMapper.updateById(s);
+
+        return flag;
+    }
+
+    @Override
+    public boolean updatePayPassword(Student student, PassWord passWord) throws PasswordErrorException {
+        boolean flag=false;
+        Student s = studentMapper.selectById(student.getUserId());
+
+        PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
+
+        String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getOldPassword()));
+        p = SHA1Util.encode(p);
+        if (!s.getPassword().equals(p)) {
+            throw new PasswordErrorException("密码错误！");
+        }
+
+        String newPassword = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getNewPassword()));
+        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getOldPassword()));
+
+        if(newPassword == null){
+            throw new PassWordNotSameException();
+        }
+
+        if(!newPassword.equals(confirmPassword)){
+            throw new PassWordNotSameException();
+        }
+
+        String np = SHA1Util.encode(newPassword);
+
+        s.setPayPassword(np);
+        studentMapper.updateById(s);
+
+        return flag;
+    }
+
+    @Override
+    public Student getBaseInfo(Student student) {
+        return studentMapper.getBaseInfo(student);
+    }
+
+    @Override
+    public Student getCurrentUser(Student student){
+        return studentMapper.getCurrentUser(student);
     }
 }

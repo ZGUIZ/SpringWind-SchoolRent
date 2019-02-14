@@ -2,15 +2,28 @@ package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.Exception.DataBaseUpdatExcepton;
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
+import com.baomidou.springwind.Exception.MoneyNotEnoughException;
+import com.baomidou.springwind.Exception.PassWordNotSameException;
+import com.baomidou.springwind.entity.Capital;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.Rent;
+import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.mapper.CapitalMapper;
 import com.baomidou.springwind.mapper.IdleInfoMapper;
 import com.baomidou.springwind.mapper.RentMapper;
+import com.baomidou.springwind.mapper.StudentMapper;
 import com.baomidou.springwind.service.IRentService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
+import com.baomidou.springwind.utils.RSAUtil;
+import com.baomidou.springwind.utils.SHA1Util;
+import com.baomidou.springwind.utils.UUIDUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.PrivateKey;
+import java.util.List;
 
 /**
  * <p>
@@ -27,6 +40,36 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
     private IdleInfoMapper idleInfoMapper;
     @Autowired
     private RentMapper rentMapper;
+    @Autowired
+    private CapitalMapper capitalMapper;
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Override
+    @Transactional
+    public boolean addRent(Rent rent,Student student) throws MoneyNotEnoughException {
+        Student s = studentMapper.selectById(student.getUserId());
+        //私钥解密
+        PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
+        String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(rent.getPayPassword()));
+        p = SHA1Util.encode(p);
+        if(!s.getPayPassword().equals(p)){
+            throw new PassWordNotSameException();
+        }
+
+        IdleInfo idleInfo = idleInfoMapper.selectById(rent.getIdelId());
+        Capital capital = capitalMapper.selectForUpdate(student.getUserId());
+        if(capital.getCapital()<idleInfo.getDeposit()){
+            throw new MoneyNotEnoughException("余额不足");
+        }
+        capital.setCapital(capital.getCapital() - idleInfo.getDeposit());
+        rent.setLastRental(idleInfo.getDeposit());
+        rent.setStatus(0);
+        rent.setRentId(UUIDUtil.getUUID());
+        rentMapper.insert(rent);
+        return true;
+    }
 
     @Transactional
     @Override
@@ -111,6 +154,33 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
                 break;
         }
         return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean responseFromCustomer(Rent rent, Student student) throws IllegalAuthroiyException, DataBaseUpdatExcepton {
+        switch (rent.getStatus()){
+            case 6:
+                Rent r = rentMapper.selectById(rent.getRentId());
+                if(r.getStatus() == 0){
+                    rentMapper.updateById(rent);
+                } else if(r.getStatus() == 1){
+                    IdleInfo idleInfo = idleInfoMapper.selectById(rent.getIdelId());
+                    idleInfo.setStatus(0);
+                    updateRentAndIdleInfo(rent,idleInfo);
+                } else {
+                    throw new IllegalAuthroiyException("状态转换异常");
+                }
+                break;
+            default:
+                throw new IllegalStateException("状态转换异常");
+        }
+        return false;
+    }
+
+    @Override
+    public List<Rent> queryList(IdleInfo idleInfo) {
+        return rentMapper.queryList(idleInfo);
     }
 
     /**
