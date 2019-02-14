@@ -49,6 +49,13 @@ public class Rent extends Model<Rent> {
 	@TableField("end_date")
 	private Date endDate;
 
+	@TableField(exist = false)
+	private Student student;
+
+	private Float lastRental;
+
+	@TableField(exist = false)
+	private String payPassword;
 
 	public String getRentId() {
 		return rentId;
@@ -103,4 +110,27 @@ public class Rent extends Model<Rent> {
 		return this.rentId;
 	}
 
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+	public Float getLastRental() {
+		return lastRental;
+	}
+
+	public void setLastRental(Float lastRental) {
+		this.lastRental = lastRental;
+	}
+
+	public String getPayPassword() {
+		return payPassword;
+	}
+
+	public void setPayPassword(String payPassword) {
+		this.payPassword = payPassword;
+	}
 }

@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-30
  */
 public interface IAuthPictureService extends IService<AuthPicture> {
-	
+	boolean addOrRefresh(AuthPicture authPicture);
 }

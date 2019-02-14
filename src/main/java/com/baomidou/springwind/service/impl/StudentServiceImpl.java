@@ -38,6 +38,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
 
     private static final String mailTitle="校园租密码重置";
     private static final String mailContext = "您在校园租的账号密码已经被重置，请及时修改，重置密码为：";
+    private static final String payContext = "您在校园租的账号支付密码已经被重置，请及时修改，重置密码为：";
 
     @Autowired
     private StudentMapper studentMapper;
@@ -147,6 +148,17 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         return true;
     }
 
+    @Override
+    public Boolean resetPayPassword(String id) throws UnsupportedEncodingException, MessagingException {
+        String password = PassWordUtil.getRandomPassword();
+        Student student = studentMapper.selectById(id);
+        student.setPayPassword(SHA1Util.encode(password));
+        studentMapper.updateById(student);
+        //发送邮件
+        MailUtil.sendMail(student.getEmail(),mailTitle,payContext+password);
+        return true;
+    }
+
     @Transactional
     @Override
     public Boolean delStudent(String jsonList) {
@@ -217,7 +229,7 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         }
 
         String newPassword = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getNewPassword()));
-        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getOldPassword()));
+        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getConfirmPaswword()));
 
         if(newPassword == null){
             throw new PassWordNotSameException();
@@ -232,7 +244,10 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         String np = SHA1Util.encode(newPassword);
 
         s.setPassword(np);
-        studentMapper.updateById(s);
+        int count = studentMapper.updateById(s);
+        if(count>0){
+            flag = true;
+        }
 
         return flag;
     }
@@ -264,7 +279,11 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         String np = SHA1Util.encode(newPassword);
 
         s.setPayPassword(np);
-        studentMapper.updateById(s);
+
+        int count = studentMapper.updateById(s);
+        if(count>0){
+            flag = true;
+        }
 
         return flag;
     }

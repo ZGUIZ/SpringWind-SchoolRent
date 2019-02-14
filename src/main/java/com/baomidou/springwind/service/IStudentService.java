@@ -55,6 +55,7 @@ public interface IStudentService extends IService<Student> {
      * @throws MessagingException
      */
     Boolean resetPassword(String id) throws UnsupportedEncodingException, MessagingException;
+    Boolean resetPayPassword(String id) throws UnsupportedEncodingException, MessagingException;
 
     /**
      * 批量删除

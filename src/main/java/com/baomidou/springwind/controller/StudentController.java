@@ -32,12 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.PrivateKey;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -288,6 +285,44 @@ public class StudentController {
         return JSONObject.toJSONString(result);
     }
 
+    @ResponseBody
+    @RequestMapping("/restPassword")
+    public String resetPasswordFromUser(HttpServletRequest request){
+        Result result=new Result();
+        boolean res= false;
+        try {
+            HttpSession session = request.getSession();
+            Student student = (Student) session.getAttribute("student");
+            res = studentService.resetPassword(student.getUserId());
+            result.setResult(res);
+            result.setMsg("重置成功！");
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("邮件发送异常");
+        }
+        return JSONObject.toJSONString(result);
+    }
+
+    @ResponseBody
+    @RequestMapping("/restPayPassword")
+    public String resetPayPasswordFromUser(HttpServletRequest request){
+        Result result=new Result();
+        boolean res= false;
+        try {
+            HttpSession session = request.getSession();
+            Student student = (Student) session.getAttribute("student");
+            res = studentService.resetPayPassword(student.getUserId());
+            result.setResult(res);
+            result.setMsg("重置成功！");
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("邮件发送异常");
+        }
+        return JSONObject.toJSONString(result);
+    }
+
     /**
      * 批量删除
      */
@@ -420,6 +455,7 @@ public class StudentController {
     public void exitLogin(HttpServletRequest request){
         HttpSession session = request.getSession();
         session.removeAttribute("student");
+        //session.setMaxInactiveInterval(1);
     }
 
     @ResponseBody
@@ -456,6 +492,7 @@ public class StudentController {
     public Result updatePassword(HttpServletRequest request,@RequestBody PassWord passWord){
         Student s = (Student) request.getSession().getAttribute("student");
         Result result = new Result();
+        result.setResult(false);
         try {
             boolean res = studentService.updatePassword(s,passWord);
             result.setResult(res);
@@ -466,6 +503,33 @@ public class StudentController {
             }
         } catch (PasswordErrorException pee){
            result.setMsg("密码错误");
+        } catch (PassWordNotSameException e){
+            result.setMsg("两次输入的密码不一致");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setMsg("修改失败！");
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updatePayPassword",method = RequestMethod.POST)
+    public Result updatePayPassword(HttpServletRequest request,@RequestBody PassWord passWord){
+        Student s = (Student) request.getSession().getAttribute("student");
+        Result result = new Result();
+        result.setResult(false);
+        try {
+            boolean res = studentService.updatePayPassword(s,passWord);
+            result.setResult(res);
+            if(res){
+                result.setMsg("修改成功！");
+            } else {
+                result.setMsg("修改失败！");
+            }
+        } catch (PasswordErrorException pee){
+            result.setMsg("密码错误");
+        } catch (PassWordNotSameException e){
+            result.setMsg("两次输入的密码不一致");
         } catch (Exception e){
             e.printStackTrace();
         }
