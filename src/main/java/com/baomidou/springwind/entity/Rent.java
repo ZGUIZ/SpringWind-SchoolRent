@@ -52,6 +52,7 @@ public class Rent extends Model<Rent> {
 	@TableField(exist = false)
 	private Student student;
 
+	@TableField("last_rental")
 	private Float lastRental;
 
 	@TableField(exist = false)

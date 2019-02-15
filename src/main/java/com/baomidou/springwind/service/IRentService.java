@@ -35,4 +35,7 @@ public interface IRentService extends IService<Rent> {
     boolean addRent(Rent rent,Student student) throws MoneyNotEnoughException;
 
     List<Rent> queryList(IdleInfo idleInfo);
+
+    int getCountOfRequest(Rent rent);
+    Rent getCanRent(Rent rent);
 }

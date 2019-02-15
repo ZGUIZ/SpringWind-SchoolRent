@@ -261,12 +261,12 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
 
         String p = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getOldPassword()));
         p = SHA1Util.encode(p);
-        if (!s.getPassword().equals(p)) {
+        if (!s.getPayPassword().equals(p)) {
             throw new PasswordErrorException("密码错误！");
         }
 
         String newPassword = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getNewPassword()));
-        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getOldPassword()));
+        String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getConfirmPaswword()));
 
         if(newPassword == null){
             throw new PassWordNotSameException();

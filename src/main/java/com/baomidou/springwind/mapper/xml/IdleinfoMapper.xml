@@ -2,6 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.baomidou.springwind.mapper.IdleInfoMapper">
 
+	<resultMap id="ResultMap" type="com.baomidou.springwind.entity.IdleInfo">
+		<id column="info_id" property="infoId" />
+		<result column="classify_id" property="classifyId" />
+		<result column="idel_info" property="idelInfo" />
+		<result column="destory_info" property="destoryInfo" />
+		<result column="deposit" property="deposit" />
+		<result column="retal" property="retal" />
+		<result column="retal_type" property="retalType" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<result column="title" property="title"/>
+		<result column="end_date" property="endDate" />
+		<result column="user_id" property="userId" />
+		<result column="address" property="address"/>
+	</resultMap>
 	<!-- 通用查询映射结果 -->
 	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.IdleInfo">
 		<id column="info_id" property="infoId" />
@@ -43,5 +58,9 @@
 		</if>
 		order by idle.create_date desc
 		limit #{start},#{pageSize}
+	</select>
+
+	<select id="selectForUpdate" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.IdleInfo">
+		select * from idle_info where info_id = #{infoId} for update
 	</select>
 </mapper>

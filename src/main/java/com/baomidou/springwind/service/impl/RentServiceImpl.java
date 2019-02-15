@@ -57,13 +57,15 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         if(!s.getPayPassword().equals(p)){
             throw new PassWordNotSameException();
         }
-
-        IdleInfo idleInfo = idleInfoMapper.selectById(rent.getIdelId());
+        IdleInfo param = new IdleInfo();
+        param.setInfoId(rent.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
         Capital capital = capitalMapper.selectForUpdate(student.getUserId());
         if(capital.getCapital()<idleInfo.getDeposit()){
             throw new MoneyNotEnoughException("余额不足");
         }
         capital.setCapital(capital.getCapital() - idleInfo.getDeposit());
+        capitalMapper.update(capital);
         rent.setLastRental(idleInfo.getDeposit());
         rent.setStatus(0);
         rent.setRentId(UUIDUtil.getUUID());
@@ -183,6 +185,12 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         return rentMapper.queryList(idleInfo);
     }
 
+    @Override
+    public int getCountOfRequest(Rent rent) {
+        Integer res = rentMapper.getCountOfRequest(rent);
+        return res == null ? 0 : res;
+    }
+
     /**
      * 同时更新租赁关系和闲置商品表
      * @param rent
@@ -231,5 +239,19 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
      */
     private boolean rollBackCapital(Rent rent,IdleInfo idleInfo){
         return false;
+    }
+
+    @Override
+    public Rent getCanRent(Rent rent){
+        List<Rent> rentList = rentMapper.getCanRent(rent);
+
+        Rent r = null;
+        if(rentList!=null && rentList.size()>0) {
+            r = rentList.get(0);
+        } else {
+            r = new Rent();
+            r.setStatus(7);
+        }
+        return r;
     }
 }

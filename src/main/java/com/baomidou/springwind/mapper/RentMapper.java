@@ -16,4 +16,7 @@ import java.util.List;
  */
 public interface RentMapper extends BaseMapper<Rent> {
     List<Rent> queryList(IdleInfo idleInfo);
+
+    Integer getCountOfRequest(Rent rent);
+    List<Rent> getCanRent(Rent rent);
 }

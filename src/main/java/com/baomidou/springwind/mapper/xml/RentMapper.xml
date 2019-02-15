@@ -3,6 +3,16 @@
 <mapper namespace="com.baomidou.springwind.mapper.RentMapper">
 
 	<!-- 通用查询映射结果 -->
+	<resultMap id="ResultMap" type="com.baomidou.springwind.entity.Rent">
+		<id column="rent_id" property="rentId" />
+		<result column="user_id" property="userId" />
+		<result column="idel_id" property="idelId" />
+		<result column="status" property="status" />
+		<result column="start_date" property="startDate" />
+		<result column="end_date" property="endDate" />
+		<result column="last_rental" property="lastRental"/>
+	</resultMap>
+
 	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.Rent">
 		<id column="rent_id" property="rentId" />
 		<result column="user_id" property="userId" />
@@ -24,7 +34,20 @@
 		select rent.*,student.student_id,student.user_name,student.credit,student.user_icon
 		from rent
 		left join student on (rent.user_id = student.user_id)
-		where idel_id = #{infoId} and rent.status != 6
+		where idel_id = #{infoId} and rent.status != 6 and rent.status != 2 and rent.status != 3
+	</select>
+
+	<select id="getCountOfRequest" resultType="Integer" parameterType="com.baomidou.springwind.entity.Rent">
+		select count(rent.user_id)
+		from rent
+		where rent.status != 6 and idel_id = #{idelId}
+		group by user_id
+	</select>
+
+	<select id="getCanRent" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.Rent">
+		select *
+		from rent
+		where user_id = #{userId} and idel_id = #{idelId} and status not in (2,3,6)
 	</select>
 
 </mapper>

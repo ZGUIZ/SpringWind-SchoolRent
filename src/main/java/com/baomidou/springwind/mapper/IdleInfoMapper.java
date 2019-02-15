@@ -16,4 +16,6 @@ import java.util.List;
  */
 public interface IdleInfoMapper extends BaseMapper<IdleInfo> {
     List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
+
+    IdleInfo selectForUpdate(IdleInfo idleInfo);
 }
