@@ -454,7 +454,9 @@ public class StudentController {
     @RequestMapping(value = "/exitLogin")
     public void exitLogin(HttpServletRequest request){
         HttpSession session = request.getSession();
+        session.setAttribute("student",null);
         session.removeAttribute("student");
+        //session.invalidate();
         //session.setMaxInactiveInterval(1);
     }
 

@@ -1,7 +1,5 @@
 package com.baomidou.springwind.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.springwind.Exception.MoneyNotEnoughException;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.entity.IdleInfo;
@@ -9,7 +7,6 @@ import com.baomidou.springwind.entity.Rent;
 import com.baomidou.springwind.entity.Result;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.service.IRentService;
-import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +52,11 @@ public class RentController {
             result.setResult(false);
             result.setCode(402);
             result.setMsg("密码错误！");
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setCode(403);
+            result.setMsg(e.getMessage());
         }
 
 	    return result;
@@ -90,10 +92,12 @@ public class RentController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/list",method = RequestMethod.POST)
-    private Result list(@RequestBody IdleInfo idleInfo){
+    @RequestMapping(value = "/list/id/{id}")
+    public Result list(@PathVariable("id") String id){
 	    Result result = new Result();
 	    try {
+	        IdleInfo idleInfo = new IdleInfo();
+	        idleInfo.setInfoId(id);
             List<Rent> rentList = rentService.queryList(idleInfo);
             result.setResult(true);
             result.setData(rentList);
@@ -106,7 +110,7 @@ public class RentController {
 
     @ResponseBody
     @RequestMapping(value = "/getRelation/id/{id}")
-    private Result getRelation(HttpServletRequest request,@PathVariable("id") String id){
+    public Result getRelation(HttpServletRequest request,@PathVariable("id") String id){
 	    HttpSession session = request.getSession();
 	    Result result = new Result();
 	    try{
@@ -122,5 +126,22 @@ public class RentController {
 	        result.setResult(false);
         }
         return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/agree",method = RequestMethod.POST)
+    public Result agree(HttpServletRequest request,@RequestBody Rent rent){
+	    Result r = new Result();
+	    HttpSession httpSession = request.getSession();
+	    Student student = (Student) httpSession.getAttribute("student");
+        try {
+            boolean result = rentService.agreeRent(student,rent);
+            r.setResult(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            r.setResult(false);
+            r.setMsg(e.getMessage());
+        }
+        return r;
     }
 }

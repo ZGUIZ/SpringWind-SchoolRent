@@ -2,6 +2,7 @@ package com.baomidou.springwind.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.IdleInfoExtend;
 import com.baomidou.springwind.entity.Result;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -106,6 +108,28 @@ public class IdleInfoController {
         List<IdleInfo> idleInfoList = idleInfoService.selectByPage(idleInfo);
         result.setResult(true);
         result.setData(idleInfoList);
+        return result;
+    }
+
+    /**
+     * 获取当前用户发布的租赁信息
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getMinePush")
+    public Result getMinePush(HttpServletRequest request){
+        Result result = new Result();
+
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        IdleInfo idleInfo = new IdleInfo();
+        idleInfo.setUserId(student.getUserId());
+        Wrapper<IdleInfo> wrapper = new EntityWrapper<>(idleInfo);
+        List<IdleInfo> idleInfoList = idleInfoService.selectList(wrapper);
+        result.setResult(true);
+        result.setData(idleInfoList);
+
         return result;
     }
 }

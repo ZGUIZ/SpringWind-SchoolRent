@@ -19,4 +19,6 @@ public interface RentMapper extends BaseMapper<Rent> {
 
     Integer getCountOfRequest(Rent rent);
     List<Rent> getCanRent(Rent rent);
+
+    List<Rent> selectForUpdate(Rent rent);
 }

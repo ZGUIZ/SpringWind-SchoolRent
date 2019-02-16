@@ -48,7 +48,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
     @Override
     @Transactional
-    public boolean addRent(Rent rent,Student student) throws MoneyNotEnoughException {
+    public boolean addRent(Rent rent,Student student) throws Exception {
         Student s = studentMapper.selectById(student.getUserId());
         //私钥解密
         PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
@@ -60,6 +60,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         IdleInfo param = new IdleInfo();
         param.setInfoId(rent.getIdelId());
         IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+        if(idleInfo.getStatus() != 0 ){
+            throw new Exception("您来晚了一步，商品已经被租走....");
+        }
         Capital capital = capitalMapper.selectForUpdate(student.getUserId());
         if(capital.getCapital()<idleInfo.getDeposit()){
             throw new MoneyNotEnoughException("余额不足");
@@ -73,6 +76,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         return true;
     }
 
+
+
+    @Deprecated
     @Transactional
     @Override
     public boolean responseRent(String rentId, Integer response,String studentId) throws IllegalAuthroiyException, DataBaseUpdatExcepton {
@@ -253,5 +259,40 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
             r.setStatus(7);
         }
         return r;
+    }
+
+    @Transactional
+    @Override
+    public boolean agreeRent(Student student,Rent rent) throws Exception {
+        IdleInfo param = new IdleInfo();
+        param.setInfoId(rent.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+
+        if(!idleInfo.getUserId().equals(student.getUserId())){
+            throw new Exception("您没有对该商品操作的权限！");
+        }
+
+        if(idleInfo.getStatus() != 0 ){
+            throw new Exception("商品已经被租走....");
+        }
+        idleInfo.setStatus(1);
+        idleInfoMapper.updateById(idleInfo);
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i = 0;i<rentList.size();i++){
+            Rent r = rentList.get(i);
+            //如果是同一条则直接修改状态为同意
+            if(r.getRentId().equals(rent.getRentId())){
+                r.setStatus(1);
+            } else {
+                //如果不同的话修改状态为拒绝并返还押金
+                r.setStatus(2);
+                Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+                capital.setCapital(capital.getCapital() + r.getLastRental());
+                r.setLastRental(0f);
+                capitalMapper.update(capital);
+            }
+            rentMapper.updateById(r);
+        }
+        return true;
     }
 }

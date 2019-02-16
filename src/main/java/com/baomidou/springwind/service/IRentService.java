@@ -32,10 +32,17 @@ public interface IRentService extends IService<Rent> {
 
     boolean responseFromCustomer(Rent rent,Student student) throws IllegalAuthroiyException, DataBaseUpdatExcepton;
 
-    boolean addRent(Rent rent,Student student) throws MoneyNotEnoughException;
+    boolean addRent(Rent rent,Student student) throws Exception;
 
     List<Rent> queryList(IdleInfo idleInfo);
 
     int getCountOfRequest(Rent rent);
     Rent getCanRent(Rent rent);
+
+    /**
+     * 同意租赁
+     * @param rent
+     * @return
+     */
+    boolean agreeRent(Student student,Rent rent) throws Exception;
 }
