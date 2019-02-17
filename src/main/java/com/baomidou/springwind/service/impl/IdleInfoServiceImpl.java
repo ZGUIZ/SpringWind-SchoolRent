@@ -1,11 +1,10 @@
 package com.baomidou.springwind.service.impl;
 
-import com.baomidou.springwind.entity.IdelPic;
-import com.baomidou.springwind.entity.IdleInfo;
-import com.baomidou.springwind.entity.IdleInfoExtend;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
+import com.baomidou.springwind.mapper.CapitalMapper;
 import com.baomidou.springwind.mapper.IdelPicMapper;
 import com.baomidou.springwind.mapper.IdleInfoMapper;
+import com.baomidou.springwind.mapper.RentMapper;
 import com.baomidou.springwind.service.IIdleInfoService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.UUIDUtil;
@@ -31,6 +30,12 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     private IdleInfoMapper idleInfoMapper;
     @Autowired
     private IdelPicMapper idelPicMapper;
+
+    @Autowired
+    private RentMapper rentMapper;
+
+    @Autowired
+    private CapitalMapper capitalMapper;
 
     @Deprecated
     @Transactional
@@ -81,5 +86,30 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     @Override
     public List<IdleInfo> selectByPage(IdleInfoExtend idleInfo) {
         return idleInfoMapper.selectByPage(idleInfo);
+    }
+
+    @Transactional
+    @Override
+    public boolean closeIdle(IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
+        if(info.getStatus() != 0){
+            throw new Exception("状态异常！");
+        }
+        Rent rent = new Rent();
+        rent.setIdelId(idleInfo.getInfoId());
+        //归还所有押金
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i=0;i<rentList.size();i++){
+            Rent r= rentList.get(i);
+            r.setStatus(2);
+            Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+            capital.setCapital(capital.getCapital()+r.getLastRental());
+            capitalMapper.updateById(capital);
+            r.setLastRental(0f);
+            rentMapper.updateById(r);
+        }
+        idleInfo.setStatus(4);
+        idleInfoMapper.updateById(idleInfo);
+        return true;
     }
 }

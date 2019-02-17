@@ -28,4 +28,6 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     int addIdleInfo(IdleInfo idleInfo);
 
     List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
+
+    boolean closeIdle(IdleInfo idleInfo) throws Exception;
 }

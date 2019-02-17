@@ -118,18 +118,38 @@ public class IdleInfoController {
      */
     @ResponseBody
     @RequestMapping(value = "/getMinePush")
-    public Result getMinePush(HttpServletRequest request){
+    public Result getMinePush(HttpServletRequest request,@RequestBody IdleInfoExtend idleInfo){
         Result result = new Result();
-
-        HttpSession session = request.getSession();
-        Student student = (Student) session.getAttribute("student");
-        IdleInfo idleInfo = new IdleInfo();
+        Student student = (Student) request.getSession().getAttribute("student");
+        idleInfo.setSchoolId(student.getSchoolId());
         idleInfo.setUserId(student.getUserId());
-        Wrapper<IdleInfo> wrapper = new EntityWrapper<>(idleInfo);
-        List<IdleInfo> idleInfoList = idleInfoService.selectList(wrapper);
+        List<IdleInfo> idleInfoList = idleInfoService.selectByPage(idleInfo);
         result.setResult(true);
         result.setData(idleInfoList);
+        return result;
+    }
 
+    /**
+     * 自主下架
+     * @param request
+     * @param idleInfo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/close",method = RequestMethod.POST)
+    public Result closeIdle(HttpServletRequest request,@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        idleInfo.setUserId(student.getUserId());
+        try {
+            boolean r = idleInfoService.closeIdle(idleInfo);
+            result.setResult(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
         return result;
     }
 }
