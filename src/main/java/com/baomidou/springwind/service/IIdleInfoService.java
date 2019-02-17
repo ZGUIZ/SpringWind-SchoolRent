@@ -30,4 +30,12 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
 
     boolean closeIdle(IdleInfo idleInfo) throws Exception;
+
+    /**
+     * 同意后取消
+     * @param idleInfo
+     * @return
+     * @throws Exception
+     */
+    boolean cancleRent(IdleInfo idleInfo) throws Exception;
 }

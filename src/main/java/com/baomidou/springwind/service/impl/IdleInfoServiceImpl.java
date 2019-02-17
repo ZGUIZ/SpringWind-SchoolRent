@@ -112,4 +112,38 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         idleInfoMapper.updateById(idleInfo);
         return true;
     }
+
+    @Transactional
+    @Override
+    public boolean cancleRent(IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
+        if(info.getStatus() != 1 && info.getStatus() != 2){
+            throw new Exception("状态异常！");
+        }
+        Rent rent = new Rent();
+        rent.setIdelId(idleInfo.getInfoId());
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i = 0;i<rentList.size();i++){
+            Rent r = rentList.get(i);
+            //如果正在确认租户而没开始
+            if(r.getStatus() == 1 ){
+                info.setStatus(0);
+                r.setStatus(2);
+            } else if(r.getStatus() == 2){
+                //如果正在租赁
+                info.setStatus(3);
+                r.setStatus(5);
+            } else{
+                continue;
+            }
+            idleInfoMapper.updateById(info);
+            //归还押金
+            Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+            capital.setCapital(capital.getCapital() + r.getLastRental());
+            r.setLastRental(0f);
+            rentMapper.updateById(r);
+            capitalMapper.updateById(capital);
+        }
+        return true;
+    }
 }

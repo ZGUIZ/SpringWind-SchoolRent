@@ -152,4 +152,29 @@ public class IdleInfoController {
         }
         return result;
     }
+
+    /**
+     * 取消或完成租赁
+     * @param idleInfo
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/cancel",method = RequestMethod.POST)
+    public Result cancleRent(@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        if(idleInfo.getInfoId() == null || "".equals(idleInfo.getInfoId())){
+            result.setResult(false);
+            result.setMsg("请选择对应的闲置信息！");
+            return result;
+        }
+        try {
+            boolean r = idleInfoService.cancleRent(idleInfo);
+            result.setResult(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
 }
