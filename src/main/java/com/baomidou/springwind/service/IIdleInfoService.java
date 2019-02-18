@@ -1,5 +1,6 @@
 package com.baomidou.springwind.service;
 
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.springwind.entity.IdleInfoExtend;
@@ -38,4 +39,8 @@ public interface IIdleInfoService extends IService<IdleInfo> {
      * @throws Exception
      */
     boolean cancleRent(IdleInfo idleInfo) throws Exception;
+
+    boolean updateIdleInfo(IdleInfo idleInfo) throws Exception;
+
+    boolean delIdleInfo(IdleInfo idleInfo) throws Exception;
 }

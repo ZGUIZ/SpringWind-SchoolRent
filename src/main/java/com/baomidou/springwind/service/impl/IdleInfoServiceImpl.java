@@ -1,5 +1,6 @@
 package com.baomidou.springwind.service.impl;
 
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.CapitalMapper;
 import com.baomidou.springwind.mapper.IdelPicMapper;
@@ -144,6 +145,95 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             rentMapper.updateById(r);
             capitalMapper.updateById(capital);
         }
+        return true;
+    }
+
+    /**
+     * 拒绝所有用户的租赁请求
+     * @param idleInfo
+     */
+    protected void refuseAllUser(IdleInfo idleInfo){
+        Rent rent = new Rent();
+        rent.setIdelId(idleInfo.getInfoId());
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i = 0;i<rentList.size();i++){
+            Rent r = rentList.get(i);
+            r.setStatus(2);
+            Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+            capital.setCapital(capital.getCapital()+r.getLastRental());
+            rentMapper.updateById(r);
+            capitalMapper.updateById(capital);
+        }
+    }
+
+    /**
+     * 返还用户超出的租金
+     */
+    protected void backCapital(IdleInfo before,IdleInfo after) throws Exception {
+        Rent rent = new Rent();
+        rent.setIdelId(before.getInfoId());
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i = 0;i<rentList.size();i++){
+            Rent r = rentList.get(i);
+            float num = before.getDeposit() - after.getDeposit();
+            if(r.getLastRental() < num || num < 0){
+                throw new Exception("资金状态异常！");
+            }
+            r.setLastRental(r.getLastRental() - num);
+            Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+            capital.setCapital(capital.getCapital() + num);
+        }
+    }
+
+    @Transactional
+    @Override
+    public boolean updateIdleInfo(IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
+        if(!info.getUserId().equals(idleInfo.getInfoId())){
+            throw new IllegalAuthroiyException("您没有对此商品执行对应操作的权限！");
+        }
+        if(info.getStatus() != 0 && info.getStatus() != 1){
+            throw new Exception("该商品状态不支持修改信息！");
+        }
+
+        //如果租金或押金提高，则先拒绝所有用户
+        if(idleInfo.getDeposit() > info.getDeposit() || idleInfo.getRetal() > idleInfo.getRetal()){
+            refuseAllUser(info);
+        } else if(idleInfo.getDeposit() < info.getDeposit()){
+            backCapital(info,idleInfo);
+        }
+
+        idleInfoMapper.updateById(idleInfo);
+        List<IdelPic> pics = idleInfo.getPicList();
+        if(pics == null ||pics.size()<=0){
+            throw new Exception("商品图片不能为空！");
+        }
+        for(int i = 0;i<pics.size();i++){
+            IdelPic pic = pics.get(i);
+            if(pic.getBeanStatus()==null || pic.getBeanStatus().equals("")){
+                continue;
+            }
+            if("add".equals(pic.getBeanStatus())){
+                pic.setPicId(UUIDUtil.getUUID());
+                idelPicMapper.insert(pic);
+            } else if("del".equals(pic.getBeanStatus())){
+                idelPicMapper.deleteById(pic);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean delIdleInfo(IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectById(idleInfo);
+        if(!idleInfo.getUserId().equals(info.getUserId())){
+            throw new IllegalAuthroiyException("您没有对此商品执行对应操作的权限！");
+        }
+        if(info.getStatus() != 3 && info.getStatus() != 4 && info.getStatus() != 100){
+            throw new Exception("状态异常！");
+        }
+        info.setStatus(101);
+        idleInfoMapper.updateById(info);
         return true;
     }
 }

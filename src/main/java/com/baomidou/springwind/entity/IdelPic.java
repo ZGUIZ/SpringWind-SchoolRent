@@ -36,6 +36,12 @@ public class IdelPic extends Model<IdelPic> {
 	@TableField("idel_id")
 	private String idelId;
 
+	/**
+	 * 用于标记图片是新增还是删除
+	 */
+	@TableField(exist = false)
+	private String beanStatus;
+
 
 	public String getPicId() {
 		return picId;
@@ -59,6 +65,14 @@ public class IdelPic extends Model<IdelPic> {
 
 	public void setIdelId(String idelId) {
 		this.idelId = idelId;
+	}
+
+	public String getBeanStatus() {
+		return beanStatus;
+	}
+
+	public void setBeanStatus(String beanStatus) {
+		this.beanStatus = beanStatus;
 	}
 
 	@Override

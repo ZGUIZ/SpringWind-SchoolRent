@@ -52,7 +52,7 @@
 		left join classify on (idle.classify_id = classify.classify_id)
 		left join idel_pic on (idle.info_id = idel_id)
 		left join student on (idle.user_id = student.user_id)
-		where idle.school_id = #{schoolId}
+		where idle.school_id = #{schoolId} and idle.status != 101
 		<if test="createDate != null">
 			and idle.create_date &lt;= #{createDate}
 		</if>

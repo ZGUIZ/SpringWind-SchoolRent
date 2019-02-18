@@ -3,6 +3,7 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.IdleInfoExtend;
 import com.baomidou.springwind.entity.Result;
@@ -170,6 +171,57 @@ public class IdleInfoController {
         try {
             boolean r = idleInfoService.cancleRent(idleInfo);
             result.setResult(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public Result updateIdle(HttpServletRequest request,@RequestBody IdleInfo idleInfo){
+        //字符编码转换
+        try {
+            idleInfo.setTitle(URLDecoder.decode(idleInfo.getTitle(), "utf-8"));
+            idleInfo.setIdelInfo(URLDecoder.decode(idleInfo.getIdelInfo(), "utf-8"));
+            if (idleInfo.getAddress() != null) {
+                idleInfo.setAddress(URLDecoder.decode(idleInfo.getAddress(), "utf-8"));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        idleInfo.setUserId(student.getUserId());
+        try {
+            result.setResult(true);
+            idleInfoService.updateIdleInfo(idleInfo);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/del",method = RequestMethod.POST)
+    public Result delIdle(HttpServletRequest request,@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        idleInfo.setUserId(student.getUserId());
+        try{
+            boolean res = idleInfoService.delIdleInfo(idleInfo);
+            result.setResult(res);
+        }catch (IllegalAuthroiyException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMsg());
         } catch (Exception e) {
             e.printStackTrace();
             result.setResult(false);
