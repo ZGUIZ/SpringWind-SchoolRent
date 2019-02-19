@@ -200,6 +200,10 @@ public class IdleInfoController {
         try {
             result.setResult(true);
             idleInfoService.updateIdleInfo(idleInfo);
+        } catch (IllegalAuthroiyException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMsg());
         } catch (Exception e){
             e.printStackTrace();
             result.setResult(false);

@@ -189,7 +189,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     @Override
     public boolean updateIdleInfo(IdleInfo idleInfo) throws Exception {
         IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
-        if(!info.getUserId().equals(idleInfo.getInfoId())){
+        if(!info.getUserId().equals(idleInfo.getUserId())){
             throw new IllegalAuthroiyException("您没有对此商品执行对应操作的权限！");
         }
         if(info.getStatus() != 0 && info.getStatus() != 1){
@@ -215,6 +215,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             }
             if("add".equals(pic.getBeanStatus())){
                 pic.setPicId(UUIDUtil.getUUID());
+                pic.setIdelId(info.getInfoId());
                 idelPicMapper.insert(pic);
             } else if("del".equals(pic.getBeanStatus())){
                 idelPicMapper.deleteById(pic);

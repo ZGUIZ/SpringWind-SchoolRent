@@ -46,6 +46,9 @@ public class IdelPic extends Model<IdelPic> {
 	public String getPicId() {
 		return picId;
 	}
+	public String getPic_id(){
+		return picId;
+	}
 
 	public void setPicId(String picId) {
 		this.picId = picId;

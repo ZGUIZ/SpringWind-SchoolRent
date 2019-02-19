@@ -10,6 +10,7 @@ import com.baomidou.springwind.mapper.ClassifyMapper;
 import com.baomidou.springwind.service.IClassifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -56,5 +57,21 @@ public class ClassifyController {
         result.setData(classifies);
         return JSONObject.toJSONString(result);
     }
-	
+
+    @ResponseBody
+    @RequestMapping(value = "/getName/id/{id}")
+    public Result getName(@PathVariable("id") String id){
+        Result result = new Result();
+
+        Classify classify = classifyService.selectById(id);
+        if(classify == null){
+            result.setResult(false);
+            result.setMsg("未找到对应的类型");
+        } else {
+            result.setResult(true);
+            result.setData(classify);
+        }
+
+        return result;
+    }
 }
