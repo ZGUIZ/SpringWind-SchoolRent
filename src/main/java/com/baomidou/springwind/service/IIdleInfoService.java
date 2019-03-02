@@ -43,4 +43,6 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     boolean updateIdleInfo(IdleInfo idleInfo) throws Exception;
 
     boolean delIdleInfo(IdleInfo idleInfo) throws Exception;
+
+    IdleInfo findById(String id);
 }

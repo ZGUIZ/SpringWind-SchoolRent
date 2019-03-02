@@ -12,10 +12,7 @@ import com.baomidou.springwind.service.IIdleInfoService;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -231,6 +228,16 @@ public class IdleInfoController {
             result.setResult(false);
             result.setMsg(e.getMessage());
         }
+        return result;
+    }
+
+    @RequestMapping("/id/{id}")
+    @ResponseBody
+    public Result findById(@PathVariable("id") String id){
+        IdleInfo idleInfo = idleInfoService.findById(id);
+        Result result = new Result();
+        result.setResult(true);
+        result.setData(idleInfo);
         return result;
     }
 }

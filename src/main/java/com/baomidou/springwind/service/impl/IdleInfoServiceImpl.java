@@ -262,4 +262,16 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         idleInfoMapper.updateById(info);
         return true;
     }
+
+    @Override
+    public IdleInfo findById(String id) {
+        IdleInfo idleInfo = new IdleInfo();
+        idleInfo.setInfoId(id);
+        IdleInfo info = idleInfoMapper.findById(idleInfo);
+        List<String> ids = new ArrayList<>();
+        ids.add(info.getInfoId());
+        List<IdelPic> pics = idelPicMapper.queryIdlePic(ids);
+        info.setPicList(pics);
+        return info;
+    }
 }

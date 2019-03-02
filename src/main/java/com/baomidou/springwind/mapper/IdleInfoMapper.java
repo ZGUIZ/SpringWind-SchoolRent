@@ -18,4 +18,6 @@ public interface IdleInfoMapper extends BaseMapper<IdleInfo> {
     List<IdleInfo> selectByPage(IdleInfoExtend idleInfo);
 
     IdleInfo selectForUpdate(IdleInfo idleInfo);
+
+    IdleInfo findById(IdleInfo idleInfo);
 }

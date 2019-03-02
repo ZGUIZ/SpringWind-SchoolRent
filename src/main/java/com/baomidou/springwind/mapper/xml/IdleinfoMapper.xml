@@ -66,4 +66,11 @@
 	<select id="selectForUpdate" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.IdleInfo">
 		select * from idle_info where info_id = #{infoId} for update
 	</select>
+
+	<select id="findById" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfo">
+		select idle.*, student.user_name,student.user_icon,student.credit,student.student_id
+		from idle_info idle
+		left join student on (idle.user_id = student.user_id)
+		where info_id = #{infoId}
+	</select>
 </mapper>
