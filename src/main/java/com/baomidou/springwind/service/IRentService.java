@@ -6,6 +6,7 @@ import com.baomidou.springwind.Exception.MoneyNotEnoughException;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.Rent;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.RentExtend;
 import com.baomidou.springwind.entity.Student;
 
 import java.util.List;
@@ -45,4 +46,8 @@ public interface IRentService extends IService<Rent> {
      * @return
      */
     boolean agreeRent(Student student,Rent rent) throws Exception;
+
+    List<Rent> selectForPage(RentExtend rentExtend);
+
+    boolean cancelRent(Student student,Rent rent) throws IllegalAuthroiyException;
 }

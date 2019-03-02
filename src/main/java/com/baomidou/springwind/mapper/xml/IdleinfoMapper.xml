@@ -39,18 +39,12 @@
 			<result column="credit" property="credit" />
 			<result column="user_icon" property="userIcon" />
 		</association>
-		<collection property="picList" ofType="com.baomidou.springwind.entity.IdelPic" column="info_id">
-			<id column="pic_id" property="picId" />
-			<result column="pic_url" property="picUrl" />
-			<result column="idel_id" property="idelId" />
-		</collection>
 	</resultMap>
 
 	<select id="selectByPage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfoExtend">
-		select idle.*, idel_pic.*,student.user_name,student.user_icon,student.credit,student.student_id
+		select idle.*, student.user_name,student.user_icon,student.credit,student.student_id
 		from idle_info idle
 		left join classify on (idle.classify_id = classify.classify_id)
-		left join idel_pic on (idle.info_id = idel_id)
 		left join student on (idle.user_id = student.user_id)
 		where idle.school_id = #{schoolId} and idle.status != 101
 		<if test="createDate != null">

@@ -4,14 +4,8 @@ import com.baomidou.springwind.Exception.DataBaseUpdatExcepton;
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.Exception.MoneyNotEnoughException;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
-import com.baomidou.springwind.entity.Capital;
-import com.baomidou.springwind.entity.IdleInfo;
-import com.baomidou.springwind.entity.Rent;
-import com.baomidou.springwind.entity.Student;
-import com.baomidou.springwind.mapper.CapitalMapper;
-import com.baomidou.springwind.mapper.IdleInfoMapper;
-import com.baomidou.springwind.mapper.RentMapper;
-import com.baomidou.springwind.mapper.StudentMapper;
+import com.baomidou.springwind.entity.*;
+import com.baomidou.springwind.mapper.*;
 import com.baomidou.springwind.service.IRentService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.RSAUtil;
@@ -23,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,6 +41,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Autowired
+    private IdelPicMapper idelPicMapper;
 
     @Override
     @Transactional
@@ -72,6 +71,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rent.setLastRental(idleInfo.getDeposit());
         rent.setStatus(0);
         rent.setRentId(UUIDUtil.getUUID());
+        rent.setCreateTime(new Date());
         rentMapper.insert(rent);
         return true;
     }
@@ -293,6 +293,58 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
             }
             rentMapper.updateById(r);
         }
+        return true;
+    }
+
+    @Override
+    public List<Rent> selectForPage(RentExtend rentExtend) {
+        List<Rent> rentList = rentMapper.selectForPage(rentExtend);
+        if(rentList.size() == 0){
+            return rentList;
+        }
+        //获取所有的闲置ID
+        List<String> ids = new ArrayList<>();
+        for(int i = 0;i<rentList.size();i++){
+            Rent rent = rentList.get(i);
+            IdleInfo idleInfo = rent.getIdleInfo();
+            ids.add(idleInfo.getInfoId());
+        }
+        //查询图片
+        List<IdelPic> picList = idelPicMapper.queryIdlePic(ids);
+        for(int i = 0;i<picList.size();i++){
+            IdelPic pic = picList.get(i);
+            for(int j = 0; j<rentList.size();i++){
+                Rent rent = rentList.get(j);
+                IdleInfo idleInfo = rent.getIdleInfo();
+                if (idleInfo.getInfoId().equals(pic.getIdelId())){
+                    List<IdelPic> idelPics = new ArrayList<>();
+                    idelPics.add(pic);
+                    idleInfo.setPicList(idelPics);
+                    break;
+                }
+            }
+        }
+        return rentList;
+    }
+
+    @Transactional
+    @Override
+    public boolean cancelRent(Student student, Rent rent) throws IllegalAuthroiyException {
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        Rent r = rentList.get(0);
+        Capital capital = capitalMapper.selectForUpdate(student.getUserId());
+        if(r == null || (r.getStatus()!=0 && r.getStatus()!=1)){
+            throw new IllegalStateException("当前状态不支持取消！");
+        }
+        if (!r.getUserId().equals(r.getUserId())) {
+            throw new IllegalAuthroiyException();
+        }
+        r.setStatus(6);
+
+        capital.setCapital(capital.getCapital()+r.getLastRental());
+        r.setLastRental(0f);
+        rentMapper.updateById(r);
+        capitalMapper.updateById(capital);
         return true;
     }
 }

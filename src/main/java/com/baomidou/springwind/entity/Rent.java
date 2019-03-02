@@ -55,8 +55,14 @@ public class Rent extends Model<Rent> {
 	@TableField("last_rental")
 	private Float lastRental;
 
+	@TableField("create_time")
+	private Date createTime;
+
 	@TableField(exist = false)
 	private String payPassword;
+
+	@TableField(exist = false)
+	private IdleInfo idleInfo;
 
 	public String getRentId() {
 		return rentId;
@@ -133,5 +139,21 @@ public class Rent extends Model<Rent> {
 
 	public void setPayPassword(String payPassword) {
 		this.payPassword = payPassword;
+	}
+
+	public IdleInfo getIdleInfo() {
+		return idleInfo;
+	}
+
+	public void setIdleInfo(IdleInfo idleInfo) {
+		this.idleInfo = idleInfo;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

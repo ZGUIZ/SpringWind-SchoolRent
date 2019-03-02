@@ -3,6 +3,7 @@ package com.baomidou.springwind.mapper;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.Rent;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.springwind.entity.RentExtend;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface RentMapper extends BaseMapper<Rent> {
     List<Rent> getCanRent(Rent rent);
 
     List<Rent> selectForUpdate(Rent rent);
+
+    List<Rent> selectForPage(RentExtend rentExtend);
 }

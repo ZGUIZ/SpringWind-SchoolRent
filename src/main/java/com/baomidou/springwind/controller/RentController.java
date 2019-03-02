@@ -1,11 +1,9 @@
 package com.baomidou.springwind.controller;
 
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.Exception.MoneyNotEnoughException;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
-import com.baomidou.springwind.entity.IdleInfo;
-import com.baomidou.springwind.entity.Rent;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IRentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,30 +61,25 @@ public class RentController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/cancle",method = RequestMethod.POST)
+    @RequestMapping(value = "/cancel",method = RequestMethod.POST)
     public Result cancle(HttpServletRequest request,@RequestBody Rent rent){
         Result result = new Result();
         HttpSession session = request.getSession();
-        if(session == null){
-            result.setResult(false);
-            result.setMsg("用户未登录");
-            result.setCode(401);
-            return result;
-        }
 
         Student student = (Student) session.getAttribute("student");
-        if(session == null){
+
+        try {
+            rentService.cancelRent(student,rent);
+            result.setResult(true);
+        } catch (IllegalAuthroiyException e) {
+            e.printStackTrace();
             result.setResult(false);
-            result.setCode(401);
-            result.setMsg("用户未登录");
-            return result;
+            result.setMsg(e.getMsg());
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
         }
-
-        if(student.getUserId().equals(rent)){
-            //rent.setStatus(6);
-        }
-
-        rentService.updateById(rent);
 
         return result;
     }
@@ -143,5 +136,18 @@ public class RentController {
             r.setMsg(e.getMessage());
         }
         return r;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryMineRent")
+    public Result queryMineRent(HttpServletRequest request, @RequestBody RentExtend rentExtend){
+	    Result r = new Result();
+	    HttpSession session = request.getSession();
+	    Student student = (Student) session.getAttribute("student");
+	    rentExtend.setUserId(student.getUserId());
+	    List<Rent> rentList = rentService.selectForPage(rentExtend);
+	    r.setResult(true);
+	    r.setData(rentList);
+	    return r;
     }
 }

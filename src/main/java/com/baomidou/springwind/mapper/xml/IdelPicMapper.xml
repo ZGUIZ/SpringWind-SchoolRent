@@ -9,4 +9,11 @@
 		<result column="idel_id" property="idelId" />
 	</resultMap>
 
+	<select id="queryIdlePic" parameterType="List" resultMap="BaseResultMap">
+		select * from idel_pic where idel_id in 
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
 </mapper>

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,7 +87,31 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
 
     @Override
     public List<IdleInfo> selectByPage(IdleInfoExtend idleInfo) {
-        return idleInfoMapper.selectByPage(idleInfo);
+        List<IdleInfo> idleInfoList = idleInfoMapper.selectByPage(idleInfo);
+        if(idleInfoList.size()<=0){
+            return idleInfoList;
+        }
+        //获取所有的闲置ID
+        List<String> ids = new ArrayList<>();
+        for(int i = 0;i<idleInfoList.size();i++){
+            IdleInfo info = idleInfoList.get(i);
+            ids.add(info.getInfoId());
+        }
+
+        //查询图片
+        List<IdelPic> picList = idelPicMapper.queryIdlePic(ids);
+        for(int i = 0;i<idleInfoList.size();i++){
+            IdleInfo info = idleInfoList.get(i);
+            List<IdelPic> pics = new ArrayList<>();
+            for(int j = 0; j<picList.size();j++){
+                IdelPic pic = picList.get(j);
+                if(pic.getIdelId().equals(info.getInfoId())){
+                    pics.add(pic);
+                }
+            }
+            info.setPicList(pics);
+        }
+        return idleInfoList;
     }
 
     @Transactional
