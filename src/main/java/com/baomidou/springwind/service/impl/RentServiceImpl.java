@@ -313,7 +313,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         List<IdelPic> picList = idelPicMapper.queryIdlePic(ids);
         for(int i = 0;i<picList.size();i++){
             IdelPic pic = picList.get(i);
-            for(int j = 0; j<rentList.size();i++){
+            for(int j = 0; j<rentList.size();j++){
                 Rent rent = rentList.get(j);
                 IdleInfo idleInfo = rent.getIdleInfo();
                 if (idleInfo.getInfoId().equals(pic.getIdelId())){
