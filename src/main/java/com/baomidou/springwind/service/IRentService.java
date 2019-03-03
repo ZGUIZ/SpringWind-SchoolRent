@@ -50,4 +50,6 @@ public interface IRentService extends IService<Rent> {
     List<Rent> selectForPage(RentExtend rentExtend);
 
     boolean cancelRent(Student student,Rent rent) throws IllegalAuthroiyException;
+
+    boolean startRent(Student student,Rent rent) throws Exception;
 }

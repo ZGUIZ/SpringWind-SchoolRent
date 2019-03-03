@@ -150,4 +150,33 @@ public class RentController {
 	    r.setData(rentList);
 	    return r;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/startRent")
+    public Result startRent(HttpServletRequest request,@RequestBody Rent rent){
+	    Result result = new Result();
+	    try{
+	        HttpSession session = request.getSession();
+	        Student student = (Student) session.getAttribute("student");
+	        boolean res = rentService.startRent(student,rent);
+	        result.setResult(res);
+        } catch (IllegalAuthroiyException e){
+	        result.setResult(false);
+	        result.setMsg(e.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "updateRent",method = RequestMethod.POST)
+    public Result updateRent(@RequestBody Rent rent){
+	    Result result = new Result();
+	    boolean r = rentService.updateById(rent);
+	    result.setResult(r);
+	    return result;
+    }
 }

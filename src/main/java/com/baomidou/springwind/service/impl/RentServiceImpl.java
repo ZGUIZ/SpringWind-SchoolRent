@@ -333,18 +333,57 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         List<Rent> rentList = rentMapper.selectForUpdate(rent);
         Rent r = rentList.get(0);
         Capital capital = capitalMapper.selectForUpdate(student.getUserId());
+        IdleInfo param = new IdleInfo();
+        param.setInfoId(r.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
         if(r == null || (r.getStatus()!=0 && r.getStatus()!=1)){
             throw new IllegalStateException("当前状态不支持取消！");
         }
         if (!r.getUserId().equals(r.getUserId())) {
             throw new IllegalAuthroiyException();
         }
-        r.setStatus(6);
+        if(r.getStatus() == 0) {
+            r.setStatus(6);
+        } else {
+            r.setStatus(3);
+        }
 
         capital.setCapital(capital.getCapital()+r.getLastRental());
         r.setLastRental(0f);
+        idleInfo.setStatus(0);
         rentMapper.updateById(r);
         capitalMapper.updateById(capital);
+        idleInfoMapper.updateById(idleInfo);
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean startRent(Student student, Rent rent) throws Exception {
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        if(rentList.size()<=0){
+            throw new Exception("找不到对应的租赁信息");
+        }
+        Rent r = rentList.get(0);
+        if(!r.getUserId().equals(student.getUserId())){
+            throw new IllegalAuthroiyException("您没有对应信息的操作权限！");
+        }
+        if(r.getStatus()!=1&&r.getStatus()!=9){
+            throw new Exception("状态转换异常");
+        }
+        //开始时自动扣除费用到租出用户的账号上
+        IdleInfo param = new IdleInfo();
+        param.setInfoId(r.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+        Capital capital = capitalMapper.selectForUpdate(idleInfo.getUserId());
+        float rental = idleInfo.getRetal();
+        capital.setCapital(capital.getCapital()+rental);
+        r.setLastRental(r.getLastRental() - rental);
+        r.setStatus(4);
+        idleInfo.setStatus(2);
+        rentMapper.updateById(r);
+        capitalMapper.updateById(capital);
+        idleInfoMapper.updateById(idleInfo);
         return true;
     }
 }
