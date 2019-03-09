@@ -320,7 +320,6 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
                     List<IdelPic> idelPics = new ArrayList<>();
                     idelPics.add(pic);
                     idleInfo.setPicList(idelPics);
-                    break;
                 }
             }
         }
@@ -332,7 +331,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
     public boolean cancelRent(Student student, Rent rent) throws IllegalAuthroiyException {
         List<Rent> rentList = rentMapper.selectForUpdate(rent);
         Rent r = rentList.get(0);
-        Capital capital = capitalMapper.selectForUpdate(student.getUserId());
+        Capital capital = capitalMapper.selectForUpdate(r.getUserId());
         IdleInfo param = new IdleInfo();
         param.setInfoId(r.getIdelId());
         IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
@@ -384,6 +383,39 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rentMapper.updateById(r);
         capitalMapper.updateById(capital);
         idleInfoMapper.updateById(idleInfo);
+        return true;
+    }
+
+    @Override
+    public boolean delRent(Student student, Rent rent) throws Exception {
+        Rent r = rentMapper.selectById(rent);
+        if(!r.getUserId().equals(student.getUserId())){
+            throw new Exception("您没有对该信息操作的权限！");
+        }
+        r.setStatus(101);
+        rentMapper.updateById(r);
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean disagreeRent(Student student,Rent rent) throws Exception{
+        IdleInfo param = new IdleInfo();
+        Rent r = rentMapper.selectForUpdateById(rent);
+        param.setInfoId(r.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+
+        if(!idleInfo.getUserId().equals(student.getUserId())){
+            throw new IllegalAuthroiyException("你没有执行该操作的权限");
+        }
+        if(r.getStatus()!=0&&r.getStatus()!=1){
+            throw new IllegalStateException("状态异常！");
+        }
+        r.setStatus(2);
+        Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+        capital.setCapital(capital.getCapital()+r.getLastRental());
+        capitalMapper.updateById(capital);
+        rentMapper.updateById(r);
         return true;
     }
 }

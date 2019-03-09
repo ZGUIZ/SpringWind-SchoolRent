@@ -24,4 +24,6 @@ public interface RentMapper extends BaseMapper<Rent> {
     List<Rent> selectForUpdate(Rent rent);
 
     List<Rent> selectForPage(RentExtend rentExtend);
+
+    Rent selectForUpdateById(Rent rent);
 }

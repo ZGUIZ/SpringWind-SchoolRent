@@ -179,4 +179,42 @@ public class RentController {
 	    result.setResult(r);
 	    return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/delRent",method = RequestMethod.POST)
+    public Result delete(HttpServletRequest request,@RequestBody Rent rent){
+	    Result result = new Result();
+	    try{
+	        HttpSession session = request.getSession();
+	        Student student = (Student) session.getAttribute("student");
+	        boolean r = rentService.delRent(student,rent);
+	        result.setResult(r);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/disagreeRent",method = RequestMethod.POST)
+    public Result disagreeRent(HttpServletRequest request,@RequestBody Rent rent){
+        Result result = new Result();
+        try{
+            HttpSession session = request.getSession();
+            Student student = (Student) session.getAttribute("student");
+            boolean r = rentService.disagreeRent(student,rent);
+            result.setResult(r);
+        } catch (IllegalAuthroiyException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
 }
