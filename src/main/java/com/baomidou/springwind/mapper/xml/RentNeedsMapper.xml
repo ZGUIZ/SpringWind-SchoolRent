@@ -9,6 +9,24 @@
 		<result column="status" property="status" />
 		<result column="create_date" property="createDate" />
 		<result column="end_date" property="endDate" />
+		<result column="title" property="title" />
+		<result column="user_id" property="userId" />
+		<result column="school_id" property="schoolId"/>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="user_name" property="userName" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
+		</association>
 	</resultMap>
 
+	<select id="queryRentNeedsByPage" parameterType="com.baomidou.springwind.entity.RentNeedsExtend" resultMap="BaseResultMap">
+		select *
+		from rent_needs
+		left join student on (rent_needs.user_id = student.user_id)
+		where rent_needs.school_id = #{schoolId}
+		order by rent_needs.create_date desc
+		limit #{start},#{pageSize}
+	</select>
 </mapper>

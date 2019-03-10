@@ -63,6 +63,9 @@ public class RentNeeds extends Model<RentNeeds> {
 	@TableField("school_id")
 	private String schoolId;
 
+	@TableField(exist = false)
+	private Student student;
+
 	public String getInfoId() {
 		return infoId;
 	}
@@ -129,6 +132,14 @@ public class RentNeeds extends Model<RentNeeds> {
 
 	public void setSchoolId(String schoolId) {
 		this.schoolId = schoolId;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	public static RentNeeds getObjectFromJsonObject(JSONObject object){

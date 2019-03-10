@@ -2,6 +2,11 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.RentNeedsExtend;
+import com.baomidou.springwind.entity.Student;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +17,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-30
  */
 public interface IRentNeedsService extends IService<RentNeeds> {
-	
+	boolean addRentNeeds(Student student,RentNeeds rentNeeds) throws UnsupportedEncodingException;
+	List<RentNeeds> queryRentNeeds(Student student, RentNeedsExtend rentNeedsExtend);
 }

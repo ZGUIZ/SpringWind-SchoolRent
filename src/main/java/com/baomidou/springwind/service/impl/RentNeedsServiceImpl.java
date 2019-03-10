@@ -1,10 +1,19 @@
 package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.entity.RentNeeds;
+import com.baomidou.springwind.entity.RentNeedsExtend;
+import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.RentNeedsMapper;
 import com.baomidou.springwind.service.IRentNeedsService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
+import com.baomidou.springwind.utils.UUIDUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +25,29 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RentNeedsServiceImpl extends BaseServiceImpl<RentNeedsMapper, RentNeeds> implements IRentNeedsService {
-	
+
+    @Autowired
+    private RentNeedsMapper rentNeedsMapper;
+
+    @Override
+    public boolean addRentNeeds(Student student, RentNeeds rentNeeds) throws UnsupportedEncodingException {
+        //初始化
+        rentNeeds.setInfoId(UUIDUtil.getUUID());
+        rentNeeds.setUserId(student.getUserId());
+        rentNeeds.setCreateDate(new Date());
+        rentNeeds.setStatus(0);
+
+        //标题和文本解码
+        rentNeeds.setTitle(URLDecoder.decode(rentNeeds.getTitle(),"utf-8"));
+        rentNeeds.setIdelInfo(URLDecoder.decode(rentNeeds.getIdelInfo(),"utf-8"));
+
+        rentNeedsMapper.insert(rentNeeds);
+        return true;
+    }
+
+    @Override
+    public List<RentNeeds> queryRentNeeds(Student student, RentNeedsExtend rentNeedsExtend) {
+        rentNeedsExtend.setSchoolId(student.getSchoolId());
+        return rentNeedsMapper.queryRentNeedsByPage(rentNeedsExtend);
+    }
 }

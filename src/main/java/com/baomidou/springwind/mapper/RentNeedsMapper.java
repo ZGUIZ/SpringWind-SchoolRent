@@ -2,6 +2,10 @@ package com.baomidou.springwind.mapper;
 
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.springwind.entity.RentNeedsExtend;
+import com.baomidou.springwind.entity.Student;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-10-30
  */
 public interface RentNeedsMapper extends BaseMapper<RentNeeds> {
-
+    List<RentNeeds> queryRentNeedsByPage(RentNeedsExtend rentNeedsExtend);
 }
