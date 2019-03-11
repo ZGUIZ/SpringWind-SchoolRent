@@ -3,16 +3,14 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.RentNeedsMapper;
 import com.baomidou.springwind.service.IRentNeedsService;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -78,6 +76,45 @@ public class RentNeedsController {
 
             result.setResult(true);
             result.setData(rentNeeds);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/mineNeeds",method = RequestMethod.POST)
+    public Result queryMyNeeds(HttpServletRequest request, @RequestBody RentNeedsExtend rentNeedsExtend){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        try{
+            List<RentNeeds> rentNeeds = rentNeedsService.queryMineNeeds(student,rentNeedsExtend);
+            result.setResult(true);
+            result.setData(rentNeeds);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/del/id/{id}")
+    public Result delNeeds(HttpServletRequest request,@PathVariable("id") String id){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        try{
+            boolean res = rentNeedsService.delRentNeeds(student,id);
+            result.setResult(res);
+        } catch (IllegalAuthroiyException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMsg());
         } catch (Exception e){
             e.printStackTrace();
             result.setResult(false);

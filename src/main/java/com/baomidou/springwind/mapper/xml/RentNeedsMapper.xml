@@ -21,11 +21,29 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="BaseMap" type="com.baomidou.springwind.entity.RentNeeds">
+		<id column="info_id" property="infoId" />
+		<result column="idel_info" property="idelInfo" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<result column="end_date" property="endDate" />
+		<result column="title" property="title" />
+		<result column="user_id" property="userId" />
+		<result column="school_id" property="schoolId"/>
+	</resultMap>
+
 	<select id="queryRentNeedsByPage" parameterType="com.baomidou.springwind.entity.RentNeedsExtend" resultMap="BaseResultMap">
 		select *
 		from rent_needs
 		left join student on (rent_needs.user_id = student.user_id)
-		where rent_needs.school_id = #{schoolId}
+		where rent_needs.school_id = #{schoolId} and rent_needs.status != 100
+		order by rent_needs.create_date desc
+		limit #{start},#{pageSize}
+	</select>
+	<select id="queryMineNeedsByPage" parameterType="com.baomidou.springwind.entity.RentNeedsExtend" resultMap="BaseMap">
+		select *
+		from rent_needs
+		where user_id = #{userId} and status != 101 and status != 100
 		order by rent_needs.create_date desc
 		limit #{start},#{pageSize}
 	</select>

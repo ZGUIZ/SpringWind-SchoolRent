@@ -1,5 +1,6 @@
 package com.baomidou.springwind.service.impl;
 
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.springwind.entity.RentNeedsExtend;
 import com.baomidou.springwind.entity.Student;
@@ -49,5 +50,27 @@ public class RentNeedsServiceImpl extends BaseServiceImpl<RentNeedsMapper, RentN
     public List<RentNeeds> queryRentNeeds(Student student, RentNeedsExtend rentNeedsExtend) {
         rentNeedsExtend.setSchoolId(student.getSchoolId());
         return rentNeedsMapper.queryRentNeedsByPage(rentNeedsExtend);
+    }
+
+    @Override
+    public List<RentNeeds> queryMineNeeds(Student student, RentNeedsExtend rentNeedsExtend) {
+        rentNeedsExtend.setUserId(student.getUserId());
+        List<RentNeeds> needsList = rentNeedsMapper.queryMineNeedsByPage(rentNeedsExtend);
+        for (int i = 0;i<needsList.size();i++){
+            RentNeeds rentNeeds = needsList.get(i);
+            rentNeeds.setStudent(student);
+        }
+        return needsList;
+    }
+
+    @Override
+    public boolean delRentNeeds(Student student, String id) throws IllegalAuthroiyException {
+        RentNeeds rentNeeds = rentNeedsMapper.selectById(id);
+        if(!rentNeeds.getUserId().equals(student.getUserId())){
+            throw new IllegalAuthroiyException("您没有执行该操作的权限！");
+        }
+        rentNeeds.setStatus(100);
+        rentNeedsMapper.updateById(rentNeeds);
+        return true;
     }
 }

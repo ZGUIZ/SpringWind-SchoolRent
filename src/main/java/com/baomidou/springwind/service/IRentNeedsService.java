@@ -1,5 +1,6 @@
 package com.baomidou.springwind.service;
 
+import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.springwind.entity.RentNeedsExtend;
@@ -19,4 +20,6 @@ import java.util.List;
 public interface IRentNeedsService extends IService<RentNeeds> {
 	boolean addRentNeeds(Student student,RentNeeds rentNeeds) throws UnsupportedEncodingException;
 	List<RentNeeds> queryRentNeeds(Student student, RentNeedsExtend rentNeedsExtend);
+	List<RentNeeds> queryMineNeeds(Student student, RentNeedsExtend rentNeedsExtend);
+	boolean delRentNeeds(Student student,String id) throws IllegalAuthroiyException;
 }

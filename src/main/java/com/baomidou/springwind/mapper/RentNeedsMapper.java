@@ -17,4 +17,5 @@ import java.util.List;
  */
 public interface RentNeedsMapper extends BaseMapper<RentNeeds> {
     List<RentNeeds> queryRentNeedsByPage(RentNeedsExtend rentNeedsExtend);
+    List<RentNeeds> queryMineNeedsByPage(RentNeedsExtend rentNeedsExtend);
 }
