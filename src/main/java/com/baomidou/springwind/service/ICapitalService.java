@@ -27,4 +27,6 @@ public interface ICapitalService extends IService<Capital> {
 	int changeCapital(Student user,Float amount,String type) throws Exception;
 
 	int transfer(Student from,Student to,Float amount) throws Exception;
+
+	Capital selectByUser(Student student);
 }

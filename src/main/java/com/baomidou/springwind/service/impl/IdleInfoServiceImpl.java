@@ -2,10 +2,7 @@ package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.*;
-import com.baomidou.springwind.mapper.CapitalMapper;
-import com.baomidou.springwind.mapper.IdelPicMapper;
-import com.baomidou.springwind.mapper.IdleInfoMapper;
-import com.baomidou.springwind.mapper.RentMapper;
+import com.baomidou.springwind.mapper.*;
 import com.baomidou.springwind.service.IIdleInfoService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.UUIDUtil;
@@ -38,6 +35,8 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
 
     @Autowired
     private CapitalMapper capitalMapper;
+    @Autowired
+    private CheckStatementMapper checkStatementMapper;
 
     @Deprecated
     @Transactional
@@ -131,6 +130,17 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             Capital capital = capitalMapper.selectForUpdate(r.getUserId());
             capital.setCapital(capital.getCapital()+r.getLastRental());
             capitalMapper.updateById(capital);
+
+            Date now = new Date();
+            CheckStatement cs = new CheckStatement();
+            cs.setStateId(UUIDUtil.getUUID());
+            cs.setAmount(r.getLastRental());
+            cs.setType(0);
+            cs.setCreateDate(now);
+            cs.setMemo("被拒返还押金");
+            cs.setUserId(r.getUserId());
+            checkStatementMapper.insert(cs);
+
             r.setLastRental(0f);
             rentMapper.updateById(r);
         }
@@ -166,6 +176,18 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             //归还押金
             Capital capital = capitalMapper.selectForUpdate(r.getUserId());
             capital.setCapital(capital.getCapital() + r.getLastRental());
+
+            //记录进账单
+            Date now = new Date();
+            CheckStatement cs = new CheckStatement();
+            cs.setStateId(UUIDUtil.getUUID());
+            cs.setAmount(r.getLastRental());
+            cs.setType(0);
+            cs.setCreateDate(now);
+            cs.setMemo("被拒返还押金");
+            cs.setUserId(r.getUserId());
+            checkStatementMapper.insert(cs);
+
             r.setLastRental(0f);
             rentMapper.updateById(r);
             capitalMapper.updateById(capital);
@@ -186,6 +208,18 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             r.setStatus(2);
             Capital capital = capitalMapper.selectForUpdate(r.getUserId());
             capital.setCapital(capital.getCapital()+r.getLastRental());
+
+            Date now = new Date();
+            CheckStatement cs = new CheckStatement();
+            cs.setStateId(UUIDUtil.getUUID());
+            cs.setAmount(r.getLastRental());
+            cs.setType(0);
+            cs.setCreateDate(now);
+            cs.setMemo("被拒返还押金");
+            cs.setUserId(r.getUserId());
+            checkStatementMapper.insert(cs);
+
+            r.setLastRental(0f);
             rentMapper.updateById(r);
             capitalMapper.updateById(capital);
         }
@@ -207,6 +241,19 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             r.setLastRental(r.getLastRental() - num);
             Capital capital = capitalMapper.selectForUpdate(r.getUserId());
             capital.setCapital(capital.getCapital() + num);
+
+            Date now = new Date();
+            CheckStatement cs = new CheckStatement();
+            cs.setStateId(UUIDUtil.getUUID());
+            cs.setAmount(r.getLastRental());
+            cs.setType(0);
+            cs.setCreateDate(now);
+            cs.setMemo("被拒返还押金");
+            cs.setUserId(r.getUserId());
+            checkStatementMapper.insert(cs);
+
+            rentMapper.updateById(r);
+            capitalMapper.updateById(capital);
         }
     }
 

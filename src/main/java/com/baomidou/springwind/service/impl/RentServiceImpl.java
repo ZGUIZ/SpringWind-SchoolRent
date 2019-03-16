@@ -45,9 +45,13 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
     @Autowired
     private IdelPicMapper idelPicMapper;
 
+    @Autowired
+    private CheckStatementMapper checkStatementMapper;
+
     @Override
     @Transactional
     public boolean addRent(Rent rent,Student student) throws Exception {
+        Date now = new Date();
         Student s = studentMapper.selectById(student.getUserId());
         //私钥解密
         PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
@@ -68,10 +72,20 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         }
         capital.setCapital(capital.getCapital() - idleInfo.getDeposit());
         capitalMapper.update(capital);
+
+        CheckStatement cs = new CheckStatement();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setAmount(idleInfo.getDeposit());
+        cs.setType(1);
+        cs.setCreateDate(now);
+        cs.setMemo("申请租赁暂扣押金");
+        cs.setUserId(student.getUserId());
+        checkStatementMapper.insert(cs);
+
         rent.setLastRental(idleInfo.getDeposit());
         rent.setStatus(0);
         rent.setRentId(UUIDUtil.getUUID());
-        rent.setCreateTime(new Date());
+        rent.setCreateTime(now);
         rentMapper.insert(rent);
         return true;
     }
@@ -278,11 +292,13 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         idleInfo.setStatus(1);
         idleInfoMapper.updateById(idleInfo);
         List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        Date now = new Date();
         for(int i = 0;i<rentList.size();i++){
             Rent r = rentList.get(i);
             //如果是同一条则直接修改状态为同意
             if(r.getRentId().equals(rent.getRentId())){
                 r.setStatus(1);
+                r.setStartDate(now);
             } else {
                 //如果不同的话修改状态为拒绝并返还押金
                 r.setStatus(2);
@@ -290,6 +306,15 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
                 capital.setCapital(capital.getCapital() + r.getLastRental());
                 r.setLastRental(0f);
                 capitalMapper.update(capital);
+
+                CheckStatement cs = new CheckStatement();
+                cs.setStateId(UUIDUtil.getUUID());
+                cs.setAmount(r.getLastRental());
+                cs.setType(0);
+                cs.setCreateDate(now);
+                cs.setMemo("拒绝返还押金");
+                cs.setUserId(r.getUserId());
+                checkStatementMapper.insert(cs);
             }
             rentMapper.updateById(r);
         }
@@ -341,15 +366,29 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         if (!r.getUserId().equals(r.getUserId())) {
             throw new IllegalAuthroiyException();
         }
+
+        CheckStatement cs = new CheckStatement();
         if(r.getStatus() == 0) {
             r.setStatus(6);
+            cs.setMemo("完成租赁返还押金");
         } else {
             r.setStatus(3);
+            cs.setMemo("拒绝租赁返还押金");
         }
+
+        cs.setAmount(r.getLastRental());
 
         capital.setCapital(capital.getCapital()+r.getLastRental());
         r.setLastRental(0f);
         idleInfo.setStatus(0);
+
+        Date now = new Date();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setType(0);
+        cs.setCreateDate(now);
+        cs.setUserId(r.getUserId());
+        checkStatementMapper.insert(cs);
+
         rentMapper.updateById(r);
         capitalMapper.updateById(capital);
         idleInfoMapper.updateById(idleInfo);
@@ -383,6 +422,17 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rentMapper.updateById(r);
         capitalMapper.updateById(capital);
         idleInfoMapper.updateById(idleInfo);
+
+        Date now = new Date();
+        CheckStatement cs = new CheckStatement();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setAmount(rental);
+        cs.setType(0);
+        cs.setCreateDate(now);
+        cs.setMemo("每日租金");
+        cs.setUserId(r.getUserId());
+        checkStatementMapper.insert(cs);
+
         return true;
     }
 
@@ -415,6 +465,18 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         Capital capital = capitalMapper.selectForUpdate(r.getUserId());
         capital.setCapital(capital.getCapital()+r.getLastRental());
         capitalMapper.updateById(capital);
+
+        Date now = new Date();
+        CheckStatement cs = new CheckStatement();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setAmount(r.getLastRental());
+        cs.setType(0);
+        cs.setCreateDate(now);
+        cs.setMemo("被拒返还押金");
+        cs.setUserId(r.getUserId());
+        checkStatementMapper.insert(cs);
+
+        r.setLastRental(0f);
         rentMapper.updateById(r);
         return true;
     }

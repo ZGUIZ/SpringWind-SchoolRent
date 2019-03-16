@@ -19,4 +19,8 @@ public class RentExtend extends Rent{
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
+
+    public int getStart(){
+        return (page-1) * pageSize;
+    }
 }

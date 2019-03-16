@@ -67,4 +67,9 @@ public class CapitalServiceImpl extends BaseServiceImpl<CapitalMapper, Capital> 
         }
         return rec;
     }
+
+    @Override
+    public Capital selectByUser(Student student) {
+        return mapper.selectByUser(student);
+    }
 }
