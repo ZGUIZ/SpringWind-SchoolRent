@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.CheckStatementMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.CheckStatement">
+		<id column="state_id" property="stateId" />
+		<result column="user_id" property="userId" />
+		<result column="type" property="type" />
+		<result column="amount" property="amount" />
+		<result column="memo" property="memo" />
+		<result column="create_date" property="createDate" />
+	</resultMap>
+
+	<select id="listByPage" parameterType="com.baomidou.springwind.entity.CheckStatementExtend" resultMap="BaseResultMap">
+		select *
+		from check_statement
+		where user_id = #{userId}
+		order by check_statement.create_date desc
+		limit #{start},#{pageSize}
+	</select>
+</mapper>

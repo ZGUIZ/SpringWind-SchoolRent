@@ -26,4 +26,8 @@
 		</set>
 		where capital_id = #{capitalId}
 	</update>
+
+	<select id="selectByUser" resultMap="BaseResultMap" resultType="com.baomidou.springwind.entity.Capital" parameterType="String">
+		select * from capital where user_id = #{userId}
+	</select>
 </mapper>

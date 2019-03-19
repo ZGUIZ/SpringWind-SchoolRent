@@ -107,8 +107,8 @@
 					and rent.status = #{status}
 				</otherwise>
 			</choose>
-
 		</if>
+		limit #{start},#{pageSize}
 	</select>
 
 </mapper>

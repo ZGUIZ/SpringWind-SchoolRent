@@ -14,6 +14,12 @@
 			<id column="user_id" property="userId" />
 			<result column="user_name" property="userName" />
 			<result column="user_icon" property="userIcon" />
+			<result column="real_name" property="realName" />
+			<result column="student_id" property="studentId" />
+			<result column="credit" property="credit" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+			<result column="sex" property="sex" />
 		</association>
 		<collection property="secondResponseInfos" ofType="com.baomidou.springwind.entity.SecondResponseInfo" column="info_id">
 			<id column="second_id" property="responseId" />
@@ -28,6 +34,12 @@
 				<id column="second_user" property="userId" />
 				<result column="second_user_name" property="userName" />
 				<result column="second_user_icon" property="userIcon" />
+				<result column="second_real_name" property="realName" />
+				<result column="second_student_id" property="studentId" />
+				<result column="second_credit" property="credit" />
+				<result column="second_telephone" property="telephone" />
+				<result column="second_email" property="email" />
+				<result column="second_sex" property="sex" />
 			</association>
 		</collection>
 	</resultMap>
@@ -38,7 +50,10 @@
 		  second_response_info.info_id as second_info_id,second_response_info.response_info as second_response_info,
 		  second_response_info.response_date as second_response_date,second_response_info.alter_user as second_alter_user,
 		  second_response_info.status as second_status,second_response_info.parent_id as parent_id,
-		  student.user_name,student.user_icon,s1.user_name as second_user_name,s1.user_icon as second_user_icon
+		  student.user_name,student.user_icon,s1.user_name as second_user_name,s1.user_icon as second_user_icon,
+		  student.real_name,student.student_id,student.telephone,student.email,student.sex,student.credit,
+		  s1.real_name as second_real_name,s1.student_id as second_student_id,s1.telephone as second_telephone,s1.sex as second_sex,
+		  s1.credit second_credit
 		from response_info
 		left join second_response_info on (response_info.response_id = second_response_info.parent_id and second_response_info.status = 1 and second_response_info.info_id = #{infoId})
 		left join student on (response_info.user_id = student.user_id)

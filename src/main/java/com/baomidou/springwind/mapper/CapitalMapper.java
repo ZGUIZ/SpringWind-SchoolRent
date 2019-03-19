@@ -30,4 +30,6 @@ public interface CapitalMapper extends BaseMapper<Capital> {
      */
     int update(Capital capital);
 
+    Capital selectByUser(Student student);
+
 }
