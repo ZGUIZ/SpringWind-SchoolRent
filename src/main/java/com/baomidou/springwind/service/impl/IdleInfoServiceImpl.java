@@ -153,7 +153,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     @Override
     public boolean cancleRent(IdleInfo idleInfo) throws Exception {
         IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
-        if(info.getStatus() != 1 && info.getStatus() != 2){
+        if(info.getStatus() != 1 && info.getStatus() != 2 && info.getStatus() != 8){
             throw new Exception("状态异常！");
         }
         Rent rent = new Rent();
@@ -165,7 +165,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             if(r.getStatus() == 1 ){
                 info.setStatus(0);
                 r.setStatus(2);
-            } else if(r.getStatus() == 2){
+            } else if(r.getStatus() == 2 || r.getStatus() == 8){
                 //如果正在租赁
                 info.setStatus(3);
                 r.setStatus(5);
