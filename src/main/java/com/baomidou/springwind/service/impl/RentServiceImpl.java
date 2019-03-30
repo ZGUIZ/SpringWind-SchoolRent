@@ -490,4 +490,43 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rentMapper.updateById(r);
         return true;
     }
+
+    @Override
+    public boolean finishRent(Student student, Rent rent) throws IllegalAuthroiyException {
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        Rent r = rentList.get(0);
+        Capital capital = capitalMapper.selectForUpdate(r.getUserId());
+        IdleInfo param = new IdleInfo();
+        param.setInfoId(r.getIdelId());
+        IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+
+        if(r == null || (r.getStatus()!=4)){
+            throw new IllegalStateException("当前状态不支持该操作！");
+        }
+        if (!idleInfo.getUserId().equals(r.getUserId())) {
+            throw new IllegalAuthroiyException();
+        }
+
+        CheckStatement cs = new CheckStatement();
+        r.setStatus(5);
+        cs.setMemo("完成租赁返还押金");
+
+        cs.setAmount(r.getLastRental());
+
+        capital.setCapital(capital.getCapital()+r.getLastRental());
+        r.setLastRental(0f);
+        idleInfo.setStatus(0);
+
+        Date now = new Date();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setType(0);
+        cs.setCreateDate(now);
+        cs.setUserId(r.getUserId());
+        checkStatementMapper.insert(cs);
+
+        rentMapper.updateById(r);
+        capitalMapper.updateById(capital);
+        idleInfoMapper.updateById(idleInfo);
+        return true;
+    }
 }

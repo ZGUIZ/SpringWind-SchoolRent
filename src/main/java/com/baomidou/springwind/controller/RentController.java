@@ -217,4 +217,21 @@ public class RentController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/finishRent",method = RequestMethod.POST)
+    public Result finishRent(HttpServletRequest request,@RequestBody Rent rent){
+	    Result result = new Result();
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        try {
+            boolean r = rentService.finishRent(student,rent);
+            result.setResult(r);
+        } catch (IllegalAuthroiyException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMsg());
+        }
+        return result;
+    }
 }

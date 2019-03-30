@@ -101,6 +101,9 @@
 				<when test="status == 2">
 					and (rent.status = #{status} or rent.status = 3)
 				</when>
+				<when test="status == 4">
+					and (rent.status = #{status} or rent.status = 8)
+				</when>
 				<otherwise>
 					and rent.status = #{status}
 				</otherwise>
