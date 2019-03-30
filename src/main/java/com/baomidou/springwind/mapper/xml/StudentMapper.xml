@@ -51,7 +51,7 @@
 	<select id="login" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
 		select user_id,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
 		from student
-		where (email = #{userName} or user_name = #{userName} or telephone = #{userName}) and password = #{password}
+		where (email = #{userName} or user_name = #{userName} or telephone = #{userName}) and password = #{password} and status not in (2,100)
 	</select>
 
 	<select id="queryList" resultType="com.baomidou.springwind.entity.Student" resultMap="queryMap">
@@ -124,5 +124,9 @@
 		select user_id,school_id,user_name,real_name,auth_level,credit,user_icon,telephone,email,sex,status,create_date
 		from student
 		where user_id = #{userId}
+	</select>
+
+	<select id="selectForUpdate" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
+		select * from student where user_id = #{userId} for update
 	</select>
 </mapper>

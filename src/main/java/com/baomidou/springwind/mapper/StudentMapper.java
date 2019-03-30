@@ -36,4 +36,6 @@ public interface StudentMapper extends BaseMapper<Student> {
     Student getBaseInfo(Student student);
 
     Student getCurrentUser(Student student);
+
+    Student selectForUpdate(Student student);
 }

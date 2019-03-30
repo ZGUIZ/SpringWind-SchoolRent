@@ -78,7 +78,11 @@
 	<select id="selectForUpdate" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.Rent">
 		select *
 		from rent
-		where idel_id = #{idelId} and status not in (2,3,6) for update
+		where idel_id = #{idelId} and status not in (2,3,6,101)
+		<if test="rentId != null">
+			and rent_id = #{rentId}
+		</if>
+		for update
 	</select>
 
 	<select id="selectForUpdateById" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.Rent">
@@ -91,14 +95,8 @@
 		select *,idle_info.status info_status
 		from rent
 		left join idle_info on (rent.idel_id = idle_info.info_id)
-		where rent.status != 6 and rent.user_id = #{userId}
+		where rent.user_id = #{userId} and rent.status not in (6,101)
 		<if test="status != null">
-			<!--<if test="status ==4">
-				and (rent.status = #{status} or rent.status = 8)
-			</if>
-			<if test="status != 4">
-				and rent.status = #{status}
-			</if>-->
 			<choose>
 				<when test="status == 2">
 					and (rent.status = #{status} or rent.status = 3)

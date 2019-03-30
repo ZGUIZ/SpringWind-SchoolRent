@@ -9,6 +9,7 @@ import com.baomidou.springwind.entity.IdleInfoExtend;
 import com.baomidou.springwind.entity.Result;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.service.IIdleInfoService;
+import com.baomidou.springwind.service.IStudentService;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,9 @@ public class IdleInfoController {
 
     @Autowired
     private IIdleInfoService idleInfoService;
+
+    @Autowired
+    private IStudentService studentService;
 
     @RequestMapping(value = "/queryList")
     public ModelAndView queryList(){
@@ -119,6 +123,20 @@ public class IdleInfoController {
     public Result getMinePush(HttpServletRequest request,@RequestBody IdleInfoExtend idleInfo){
         Result result = new Result();
         Student student = (Student) request.getSession().getAttribute("student");
+        idleInfo.setSchoolId(student.getSchoolId());
+        idleInfo.setUserId(student.getUserId());
+        List<IdleInfo> idleInfoList = idleInfoService.selectByPage(idleInfo);
+        result.setResult(true);
+        result.setData(idleInfoList);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getUserPush")
+    public Result getPush(@RequestBody IdleInfoExtend idleInfo){
+        Result result = new Result();
+        Student student;
+        student = studentService.selectById(idleInfo.getUserId());
         idleInfo.setSchoolId(student.getSchoolId());
         idleInfo.setUserId(student.getUserId());
         List<IdleInfo> idleInfoList = idleInfoService.selectByPage(idleInfo);

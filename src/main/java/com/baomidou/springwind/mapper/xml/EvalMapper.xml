@@ -13,4 +13,26 @@
 		<result column="status" property="status" />
 	</resultMap>
 
+	<resultMap id="ResultMap" type="com.baomidou.springwind.entity.Eval">
+		<id column="eval_id" property="evalId" />
+		<result column="user_id" property="userId" />
+		<result column="idle_id" property="idleId" />
+		<result column="content" property="content" />
+		<result column="eval_date" property="evalDate" />
+		<result column="level" property="level" />
+		<result column="status" property="status" />
+		<association property="idleInfo" javaType="com.baomidou.springwind.entity.IdleInfo">
+			<id column="idle_id" property="idleId" />
+			<result column="title" property="title"/>
+		</association>
+	</resultMap>
+
+	<select id="selectByPage" parameterType="com.baomidou.springwind.entity.EvalExtend" resultMap="BaseResultMap">
+		select eval.*, student.user_name,student.user_icon,student.credit,student.student_id
+		from eval
+		left join idle_info on (idle.idle_id = eval.idle_id)
+		where user_id = #{userId} and eval.status != 100
+		order by eval.eval_date desc
+		limit #{start},#{pageSize}
+	</select>
 </mapper>

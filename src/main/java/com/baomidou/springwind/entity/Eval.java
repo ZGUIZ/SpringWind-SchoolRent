@@ -46,11 +46,13 @@ public class Eval extends Model<Eval> {
     /**
      * 评价等级
      */
-	private Integer level;
+	private float level;
     /**
      * 状态
      */
 	private Integer status;
+
+	private IdleInfo idleInfo;
 
 
 	public String getEvalId() {
@@ -93,11 +95,11 @@ public class Eval extends Model<Eval> {
 		this.evalDate = evalDate;
 	}
 
-	public Integer getLevel() {
+	public float getLevel() {
 		return level;
 	}
 
-	public void setLevel(Integer level) {
+	public void setLevel(float level) {
 		this.level = level;
 	}
 
@@ -114,4 +116,11 @@ public class Eval extends Model<Eval> {
 		return this.evalId;
 	}
 
+	public IdleInfo getIdleInfo() {
+		return idleInfo;
+	}
+
+	public void setIdleInfo(IdleInfo idleInfo) {
+		this.idleInfo = idleInfo;
+	}
 }

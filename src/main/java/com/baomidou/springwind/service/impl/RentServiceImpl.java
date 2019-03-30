@@ -360,6 +360,16 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         IdleInfo param = new IdleInfo();
         param.setInfoId(r.getIdelId());
         IdleInfo idleInfo = idleInfoMapper.selectForUpdate(param);
+
+        //申请返还
+        if(r.getStatus() == 4){
+            r.setStatus(8);
+            idleInfo.setStatus(8);
+            rentMapper.updateById(r);
+            idleInfoMapper.updateById(idleInfo);
+            return true;
+        }
+
         if(r == null || (r.getStatus()!=0 && r.getStatus()!=1)){
             throw new IllegalStateException("当前状态不支持取消！");
         }
