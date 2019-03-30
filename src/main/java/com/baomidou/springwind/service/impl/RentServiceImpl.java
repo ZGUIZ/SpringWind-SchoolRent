@@ -440,7 +440,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         cs.setType(0);
         cs.setCreateDate(now);
         cs.setMemo("每日租金");
-        cs.setUserId(r.getUserId());
+        cs.setUserId(idleInfo.getUserId());
         checkStatementMapper.insert(cs);
 
         return true;
