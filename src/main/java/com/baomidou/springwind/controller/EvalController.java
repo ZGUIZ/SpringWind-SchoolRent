@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -34,9 +36,19 @@ public class EvalController {
 	@ResponseBody
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public Result add(HttpServletRequest request, @RequestBody Eval eval){
+        Result result = new Result();
+        try {
+            eval.setContent(URLDecoder.decode(eval.getContent(),"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("内容转码异常");
+            return result;
+        }
+
         HttpSession session = request.getSession();
         Student student = (Student) session.getAttribute("student");
-        Result result = new Result();
+
         int row = evalService.add(student,eval);
         if(row>0){
             result.setResult(true);
