@@ -83,7 +83,7 @@ public class EvalServiceImpl extends BaseServiceImpl<EvalMapper, Eval> implement
     public List<Eval> getByPage(EvalExtend extend) {
         List<Eval> evals = mapper.selectByPage(extend);
         //查询图标
-        List<String> ids = new ArrayList<>();
+        /*List<String> ids = new ArrayList<>();
         for(int i=0;i<evals.size();i++){
             Eval eval = evals.get(i);
             ids.add(eval.getIdleId());
@@ -101,7 +101,7 @@ public class EvalServiceImpl extends BaseServiceImpl<EvalMapper, Eval> implement
                 }
             }
             eval.getIdleInfo().setPicList(picList);
-        }
+        }*/
         return evals;
     }
 }

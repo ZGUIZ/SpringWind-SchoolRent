@@ -21,17 +21,24 @@
 		<result column="eval_date" property="evalDate" />
 		<result column="level" property="level" />
 		<result column="status" property="status" />
-		<association property="idleInfo" javaType="com.baomidou.springwind.entity.IdleInfo">
-			<id column="idle_id" property="idleId" />
-			<result column="title" property="title"/>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="user_name" property="userName" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
 		</association>
 	</resultMap>
 
-	<select id="selectByPage" parameterType="com.baomidou.springwind.entity.EvalExtend" resultMap="BaseResultMap">
-		select eval.*, student.user_name,student.user_icon,student.credit,student.student_id
+	<select id="selectByPage" parameterType="com.baomidou.springwind.entity.EvalExtend" resultMap="ResultMap">
+		select eval.*, student.user_name,student.user_icon,credit,student.student_id
 		from eval
-		left join idle_info on (idle.idle_id = eval.idle_id)
-		where user_id = #{userId} and eval.status != 100
+		left join idle_info on (idle_info.info_id = eval.idle_id)
+		left join student on (eval.user_id = student.user_id)
+		where idle_info.user_id = #{userId} and eval.status != 100
+		<if test="evalDate != null">
+			and eval.eval_date &lt;= #{evalDate}
+		</if>
 		order by eval.eval_date desc
 		limit #{start},#{pageSize}
 	</select>

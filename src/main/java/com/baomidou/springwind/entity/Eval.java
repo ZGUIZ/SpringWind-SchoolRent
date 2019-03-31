@@ -54,6 +54,8 @@ public class Eval extends Model<Eval> {
 
 	private IdleInfo idleInfo;
 
+	private Student student;
+
 
 	public String getEvalId() {
 		return evalId;
@@ -122,5 +124,13 @@ public class Eval extends Model<Eval> {
 
 	public void setIdleInfo(IdleInfo idleInfo) {
 		this.idleInfo = idleInfo;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 }

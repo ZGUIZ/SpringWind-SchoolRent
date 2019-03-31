@@ -1,6 +1,6 @@
 package com.baomidou.springwind.entity;
 
-public class EvalExtend {
+public class EvalExtend extends Eval{
     private int page;
     private int pageSize;
 
