@@ -164,6 +164,11 @@
 			<artifactId>jetty-util</artifactId>
 			<version>9.3.7.v20160115</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.jpush.api</groupId>
+			<artifactId>jpush-client</artifactId>
+			<version>3.3.10</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

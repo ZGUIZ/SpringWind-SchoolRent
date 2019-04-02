@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baomidou.springwind.mapper.MessageMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.Message">
+		<id column="msg_id" property="msgId" />
+		<result column="content" property="content" />
+		<result column="title" property="title" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<result column="user_id" property="userId" />
+	</resultMap>
+
+	<select id="unReadMessage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.Message">
+		select * from message where user_id = #{userId} and status = #{status} order by create_date desc
+	</select>
+</mapper>

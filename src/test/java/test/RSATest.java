@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.springwind.entity.RequestInfo;
+import com.baomidou.springwind.utils.JPushUnits;
 import com.baomidou.springwind.utils.MailUtil;
 import com.baomidou.springwind.utils.RSAUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -83,5 +84,11 @@ public class RSATest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testPush(){
+        JPushUnits jPushUnits = JPushUnits.newInstance();
+        jPushUnits.pushForUser("8284984fd6394f2c935506ada97d565c","来自服务器端的测试");
     }
 }

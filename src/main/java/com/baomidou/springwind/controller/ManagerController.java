@@ -54,4 +54,12 @@ public class ManagerController {
         return JSON.toJSONString(result);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/login")
+    public Result login(Manager manager){
+        Result result = new Result();
+
+        return result;
+    }
+
 }
