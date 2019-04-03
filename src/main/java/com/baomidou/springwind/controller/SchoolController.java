@@ -42,17 +42,16 @@ public class SchoolController {
     @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/getCity")
-    public String getCity(String province){
+    public List<Select2Bean> getCity(String province){
         List<Select2Bean> cities=schoolService.getCity(province);
-        String citiesJson=JSONArray.toJSONString(cities);
-        return citiesJson;
+        return cities;
     }
     @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("getProvince")
-    public String getProvince(){
+    public List<Select2Bean> getProvince(){
         List<Select2Bean> provinces=schoolService.getProvince();
-        return JSONArray.toJSONString(provinces);
+        return provinces;
     }
 
     /**
@@ -63,25 +62,24 @@ public class SchoolController {
     @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/queryList")
-    public String getSchool(String city){
+    public List<School> getSchool(String city){
         EntityWrapper<School> entityWrapper=new EntityWrapper();
 
         if(city == null || "".equals(city)){
-            return  DataTablesUtilJson.arrayToDataTablesJson(schoolService.selectList(entityWrapper));
+            return  schoolService.selectList(entityWrapper);
         } else{
             List<School> school=schoolService.getSchool(city);
             //String json= "{ 'data':"+JSONArray.toJSONString()+"}";
-            String json= DataTablesUtilJson.arrayToDataTablesJson(school);
-            return json;
+            return school;
         }
     }
 
     @Permission(action = Action.Skip)
     @ResponseBody
     @RequestMapping("/getSchool")
-    public String getSchoolForSelect2(String city){
+    public List<Select2Bean>  getSchoolForSelect2(String city){
         List<Select2Bean> select2Beans = schoolService.getSchoolForSelect(city);
-        return JSONArray.toJSONString(select2Beans);
+        return select2Beans;
     }
 
     @Permission(action = Action.Skip)

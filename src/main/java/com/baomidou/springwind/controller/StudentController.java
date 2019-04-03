@@ -17,15 +17,11 @@ import com.baomidou.springwind.utils.MailUtil;
 import com.baomidou.springwind.utils.PassWordUtil;
 import com.baomidou.springwind.utils.RSAUtil;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -171,14 +167,14 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value = "/queryListByPage")
-    public String queryList(RequestInfo requestInfo){
+    public DatatablesView<Student> queryList(RequestInfo requestInfo){
         DatatablesView<Student> datatablesView=new DatatablesView<>();
         datatablesView.setDraw(requestInfo.getDraw());
         List<Student> students=studentService.queryListByPage(requestInfo);
         datatablesView.setRecordsTotal(requestInfo.getAmmount());
         datatablesView.setData(students);
         datatablesView.setRecordsFiltered(requestInfo.getAmmount());
-        return JSONObject.toJSONString(datatablesView);
+        return datatablesView;
     }
 
     @RequestMapping("/toList")
@@ -229,11 +225,11 @@ public class StudentController {
 
     @RequestMapping(value = "/id/{id}")
     @ResponseBody
-    public String queryById(@PathVariable("id") String id){
+    public Student queryById(@PathVariable("id") String id){
         Student student = studentService.selectById(id);
         School school = schoolService.selectById(student.getSchoolId());
         student.setSchool(school);
-        return JSONObject.toJSONString(student);
+        return student;
     }
 
     @ResponseBody
@@ -251,7 +247,7 @@ public class StudentController {
     @Permission(action = Action.Skip)
     @RequestMapping(value = "/getSex")
     @ResponseBody
-    public String getSex(){
+    public List<Select2Bean> getSex(){
         List<Select2Bean> select2Beans = new ArrayList<>();
         Select2Bean man=new Select2Bean();
         man.setId("男");
@@ -261,7 +257,7 @@ public class StudentController {
         woman.setId("女");
         woman.setText("女");
         select2Beans.add(woman);
-        return JSONArray.toJSONString(select2Beans);
+        return select2Beans;
     }
 
     /**

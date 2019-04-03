@@ -74,6 +74,6 @@
 
 	<!-- 欢迎界面 -->
 	<welcome-file-list>
-		<welcome-file>/manager/toLogin</welcome-file>
+		<welcome-file>/manager/toLogin.action</welcome-file>
 	</welcome-file-list>
 </web-app>

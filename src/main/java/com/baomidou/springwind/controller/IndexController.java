@@ -38,12 +38,10 @@ public class IndexController extends BaseController {
 		return "/home";
 	}
 
-	/**
-	 * SW 捐赠
-	 */
+	@Login(action = Action.Skip)
 	@Permission(action = Action.Skip)
-	@RequestMapping("/donate")
-	public String donate() {
-		return "/donate";
+	@RequestMapping("/")
+	public String index(){
+		return "/login";
 	}
 }

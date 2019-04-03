@@ -1,3 +1,12 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Amia
+  Date: 2019/4/3
+  Time: 17:37
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -25,13 +34,13 @@
     <title>学生列表</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 学生管理 <span class="c-gray en">&gt;</span> 学生列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="student_add('添加学生','/student/toForm','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加学生</a></span></div>
     <table class="table table-border table-bordered table-bg display" id="student">
         <thead>
         <tr>
-            <th scope="col" colspan="15">学生列表</th>
+            <th scope="col" colspan="15">用户列表</th>
         </tr>
         <tr class="text-c">
             <th  width="3px" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
@@ -42,12 +51,12 @@
             <th width="90">用户名</th>
             <th width="90">真实姓名</th>
             <th width="40">性别</th>
-            <th width="150">手机号码</th>
+            <th width="100">手机号码</th>
             <th width="150">邮箱</th>
             <th width="40">信誉</th>
             <th width="40">认证等级</th>
             <th width="40">状态</th>
-            <th width="70">注册日期</th>
+            <th width="100">注册日期</th>
             <th width="100">操作</th>
         </tr>
         </thead>
@@ -74,7 +83,7 @@
 
         studentTable=$("#student").DataTable({
             ajax:{
-                url: APP.WEB_APP_NAME+'/student/queryListByPage',
+                url: APP.WEB_APP_NAME+'/student/queryListByPage'
             },
             "serverSide": true,
             "destroy": true,

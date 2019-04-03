@@ -89,4 +89,9 @@ public class ManagerController {
     public String toLogin(){
         return "/login";
     }
+
+    @RequestMapping("/index")
+    public String index(){
+        return "/index";
+    }
 }

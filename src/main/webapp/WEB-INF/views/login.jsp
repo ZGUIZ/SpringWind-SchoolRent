@@ -98,7 +98,7 @@
             success: function (data) {
                 console.log(data);
                 if(data.result){
-
+                    window.location.href = APP.WEB_APP_NAME+"/manager/index";
                 } else {
                     layer.msg(data.msg);
                 }
