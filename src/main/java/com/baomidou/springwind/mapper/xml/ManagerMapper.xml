@@ -10,4 +10,9 @@
 		<result column="role" property="role" />
 	</resultMap>
 
+	<select id="login" parameterType="com.baomidou.springwind.entity.Manager" resultMap="BaseResultMap">
+		select user_id,account,role
+		from manager
+		where account = #{account} and password = #{password}
+	</select>
 </mapper>

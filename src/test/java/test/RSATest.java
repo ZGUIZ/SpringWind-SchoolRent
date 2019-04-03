@@ -1,5 +1,7 @@
 package test;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.springwind.entity.RentNeeds;
@@ -87,7 +89,7 @@ public class RSATest {
     }
 
     @Test
-    public void testPush(){
+    public void testPush() throws APIConnectionException, APIRequestException {
         JPushUnits jPushUnits = JPushUnits.newInstance();
         jPushUnits.pushForUser("8284984fd6394f2c935506ada97d565c","来自服务器端的测试");
     }

@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-10-30
  */
 public interface ManagerMapper extends BaseMapper<Manager> {
-
+    Manager login(Manager manager);
 }
