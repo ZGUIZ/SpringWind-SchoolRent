@@ -177,9 +177,31 @@ public class StudentController {
         return datatablesView;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/queryUnLogin")
+    public DatatablesView<Student> queryUnLogin(RequestInfo<Student> requestInfo){
+        DatatablesView<Student> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+
+        Student student = new Student();
+        student.setStatus(2);
+        requestInfo.setParam(student);
+
+        List<Student> students=studentService.queryListByPage(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(students);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
     @RequestMapping("/toList")
     public String toList(){
         return "student/studentList";
+    }
+
+    @RequestMapping("/toUnLogin")
+    public String toUnLogin(){
+        return "student/unLoginList";
     }
 
     @ResponseBody

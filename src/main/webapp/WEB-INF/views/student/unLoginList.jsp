@@ -31,10 +31,10 @@
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="../static/css/TableStyle.css">
-    <title>学生列表</title>
+    <title>禁止登陆列表</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 禁止登陆列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="student_add('添加学生','/student/toForm','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加学生</a></span></div>
     <table class="table table-border table-bordered table-bg display" id="student">
@@ -83,7 +83,7 @@
 
         studentTable=$("#student").DataTable({
             ajax:{
-                url: APP.WEB_APP_NAME+'/student/queryListByPage'
+                url: APP.WEB_APP_NAME+'/student/queryUnLogin'
             },
             "serverSide": true,
             "destroy": true,
@@ -134,7 +134,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="studentStart(this,\''+data+'\',\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'编辑\',\'/student/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        return '<a style="text-decoration:none" onClick="studentStart(this,\''+data+'\',\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'编辑\',\'/student/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>  ';
                     }
                 }
             ],
@@ -178,22 +178,9 @@
         $(window.layer).attr('data-url',ajaxUrl);
     }
 
-    function resetPassword(id){
-        layer.confirm("确定要重置密码？",function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/resetPasssWord/id/'+id,'get',true,null,function (data) {
-                if(data.result){
-                    layer.msg('已经重置密码!',{icon: 6,time:1000});
-                } else{
-                    layer.msg("重置失败："+data.msg,{icon:5,time:1000});
-                }
-
-            });
-        });
-    }
-
     function studentStart(obj,status,userId){
-        layer.confirm('确认要禁止该用户登录吗？',function(index){
-            status = 2;
+        layer.confirm('确认要恢复可登录状态吗？',function(index){
+            status = 1;
             var student = {};
             student.userId = userId;
             student.status = status;
@@ -206,7 +193,7 @@
                 data: JSON.stringify(student),
                 success: function(data){
                     if(data.result){
-                        layer.msg('已修改!',{icon: 6,time:1000});
+                        layer.msg('已启用!',{icon: 6,time:1000});
                     } else{
                         layer.msg("修改失效",{icon:5,time:1000});
                     }
@@ -221,24 +208,7 @@
     }
 
     function delStudent() {
-        var studentList = new Array();
-        var selected =$("input:checkbox[name='userId']:checked");
-        for(var i=0;i<selected.length;i++){
-            var student = {};
-            student.userId = $(selected[i]).val();
-            student.status = 100;
-            studentList.push(student);
-        }
 
-        AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/del','POST',true,studentList,function (data) {
-            debugger;
-            if(data.result){
-                layer.msg('删除成功!',{icon: 6,time:1000});
-            } else{
-                layer.msg("删除失败:"+data.msg,{icon:5,time:1000});
-            }
-            studentTable.ajax.reload();
-        });
     }
 </script>
 </body>

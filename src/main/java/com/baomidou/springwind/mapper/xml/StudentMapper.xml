@@ -62,8 +62,17 @@
 
 	<select id="queryForPage" resultType="com.baomidou.springwind.entity.Student" resultMap="queryMap" parameterType="com.baomidou.springwind.entity.RequestInfo">
 		select * from student
-		where status != 100
-		<if test="#{searchString} !=null">
+		where
+		<choose>
+			<when test="param != null and param.status != null">
+				status = #{param.status}
+			</when>
+			<otherwise>
+				status != 100 and status != 2
+			</otherwise>
+		</choose>
+
+		<if test="searchString !=null">
 			and (student_id like "%"#{searchString}"%" or
 			user_name like "%"#{searchString}"%" or
 			real_name like "%"#{searchString}"%" or
