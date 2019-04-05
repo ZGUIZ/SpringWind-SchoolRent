@@ -184,9 +184,7 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value="/updateStudent", method = RequestMethod.POST)
-    public String updateStudent(@RequestBody String json){
-        Student student=Student.getObjectFromJsonObject(json);
-
+    public Result updateStudentFromServer(@RequestBody Student student){
         //如果是新增学生
         if("add".equals(student.getBeanStatus())){
             Result result=new Result();
@@ -205,14 +203,14 @@ public class StudentController {
                 result.setMsg("注册失败:"+e.getMessage());
             }
 
-            return JSONObject.toJSONString(result);
+            return result;
         }
 
         //更新学生信息
         boolean success=studentService.updateById(student);
         Result result=new Result();
         result.setResult(success);
-        return JSONObject.toJSONString(result);
+        return result;
     }
 
     @RequestMapping(value = "toForm/id/{id}")
@@ -234,10 +232,10 @@ public class StudentController {
 
     @ResponseBody
     @RequestMapping(value="/add")
-    public String addStudent(){
+    public Student addStudent(){
         Student student = new Student();
         student.setBeanStatus("add");
-        return JSONObject.toJSONString(student);
+        return student;
     }
 
     /**
@@ -324,7 +322,7 @@ public class StudentController {
      */
     @ResponseBody
     @RequestMapping(value = "/del",method = RequestMethod.POST)
-    public String delStudent(@RequestBody String json){
+    public Result delStudent(@RequestBody String json){
         Result result=new Result();
         try{
             Boolean res=studentService.delStudent(json);
@@ -334,7 +332,7 @@ public class StudentController {
             result.setResult(false);
             result.setMsg(e.getMessage());
         }
-        return JSONObject.toJSONString(result);
+        return result;
     }
 
     private static final String MAIL_MESSAGE_TITLE = "邮箱验证";

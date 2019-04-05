@@ -42,6 +42,9 @@ public class AuthPicture extends Model<AuthPicture> {
 	@TableField("create_date")
 	private Date createDate;
 
+	@TableField(exist = false)
+	private Student student;
+
 	/**
 	 * 类型
 	 */
@@ -102,4 +105,11 @@ public class AuthPicture extends Model<AuthPicture> {
 		return this.picId;
 	}
 
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
 }

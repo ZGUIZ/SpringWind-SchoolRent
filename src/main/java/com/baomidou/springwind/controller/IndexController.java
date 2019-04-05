@@ -1,5 +1,6 @@
 package com.baomidou.springwind.controller;
 
+import com.baomidou.springwind.entity.Manager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.baomidou.kisso.annotation.Action;
 import com.baomidou.kisso.annotation.Login;
 import com.baomidou.kisso.annotation.Permission;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -41,7 +45,13 @@ public class IndexController extends BaseController {
 	@Login(action = Action.Skip)
 	@Permission(action = Action.Skip)
 	@RequestMapping("/")
-	public String index(){
-		return "/login";
+	public String index(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		Manager manager = (Manager) session.getAttribute("manager");
+		if (manager == null) {
+			return "/login";
+		} else {
+			return "/index";
+		}
 	}
 }

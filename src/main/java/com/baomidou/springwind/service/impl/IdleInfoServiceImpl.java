@@ -321,4 +321,24 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         info.setPicList(pics);
         return info;
     }
+
+    @Override
+    public List<IdleInfo> queryListByPage(RequestInfo param,String type) {
+        List<IdleInfo> idleInfoList = null;
+
+        IdleInfo idleInfo = new IdleInfo();
+
+        switch (type){
+            case COMMENT:
+                param.setAmmount(idleInfoMapper.getCount(idleInfo));
+                idleInfoList = idleInfoMapper.queryForPage(param);
+                break;
+            case DEL:
+                idleInfo.setStatus(100);
+                param.setAmmount(idleInfoMapper.getCount(idleInfo));
+                idleInfoList = idleInfoMapper.queryDel(param);
+                break;
+        }
+        return idleInfoList;
+    }
 }

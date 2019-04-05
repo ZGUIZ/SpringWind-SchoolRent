@@ -2,6 +2,10 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.IdelPic;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.IdleInfo;
+import com.baomidou.springwind.entity.RequestInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,4 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-30
  */
 public interface IIdelPicService extends IService<IdelPic> {
-	
 }

@@ -18,8 +18,8 @@
                 <dt><i class="Hui-iconfont">&#xe616;</i> 商品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a data-href="" data-title="商品列表" href="javascript:void(0)">商品列表</a></li>
-                        <li><a data-href="" data-title="禁止显示" href="javascript:void(0)">禁止显示</a></li>
+                        <li><a data-href="/SpringWind/idleInfo/toList" data-title="商品列表" href="javascript:void(0)">商品列表</a></li>
+                        <li><a data-href="/SpringWind/idleInfo/toDel" data-title="禁止显示" href="javascript:void(0)">禁止显示</a></li>
                     </ul>
                 </dd>
             </dl>
@@ -28,7 +28,7 @@
                 <dd>
                     <ul>
                         <li><a data-href="/SpringWind/student/toList" data-title="用户列表" href="javascript:void(0)">用户列表</a></li>
-                        <li><a data-href="" data-title="身份审核" href="javascript:void(0)">身份审核</a></li>
+                        <li><a data-href="/SpringWind/authPicture/toList" data-title="身份审核" href="javascript:void(0)">身份审核</a></li>
                         <li><a data-href="" data-title="禁止登陆" href="javascript:void(0)">禁止登陆</a></li>
                     </ul>
                 </dd>

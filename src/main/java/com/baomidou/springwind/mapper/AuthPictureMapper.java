@@ -2,6 +2,9 @@ package com.baomidou.springwind.mapper;
 
 import com.baomidou.springwind.entity.AuthPicture;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.springwind.entity.RequestInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-10-30
  */
 public interface AuthPictureMapper extends BaseMapper<AuthPicture> {
-
+    List<AuthPicture> getByPage(RequestInfo requestInfo);
+    AuthPicture selectById(AuthPicture picture);
+    int getCount(RequestInfo picture);
 }

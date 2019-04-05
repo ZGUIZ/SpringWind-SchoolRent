@@ -4,6 +4,7 @@ import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.IdleInfo;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.springwind.entity.IdleInfoExtend;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 
 import java.util.List;
@@ -45,4 +46,8 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     boolean delIdleInfo(IdleInfo idleInfo) throws Exception;
 
     IdleInfo findById(String id);
+
+    String COMMENT = "comment";
+    String DEL = "del";
+    List<IdleInfo> queryListByPage(RequestInfo param,String type);
 }

@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
-import com.baomidou.springwind.entity.IdleInfo;
-import com.baomidou.springwind.entity.IdleInfoExtend;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IIdleInfoService;
 import com.baomidou.springwind.service.IStudentService;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -257,5 +254,42 @@ public class IdleInfoController {
         result.setResult(true);
         result.setData(idleInfo);
         return result;
+    }
+
+    /**
+     * 服务端
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryListByPage")
+    public DatatablesView<IdleInfo> queryList(RequestInfo requestInfo){
+        DatatablesView<IdleInfo> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<IdleInfo> idleInfos=idleInfoService.queryListByPage(requestInfo,IIdleInfoService.COMMENT);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(idleInfos);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryDelByPage")
+    public DatatablesView<IdleInfo> queryDel(RequestInfo requestInfo){
+        DatatablesView<IdleInfo> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<IdleInfo> idleInfos=idleInfoService.queryListByPage(requestInfo,IIdleInfoService.DEL);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(idleInfos);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @RequestMapping(value = "/toList")
+    public String toList(){
+        return "/idle/idleList";
+    }
+
+    @RequestMapping(value = "/toDel")
+    public String toDel(){
+        return "/idle/delIdleList";
     }
 }

@@ -41,12 +41,39 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.IdleInfo">
+		<id column="info_id" property="infoId" />
+		<result column="classify_id" property="classifyId" />
+		<result column="idel_info" property="idelInfo" />
+		<result column="destory_info" property="destoryInfo" />
+		<result column="deposit" property="deposit" />
+		<result column="retal" property="retal" />
+		<result column="retal_type" property="retalType" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<result column="title" property="title"/>
+		<result column="end_date" property="endDate" />
+		<result column="user_id" property="userId" />
+		<result column="address" property="address"/>
+		<association property="classify" javaType="com.baomidou.springwind.entity.Classify">
+			<result column="classify_name" property="classifyName" />
+		</association>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="user_name" property="userName" />
+			<association property="school" javaType="com.baomidou.springwind.entity.School">
+				<result column="school_name" property="schoolName" />
+			</association>
+		</association>
+	</resultMap>
+
 	<select id="selectByPage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfoExtend">
 		select idle.*, student.user_name,student.user_icon,student.credit,student.student_id
 		from idle_info idle
 		left join classify on (idle.classify_id = classify.classify_id)
 		left join student on (idle.user_id = student.user_id)
-		where idle.school_id = #{schoolId} and idle.status != 101
+		where idle.school_id = #{schoolId} and idle.status not in (100,101)
 		<if test="createDate != null">
 			and idle.create_date &lt;= #{createDate}
 		</if>
@@ -72,5 +99,51 @@
 		from idle_info idle
 		left join student on (idle.user_id = student.user_id)
 		where info_id = #{infoId}
+	</select>
+
+	<select id="queryForPage" resultType="com.baomidou.springwind.entity.IdleInfo" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select idle_info.*,classify.classify_name,student.user_name,school.school_name from idle_info
+		left join classify on (idle_info.classify_id = classify.classify_id)
+		left join student on (idle_info.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
+		where idle_info.status not in (100,101)
+		<if test="#{searchString} !=null">
+			and (idle_info.title like "%"#{searchString}"%" or
+			idle_info.address like "%"#{searchString}"%" or
+			idle_info.idel_info like "%"#{searchString}"%" or
+			classify.classify_name like "%"#{searchString}"%" or
+			student.user_name like "%"#{searchString}"%" or
+			school.school_NAME like "%"#{searchString}"%")
+		</if>
+		limit #{start},#{length}
+	</select>
+
+	<select id="queryDel" resultType="com.baomidou.springwind.entity.IdleInfo" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select idle_info.*,classify.classify_name,student.user_name,school.school_name from idle_info
+		left join classify on (idle_info.classify_id = classify.classify_id)
+		left join student on (idle_info.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
+		where idle_info.status = 100
+		<if test="searchString !=null">
+			and (idle_info.title like "%"#{searchString}"%" or
+			idle_info.address like "%"#{searchString}"%" or
+			idle_info.idel_info like "%"#{searchString}"%" or
+			classify.classify_name like "%"#{searchString}"%" or
+			student.user_name like "%"#{searchString}"%" or
+			school.school_NAME like "%"#{searchString}"%")
+		</if>
+		limit #{start},#{length}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.IdleInfo">
+		select count(idle_info.info_id)
+		from idle_info
+		left join classify on (idle_info.classify_id = classify.classify_id)
+		where
+		<if test="status != null">
+			status = 100
+		</if>
+		<if test="status == null">
+			status not in (100,101)
+		</if>
 	</select>
 </mapper>

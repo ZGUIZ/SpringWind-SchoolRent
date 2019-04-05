@@ -2,6 +2,9 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.AuthPicture;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.RequestInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IAuthPictureService extends IService<AuthPicture> {
 	boolean addOrRefresh(AuthPicture authPicture);
+
+	List<AuthPicture> queryListByPage(RequestInfo requestInfo);
+
+	AuthPicture selectById(AuthPicture picture);
+
+	boolean passValidate(String id);
+	boolean unPassValidate(String id);
 }

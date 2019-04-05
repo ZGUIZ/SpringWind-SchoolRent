@@ -6,8 +6,74 @@
 	<resultMap id="BaseResultMap" type="com.baomidou.springwind.entity.AuthPicture">
 		<id column="pic_id" property="picId" />
 		<result column="user_id" property="userId" />
+		<result column="type" property="type"/>
 		<result column="pic_url" property="picUrl" />
 		<result column="create_date" property="createDate" />
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.AuthPicture">
+		<id column="pic_id" property="picId" />
+		<result column="user_id" property="userId" />
+		<result column="picture_url" property="picUrl" />
+		<result column="type" property="type"/>
+		<result column="create_date" property="createDate" />
+		<result column="status" property="status" />
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="school_id" property="schoolId" />
+			<result column="user_name" property="userName" />
+			<result column="real_name" property="realName" />
+			<result column="auth_level" property="authLevel" />
+			<result column="user_icon" property="userIcon" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+			<result column="sex" property="sex" />
+			<result column="status" property="status" />
+			<result column="create_date" property="createDate" />
+			<association property="school" javaType="com.baomidou.springwind.entity.School">
+				<id column="school_id" property="schoolId" />
+				<result column="school_name" property="schoolName" />
+			</association>
+		</association>
+	</resultMap>
+
+	<select id="getByPage" parameterType="com.baomidou.springwind.entity.RequestInfo" resultMap="BaseResultMap1">
+		select *, concat("https://schoolrent-1253946493.cos.ap-guangzhou.myqcloud.com",pic_url) as picture_url
+		from auth_picture
+		left join student on (student.user_id = auth_picture.user_id)
+		left join school on (student.school_id = school.school_id)
+		where 1 = 1
+		<if test="param != null and param.status != null">
+			and auth_picture.status = #{param.status}
+		</if>
+		<if test="searchString !=null">
+			and student.user_name like "%"#{searchString}"%" or
+			student.real_name like "%"#{searchString}"%"
+		</if>
+		order by auth_picture.create_date desc
+		limit #{start},#{length}
+	</select>
+
+	<select id="selectById" parameterType="com.baomidou.springwind.entity.AuthPicture" resultMap="BaseResultMap1">
+		select *
+		from auth_picture
+		left join student on (student.user_id = auth_picture.user_id)
+		left join school on (student.school_id = school.school_id)
+		where auth_picture.pic_id = #{picId}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(pic_id)
+		from auth_picture
+		left join student on (student.user_id = auth_picture.user_id)
+		where 1 = 1
+		<if test="param != null and param.status !=null">
+			and auth_picture.status = #{param.status}
+		</if>
+		<if test="searchString != null">
+			and student.user_name like "%"#{searchString}"%" or
+			student.real_name like "%"#{searchString}"%"
+		</if>
+	</select>
 </mapper>

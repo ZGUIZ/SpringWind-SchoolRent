@@ -3,6 +3,7 @@ package com.baomidou.springwind.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.springwind.entity.AuthPicture;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.mapper.AuthPictureMapper;
 import com.baomidou.springwind.service.IAuthPictureService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
@@ -55,6 +56,42 @@ public class AuthPictureServiceImpl extends BaseServiceImpl<AuthPictureMapper, A
             } else {
                 return false;
             }
+        }
+    }
+
+    @Override
+    public List<AuthPicture> queryListByPage(RequestInfo requestInfo) {
+        requestInfo.setAmmount(mapper.getCount(requestInfo));
+        return mapper.getByPage(requestInfo);
+    }
+
+    public AuthPicture selectById(AuthPicture authPicture){
+        return mapper.selectById(authPicture);
+    }
+
+    @Override
+    public boolean passValidate(String id) {
+        try {
+            AuthPicture authPicture = mapper.selectById(id);
+            authPicture.setStatus(1);
+            mapper.updateById(authPicture);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean unPassValidate(String id) {
+        try {
+            AuthPicture authPicture = mapper.selectById(id);
+            authPicture.setStatus(2);
+            mapper.updateById(authPicture);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
     }
 }

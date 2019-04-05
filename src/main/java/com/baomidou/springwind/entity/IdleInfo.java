@@ -97,6 +97,9 @@ public class IdleInfo extends Model<IdleInfo> {
 	@TableField(exist = false)
 	private Student student;
 
+	@TableField(exist = false)
+	private Classify classify;
+
 	public String getSchoolId() {
 		return schoolId;
 	}
@@ -228,6 +231,14 @@ public class IdleInfo extends Model<IdleInfo> {
 
 	public void setStudent(Student student) {
 		this.student = student;
+	}
+
+	public Classify getClassify() {
+		return classify;
+	}
+
+	public void setClassify(Classify classify) {
+		this.classify = classify;
 	}
 
 	/**
