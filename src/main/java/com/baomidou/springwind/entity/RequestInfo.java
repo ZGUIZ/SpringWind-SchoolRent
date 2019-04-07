@@ -146,7 +146,11 @@ public class RequestInfo<T>{
     }
 
     public String getSearchString(){
-        return (String) search.get("value");
+        String str = (String) search.get("value");
+        if("".equals(str)){
+            str = null;
+        }
+        return str;
     }
 
     /**

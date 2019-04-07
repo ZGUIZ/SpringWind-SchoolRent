@@ -36,6 +36,9 @@ public class Manager extends Model<Manager> {
      */
 	private String role;
 
+	@TableField(exist = false)
+	private ManagerRole managerRole;
+
 
 	public String getUserId() {
 		return userId;
@@ -74,4 +77,11 @@ public class Manager extends Model<Manager> {
 		return this.userId;
 	}
 
+	public ManagerRole getManagerRole() {
+		return managerRole;
+	}
+
+	public void setManagerRole(ManagerRole managerRole) {
+		this.managerRole = managerRole;
+	}
 }

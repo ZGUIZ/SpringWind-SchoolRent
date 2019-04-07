@@ -107,7 +107,7 @@
 		left join student on (idle_info.user_id = student.user_id)
 		left join school on (student.school_id = school.school_id)
 		where idle_info.status not in (100,101)
-		<if test="#{searchString} !=null">
+		<if test="searchString !=null">
 			and (idle_info.title like "%"#{searchString}"%" or
 			idle_info.address like "%"#{searchString}"%" or
 			idle_info.idel_info like "%"#{searchString}"%" or
@@ -138,12 +138,22 @@
 		select count(idle_info.info_id)
 		from idle_info
 		left join classify on (idle_info.classify_id = classify.classify_id)
+		left join student on (idle_info.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
 		where
 		<if test="status != null">
-			status = 100
+			idle_info.status = 100
 		</if>
 		<if test="status == null">
-			status not in (100,101)
+			idle_info.status not in (100,101)
+		</if>
+		<if test="idelInfo !=null">
+			and (idle_info.title like "%"#{idelInfo}"%" or
+			idle_info.address like "%"#{idelInfo}"%" or
+			idle_info.idel_info like "%"#{idelInfo}"%" or
+			classify.classify_name like "%"#{idelInfo}"%" or
+			student.user_name like "%"#{idelInfo}"%" or
+			school.school_NAME like "%"#{idelInfo}"%")
 		</if>
 	</select>
 </mapper>

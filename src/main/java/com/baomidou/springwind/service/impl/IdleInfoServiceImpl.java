@@ -327,6 +327,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         List<IdleInfo> idleInfoList = null;
 
         IdleInfo idleInfo = new IdleInfo();
+        idleInfo.setIdelInfo(param.getSearchString());
 
         switch (type){
             case COMMENT:

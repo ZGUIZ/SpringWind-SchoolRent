@@ -2,6 +2,9 @@ package com.baomidou.springwind.mapper;
 
 import com.baomidou.springwind.entity.Manager;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.springwind.entity.RequestInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ManagerMapper extends BaseMapper<Manager> {
     Manager login(Manager manager);
+    List<Manager> queryManager(RequestInfo requestInfo);
+    int queryCount(RequestInfo requestInfo);
 }

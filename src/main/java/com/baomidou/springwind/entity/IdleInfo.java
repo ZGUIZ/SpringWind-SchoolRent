@@ -1,6 +1,7 @@
 package com.baomidou.springwind.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -66,6 +67,7 @@ public class IdleInfo extends Model<IdleInfo> {
     /**
      * 发布日期
      */
+	@JSONField(format="yyyy-MM-dd hh:mm:ss")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField("create_date")
 	private Date createDate;

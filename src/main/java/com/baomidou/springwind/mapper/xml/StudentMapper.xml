@@ -85,7 +85,7 @@
 	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
 		select count(user_id) from student
 		<where>
-			<if test="#{searchString} !=null">
+			<if test="searchString !=null">
 				student_id like "%"#{searchString}"%" or
 				user_name like "%"#{searchString}"%" or
 				real_name like "%"#{searchString}"%" or

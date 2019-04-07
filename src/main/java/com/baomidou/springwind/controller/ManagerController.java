@@ -3,8 +3,7 @@ package com.baomidou.springwind.controller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.kisso.annotation.Login;
 import com.baomidou.kisso.annotation.Permission;
-import com.baomidou.springwind.entity.Manager;
-import com.baomidou.springwind.entity.Result;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IManagerService;
 import com.baomidou.springwind.utils.RSAUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.Action;
 import java.security.PrivateKey;
+import java.util.List;
 
 /**
  * <p>
@@ -93,5 +93,22 @@ public class ManagerController {
     @RequestMapping("/index")
     public String index(){
         return "/index";
+    }
+
+    @RequestMapping("/toList")
+    public String toList(){
+        return "/manager/managerList";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryListByPage")
+    public DatatablesView<Manager> queryList(RequestInfo requestInfo){
+        DatatablesView<Manager> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<Manager> students=managerService.queryListByPage(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(students);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
     }
 }

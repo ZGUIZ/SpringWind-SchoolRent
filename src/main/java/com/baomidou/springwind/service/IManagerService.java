@@ -2,6 +2,9 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.Manager;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.RequestInfo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IManagerService extends IService<Manager> {
 	Manager login(Manager manager);
+	List<Manager> queryListByPage(RequestInfo requestInfo);
 }

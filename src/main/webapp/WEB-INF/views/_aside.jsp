@@ -59,7 +59,7 @@
                 <dt><i class="Hui-iconfont">&#xe616;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a data-href="" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
+                        <li><a data-href="/SpringWind/manager/toList" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
                         <li><a data-href="" data-title="禁止登录" href="javascript:void(0)">禁止登录</a></li>
                     </ul>
                 </dd>
