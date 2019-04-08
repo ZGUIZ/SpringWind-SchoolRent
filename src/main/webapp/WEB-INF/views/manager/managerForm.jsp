@@ -64,7 +64,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <div class="select-inline">
                     <input type="text" class="input-text" value="" placeholder="" id="manager.code" name="manager.code" v-model="manager.code" />
-                    <input class="btn btn-default radius" type="button" value="获取验证码" onclick="validateMail()">
+                    <input id="send_val_btn" class="btn btn-default radius" type="button" value="获取验证码" onclick="validateMail()">
                 </div>
             </div>
         </div>
@@ -132,30 +132,47 @@
             if(data.result){
                 layer.msg('保存成功!',{icon: 6,time:1000});
             } else{
-                layer.msg("修改失效:"+data.msg,{icon:5,time:1000});
+                layer.msg("修改失效:"+data.msg,{icon:5,time:2000});
             }
         });
     }
 
     function validateMail() {
+
+        var $btn = $("#send_val_btn");
+        if($btn.hasClass("disabled")){
+            return;
+        }
+
         var mail = manager.manager.mail;
         if(mail == null || mail == ""){
             layer.msg('邮箱不能为空!',{icon: 6,time:1000});
             return;
         }
         AjaxUtil.ajax(APP.WEB_APP_NAME+"/manager/validate","POST",true,manager.manager, function(data) {
-            debugger;
             if(data.result){
                 layer.msg('发送成功!',{icon: 6,time:1000});
                 validateSendSuccess();
             } else{
-                layer.msg(data.msg,{icon:5,time:1000});
+                layer.msg(data.msg,{icon:5,time:2000});
             }
         });
     }
 
     function validateSendSuccess(){
-
+        var $btn = $("#send_val_btn");
+        $btn.addClass("disabled");
+        var lastTime = 30;
+        var r = setInterval(function(){
+            if(lastTime>0){
+                $btn.val("剩余"+lastTime+"s");
+                lastTime --;
+            } else {
+                $btn.val("获取验证码");
+                clearInterval(r);
+                $btn.removeClass("disabled");
+            }
+        },1000);
     }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

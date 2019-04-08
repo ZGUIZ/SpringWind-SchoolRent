@@ -6,8 +6,10 @@ import com.baomidou.kisso.annotation.Permission;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IManagerService;
 import com.baomidou.springwind.utils.RSAUtil;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,12 +122,15 @@ public class ManagerController {
             if(manager.getBeanStatus().equals("add")){
                 res = managerService.add(manager);
             } else {
-
                 managerService.updateById(manager);
                 res = true;
             }
 
             result.setResult(res);
+        } catch (MySQLIntegrityConstraintViolationException | DuplicateKeyException e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("添加失败，该邮箱已经被注册");
         } catch (Exception e){
             e.printStackTrace();
             result.setResult(false);
@@ -160,5 +165,12 @@ public class ManagerController {
             result.setMsg("验证码发送失败，请检查您的邮箱输入是否正确！");
         }
         return result;
+    }
+
+    @RequestMapping(value = "/exit")
+    public String exit(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.invalidate();
+        return "redirect:/";
     }
 }

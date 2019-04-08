@@ -472,8 +472,7 @@ public class StudentController {
         HttpSession session = request.getSession();
         session.setAttribute("student",null);
         session.removeAttribute("student");
-        //session.invalidate();
-        //session.setMaxInactiveInterval(1);
+        session.invalidate();
     }
 
     @ResponseBody

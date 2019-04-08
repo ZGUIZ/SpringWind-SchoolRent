@@ -26,7 +26,7 @@
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:void(0)" onclick="myselfinfo()">个人信息</a></li>
                             <li><a href="javascript:void(0)" onclick="updatePassword()">修改密码</a></li>
-                            <li><a href="exam/student/singout">退出</a></li>
+                            <li><a href="/SpringWind/manager/exit">退出</a></li>
                         </ul>
                     </li>
                     <li id="Hui-msg">
