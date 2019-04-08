@@ -35,7 +35,7 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 禁止登陆</a>  <a href="javascript:;" onclick="student_add('添加学生','/student/toForm','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span></div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 禁止登陆</a>  <a href="javascript:;" onclick="manager_add('添加管理员','/manager/toForm','800','400')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span></div>
     <table class="table table-border table-bordered table-bg display" id="student">
         <thead>
         <tr>
@@ -44,6 +44,8 @@
         <tr class="text-c">
             <th  width="3" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
             <th width="40">用户名</th>
+            <th width="40">姓名</th>
+            <th width="60">邮箱</th>
             <th width="40">角色</th>
             <th width="80">操作</th>
         </tr>
@@ -89,6 +91,8 @@
                     }
                 },
                 {data: 'account'},
+                {data: 'userName'},
+                {data: 'mail'},
                 {data: 'managerRole.roleName'},
                 {
                     orderable: false,
@@ -147,39 +151,19 @@
 
     function studentStart(obj,status,userId){
         layer.confirm('确认要改变状态吗？',function(index){
-            status = (status+1)%3;
-            var student = {};
-            student.userId = userId;
-            student.status = status;
 
-            $.ajax({
-                type: 'POST',
-                url:  APP.WEB_APP_NAME+'/student/updateStudent',
-                contentType:'application/json;charset=UTF-8',
-                dataType: 'json',
-                data: JSON.stringify(student),
-                success: function(data){
-                    if(data.result){
-                        layer.msg('已启用!',{icon: 6,time:1000});
-                    } else{
-                        layer.msg("修改失效",{icon:5,time:1000});
-                    }
-
-                    studentTable.ajax.reload();
-                },
-                error:function(data) {
-                    console.log(data.msg);
-                },
-            });
         });
     }
 
     function delStudent() {
 
-        AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/del','POST',true,studentList,function (data) {
+    }
 
-            studentTable.ajax.reload();
-        });
+    function manager_add(title,url,w,h) {
+        url =  APP.WEB_APP_NAME + url;
+        layer_show(title,url,w,h);
+        var ajaxUrl =  APP.WEB_APP_NAME+ '/manager/toAdd';
+        $(window.layer).attr('data-url',ajaxUrl);
     }
 </script>
 </body>

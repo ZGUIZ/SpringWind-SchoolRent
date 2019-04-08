@@ -8,4 +8,14 @@
 		<result column="role_name" property="roleName" />
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.Select2Bean">
+		<id column="role_id" property="id" />
+		<result column="role_name" property="text" />
+	</resultMap>
+
+	<select id="queryForSelect" resultMap="BaseResultMap1">
+		select *
+		from manager_role
+		where role_id != 1
+	</select>
 </mapper>

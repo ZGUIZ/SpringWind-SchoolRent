@@ -7,13 +7,17 @@
 		<id column="user_id" property="userId" />
 		<result column="account" property="account" />
 		<result column="password" property="password" />
+		<result column="user_name" property="userName"/>
 		<result column="role" property="role" />
+		<result column="mail" property="mail"/>
 	</resultMap>
 
 	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.Manager">
 		<id column="user_id" property="userId" />
 		<result column="account" property="account" />
 		<result column="role" property="role" />
+		<result column="user_name" property="userName"/>
+		<result column="mail" property="mail"/>
 		<association property="managerRole" javaType="com.baomidou.springwind.entity.ManagerRole">
 			<result column="role" property="roleId" />
 			<result column="role_name" property="roleName" />

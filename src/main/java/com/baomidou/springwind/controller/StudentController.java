@@ -359,7 +359,7 @@ public class StudentController {
 
     private static final String MAIL_MESSAGE_TITLE = "邮箱验证";
     private static final String MAIL_VAIL_MSG="您的邮箱正在绑定校园租的账号，若非本人操作，请忽略此信息。此验证码有效时间10分钟，验证码为：";
-    private static final String MAIL_VALI_CACHE_NAME = "captchaCache";
+    public static final String MAIL_VALI_CACHE_NAME = "captchaCache";
 
     /**
      * 此方法用于发送验证邮件到绑定的邮箱

@@ -36,9 +36,22 @@ public class Manager extends Model<Manager> {
      */
 	private String role;
 
+	@TableField("user_name")
+	private String userName;
+
+	private String mail;
+
+	/**
+	 * 邮箱验证码
+	 */
+	@TableField(exist = false)
+	private String code;
+
 	@TableField(exist = false)
 	private ManagerRole managerRole;
 
+	@TableField(exist = false)
+	private String beanStatus;
 
 	public String getUserId() {
 		return userId;
@@ -83,5 +96,37 @@ public class Manager extends Model<Manager> {
 
 	public void setManagerRole(ManagerRole managerRole) {
 		this.managerRole = managerRole;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getBeanStatus() {
+		return beanStatus;
+	}
+
+	public void setBeanStatus(String beanStatus) {
+		this.beanStatus = beanStatus;
 	}
 }

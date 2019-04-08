@@ -4,6 +4,8 @@ import com.baomidou.springwind.entity.Manager;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.springwind.entity.RequestInfo;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -17,4 +19,7 @@ import java.util.List;
 public interface IManagerService extends IService<Manager> {
 	Manager login(Manager manager);
 	List<Manager> queryListByPage(RequestInfo requestInfo);
+
+	boolean add(Manager manager) throws Exception;
+	boolean getValidate(String mail) throws UnsupportedEncodingException, MessagingException;
 }

@@ -9,14 +9,13 @@ import com.baomidou.springwind.utils.RSAUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.ws.Action;
+import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.util.List;
 
@@ -110,5 +109,56 @@ public class ManagerController {
         datatablesView.setData(students);
         datatablesView.setRecordsFiltered(requestInfo.getAmmount());
         return datatablesView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public Result update(@RequestBody Manager manager){
+        Result result = new Result();
+        try {
+            boolean res = false;
+            if(manager.getBeanStatus().equals("add")){
+                res = managerService.add(manager);
+            } else {
+
+                managerService.updateById(manager);
+                res = true;
+            }
+
+            result.setResult(res);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/toForm")
+    public String toForm(){
+        return "/manager/managerForm";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/toAdd")
+    public Manager toAdd(){
+        Manager manager = new Manager();
+        manager.setBeanStatus("add");
+        return manager;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/validate")
+    public Result validateMail(@RequestBody Manager manager){
+        Result result = new Result();
+        try {
+            boolean res = managerService.getValidate(manager.getMail());
+            result.setResult(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("验证码发送失败，请检查您的邮箱输入是否正确！");
+        }
+        return result;
     }
 }
