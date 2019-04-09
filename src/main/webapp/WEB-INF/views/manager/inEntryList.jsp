@@ -35,7 +35,6 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 禁止登陆</a>  <a href="javascript:;" onclick="manager_add('添加管理员','/manager/toForm','800','400')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span></div>
     <table class="table table-border table-bordered table-bg display" id="student">
         <thead>
         <tr>
@@ -71,7 +70,7 @@
 
         managerTable=$("#student").DataTable({
             ajax:{
-                url: APP.WEB_APP_NAME+'/manager/queryListByPage'
+                url: APP.WEB_APP_NAME+'/manager/queryInEntry'
             },
             "serverSide": true,
             "destroy": true,
@@ -98,7 +97,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="inEntry(\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="manager_edit(\'编辑\',\'/manager/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        return '<a style="text-decoration:none" onClick="inEntry(\''+full.userId+'\')" href="javascript:;" title="允许登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="manager_edit(\'编辑\',\'/manager/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
                     }
                 }
             ],
@@ -149,15 +148,15 @@
     }
 
     function inEntry(userId){
-        layer.confirm('确认禁止该用户登录吗？',function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/manager/inEntry/'+userId,'get',true,null,function (data) {
+        layer.confirm('确认允许该用户登录吗？',function(index){
+           /* AjaxUtil.ajax( APP.WEB_APP_NAME+'/manager/inEntry/'+userId,'get',true,null,function (data) {
                 if(data.result){
                     layer.msg('设置成功!',{icon: 6,time:1000});
                 } else{
                     layer.msg("设置失败："+data.msg,{icon:5,time:1000});
                 }
                 managerTable.ajax.reload();
-            });
+            });*/
         });
     }
 

@@ -60,7 +60,7 @@
                 <dd>
                     <ul>
                         <li><a data-href="/SpringWind/manager/toList" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
-                        <li><a data-href="" data-title="禁止登录" href="javascript:void(0)">禁止登录</a></li>
+                        <li><a data-href="/SpringWind/manager/toInEntryList" data-title="禁止登录" href="javascript:void(0)">禁止登录</a></li>
                     </ul>
                 </dd>
             </dl>
