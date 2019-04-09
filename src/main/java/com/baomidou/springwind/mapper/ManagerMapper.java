@@ -18,4 +18,7 @@ public interface ManagerMapper extends BaseMapper<Manager> {
     Manager login(Manager manager);
     List<Manager> queryManager(RequestInfo requestInfo);
     int queryCount(RequestInfo requestInfo);
+
+    List<Manager> queryInEntry(RequestInfo requestInfo);
+    int queryInEntryCount(RequestInfo requestInfo);
 }

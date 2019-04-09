@@ -16,6 +16,6 @@
 	<select id="queryForSelect" resultMap="BaseResultMap1">
 		select *
 		from manager_role
-		where role_id != 1
+		where role_id != 1 and role_id != 0
 	</select>
 </mapper>

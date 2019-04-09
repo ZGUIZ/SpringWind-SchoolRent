@@ -167,10 +167,46 @@ public class ManagerController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/id/{id}")
+    public Manager queryById(@PathVariable("id") String id){
+        Manager manager = managerService.selectById(id);
+        manager.setBeanStatus("edit");
+        return manager;
+    }
+
     @RequestMapping(value = "/exit")
     public String exit(HttpServletRequest request){
         HttpSession session = request.getSession();
         session.invalidate();
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/inEntry/{id}")
+    public Result inEntry(@PathVariable("id") String id){
+        Result result = new Result();
+        Manager manager = managerService.selectById(id);
+        manager.setStatus(2);
+        boolean res = managerService.updateById(manager);
+        result.setResult(res);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryInEntry")
+    public DatatablesView<Manager> queryInEntry(RequestInfo requestInfo){
+        DatatablesView<Manager> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<Manager> students=managerService.queryInEntry(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(students);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @RequestMapping("/toInEntryList")
+    public String toInEntryList(){
+        return "/manager/inEntryList";
     }
 }

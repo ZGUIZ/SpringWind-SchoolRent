@@ -41,6 +41,8 @@ public class Manager extends Model<Manager> {
 
 	private String mail;
 
+	private int status;
+
 	/**
 	 * 邮箱验证码
 	 */
@@ -128,5 +130,13 @@ public class Manager extends Model<Manager> {
 
 	public void setBeanStatus(String beanStatus) {
 		this.beanStatus = beanStatus;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }

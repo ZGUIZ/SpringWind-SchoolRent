@@ -44,6 +44,12 @@ public class ManagerServiceImpl extends BaseServiceImpl<ManagerMapper, Manager> 
         return managerMapper.queryManager(requestInfo);
     }
 
+    @Override
+    public List<Manager> queryInEntry(RequestInfo requestInfo) {
+        requestInfo.setAmmount(managerMapper.queryInEntryCount(requestInfo));
+        return managerMapper.queryInEntry(requestInfo);
+    }
+
     private static final String mailTitle = "校园租账号绑定";
     private static final String mailPass = "您的账号已经绑定为校园租的邮箱。登录密码为：";
     private static final String alertUpdate = "。请尽早更新您的密码！";

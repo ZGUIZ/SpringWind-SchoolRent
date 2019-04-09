@@ -19,6 +19,7 @@ import java.util.List;
 public interface IManagerService extends IService<Manager> {
 	Manager login(Manager manager);
 	List<Manager> queryListByPage(RequestInfo requestInfo);
+	List<Manager> queryInEntry(RequestInfo requestInfo);
 
 	boolean add(Manager manager) throws Exception;
 	boolean getValidate(String mail) throws UnsupportedEncodingException, MessagingException;

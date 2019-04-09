@@ -10,6 +10,7 @@
 		<result column="user_name" property="userName"/>
 		<result column="role" property="role" />
 		<result column="mail" property="mail"/>
+		<result column="status" property="status"/>
 	</resultMap>
 
 	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.Manager">
@@ -18,6 +19,7 @@
 		<result column="role" property="role" />
 		<result column="user_name" property="userName"/>
 		<result column="mail" property="mail"/>
+		<result column="status" property="status"/>
 		<association property="managerRole" javaType="com.baomidou.springwind.entity.ManagerRole">
 			<result column="role" property="roleId" />
 			<result column="role_name" property="roleName" />
@@ -33,9 +35,9 @@
 		select *
 		from manager
 		left join manager_role on (manager.role = manager_role.role_id)
-		where manager.role != 1
+		where manager.role not in (0,1) and manager.status = 1
 		<if test="searchString != null">
-			manager.account like "%"#{searchString}"%" or
+			and manager.account like "%"#{searchString}"%" or
 			manager_role.role_name like "%"#{searchString}"%"
 		</if>
 	</select>
@@ -44,9 +46,31 @@
 		select count(manager.user_id)
 		from manager
 		left join manager_role on (manager.role = manager_role.role_id)
-		where manager.role != 1
+		where manager.role not in (0,1) and manager.status = 1
 		<if test="searchString != null">
-			manager.account like "%"#{searchString}"%" or
+			and manager.account like "%"#{searchString}"%" or
+			manager_role.role_name like "%"#{searchString}"%"
+		</if>
+	</select>
+
+	<select id="queryInEntry" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select *
+		from manager
+		left join manager_role on (manager.role = manager_role.role_id)
+		where manager.role not in (0,1) and manager.status = 2
+		<if test="searchString != null">
+			and manager.account like "%"#{searchString}"%" or
+			manager_role.role_name like "%"#{searchString}"%"
+		</if>
+	</select>
+
+	<select id="queryInEntryCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(manager.user_id)
+		from manager
+		left join manager_role on (manager.role = manager_role.role_id)
+		where manager.role not in (0,1) and manager.status = 2
+		<if test="searchString != null">
+			and manager.account like "%"#{searchString}"%" or
 			manager_role.role_name like "%"#{searchString}"%"
 		</if>
 	</select>
