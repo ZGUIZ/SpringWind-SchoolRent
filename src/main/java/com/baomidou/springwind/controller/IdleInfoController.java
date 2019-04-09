@@ -256,6 +256,16 @@ public class IdleInfoController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping("/fromService/id/{id}")
+    public Result queryFromService(@PathVariable("id") String id){
+        Result result = new Result();
+        IdleInfo idleInfo = idleInfoService.findFromServiceById(id);
+        result.setResult(true);
+        result.setData(idleInfo);
+        return result;
+    }
+
     /**
      * 服务端
      */
@@ -291,5 +301,30 @@ public class IdleInfoController {
     @RequestMapping(value = "/toDel")
     public String toDel(){
         return "/idle/delIdleList";
+    }
+
+    @RequestMapping(value = "/toForm")
+    public String toForm(){
+        return "/idle/idleForm";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/delByManager/{id}")
+    public Result delByManager(@PathVariable("id") String id){
+        Result result = new Result();
+       boolean res = idleInfoService.delByManager(id);
+        result.setResult(res);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/reShow/{id}")
+    public Result reShow(@PathVariable("id") String id){
+        Result result = new Result();
+        IdleInfo idleInfo = idleInfoService.selectById(id);
+        idleInfo.setStatus(0);
+        boolean res = idleInfoService.updateById(idleInfo);
+        result.setResult(res);
+        return result;
     }
 }

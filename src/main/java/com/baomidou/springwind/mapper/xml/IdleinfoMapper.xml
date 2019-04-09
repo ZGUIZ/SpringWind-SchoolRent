@@ -73,7 +73,7 @@
 		from idle_info idle
 		left join classify on (idle.classify_id = classify.classify_id)
 		left join student on (idle.user_id = student.user_id)
-		where idle.school_id = #{schoolId} and idle.status not in (100,101)
+		where idle.school_id = #{schoolId}
 		<if test="createDate != null">
 			and idle.create_date &lt;= #{createDate}
 		</if>
@@ -83,9 +83,17 @@
 		<if test="search != null">
 			and (title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%")
 		</if>
-		<if test="userId != null">
+		<!--<if test="userId != null">
 			and idle.user_id = #{userId}
-		</if>
+		</if>-->
+		<choose>
+			<when test="userId != null">
+				and idle.user_id = #{userId} and idle.status != 101
+			</when>
+			<otherwise>
+				and idle.status not in (100,101)
+			</otherwise>
+		</choose>
 		order by idle.create_date desc
 		limit #{start},#{pageSize}
 	</select>

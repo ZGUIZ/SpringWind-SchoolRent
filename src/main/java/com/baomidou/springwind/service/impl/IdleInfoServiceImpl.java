@@ -9,6 +9,7 @@ import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -322,6 +323,23 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         return info;
     }
 
+    private static final String picUrlPrefix = "https://schoolrent-1253946493.cos.ap-guangzhou.myqcloud.com";
+    @Override
+    public IdleInfo findFromServiceById(String id) {
+        IdleInfo idleInfo = new IdleInfo();
+        idleInfo.setInfoId(id);
+        IdleInfo info = idleInfoMapper.findById(idleInfo);
+        List<String> ids = new ArrayList<>();
+        ids.add(info.getInfoId());
+        List<IdelPic> pics = idelPicMapper.queryIdlePic(ids);
+        for(int i = 0;i<pics.size();i++){
+            IdelPic pic = pics.get(i);
+            pic.setPicId(picUrlPrefix+pic.getPicUrl());
+        }
+        info.setPicList(pics);
+        return info;
+    }
+
     @Override
     public List<IdleInfo> queryListByPage(RequestInfo param,String type) {
         List<IdleInfo> idleInfoList = null;
@@ -341,5 +359,38 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
                 break;
         }
         return idleInfoList;
+    }
+
+    @Transactional
+    @Override
+    public boolean delByManager(String id) {
+        IdleInfo idleInfo = idleInfoMapper.selectById(id);
+        idleInfo.setStatus(100);
+        int count = idleInfoMapper.updateById(idleInfo);
+        if(count <= 0){
+            return false;
+        }
+        //归还所有押金
+        Rent rent = new Rent();
+        rent.setIdelId(id);
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        for(int i = 0;i<rentList.size();i++){
+            Rent r = rentList.get(i);
+            backRental(r);
+        }
+
+        return true;
+    }
+
+    /**
+     * 归还押金
+     * @param rent
+     */
+    private void backRental(Rent rent){
+        Capital capital = capitalMapper.selectForUpdate(rent.getUserId());
+        capital.setCapital(capital.getCapital() + rent.getLastRental());
+        rent.setLastRental(0f);
+        capitalMapper.updateById(capital);
+        rentMapper.updateById(rent);
     }
 }

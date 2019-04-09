@@ -46,8 +46,11 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     boolean delIdleInfo(IdleInfo idleInfo) throws Exception;
 
     IdleInfo findById(String id);
+    IdleInfo findFromServiceById(String id);
 
     String COMMENT = "comment";
     String DEL = "del";
     List<IdleInfo> queryListByPage(RequestInfo param,String type);
+
+    boolean delByManager(String id);
 }

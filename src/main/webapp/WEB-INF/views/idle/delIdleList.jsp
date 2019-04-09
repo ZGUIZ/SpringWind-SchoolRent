@@ -36,7 +36,7 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量恢复</a> </span></div>
-    <table class="table table-border table-bordered table-bg display" id="student">
+    <table class="table table-border table-bordered table-bg display" id="idleTable">
         <thead>
         <tr>
             <th scope="col" colspan="15">商品列表</th>
@@ -70,10 +70,10 @@
 <script type="text/javascript" src="../lib/DataTablesUtil/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     var host = window.location.host;
-    var studentTable;
+    var idleTable;
     $(function(){
 
-        studentTable=$("#student").DataTable({
+        idleTable=$("#idleTable").DataTable({
             ajax:{
                 url: APP.WEB_APP_NAME+'/idleInfo/queryDelByPage'
             },
@@ -105,7 +105,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="studentStart(this,\''+data+'\',\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'编辑\',\'/student/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        return '<a style="text-decoration:none" onClick="reShow(\''+full.infoId+'\')" href="javascript:;" title="恢复显示"><i class="Hui-iconfont">&#xe631;</i></a>';
                     }
                 }
             ],
@@ -142,44 +142,15 @@
         $(window.layer).attr('data-url',ajaxUrl);
     }
 
-    function resetPassword(id){
-        layer.confirm("确定要重置密码？",function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/resetPasssWord/id/'+id,'get',true,null,function (data) {
+    function reShow(infoId){
+        layer.confirm('确认要恢复该信息正常显示吗？',function(index){
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/idleInfo/reShow/'+infoId,'get',true,null,function (data) {
                 if(data.result){
-                    layer.msg('已经重置密码!',{icon: 6,time:1000});
+                    layer.msg('设置成功!',{icon: 6,time:1000});
                 } else{
-                    layer.msg("重置失败："+data.msg,{icon:5,time:1000});
+                    layer.msg("设置失败："+data.msg,{icon:5,time:1000});
                 }
-
-            });
-        });
-    }
-
-    function studentStart(obj,status,userId){
-        layer.confirm('确认要改变状态吗？',function(index){
-            status = (status+1)%3;
-            var student = {};
-            student.userId = userId;
-            student.status = status;
-
-            $.ajax({
-                type: 'POST',
-                url:  APP.WEB_APP_NAME+'/student/updateStudent',
-                contentType:'application/json;charset=UTF-8',
-                dataType: 'json',
-                data: JSON.stringify(student),
-                success: function(data){
-                    if(data.result){
-                        layer.msg('已启用!',{icon: 6,time:1000});
-                    } else{
-                        layer.msg("修改失效",{icon:5,time:1000});
-                    }
-
-                    studentTable.ajax.reload();
-                },
-                error:function(data) {
-                    console.log(data.msg);
-                },
+                idleTable.ajax.reload();
             });
         });
     }
