@@ -1,6 +1,7 @@
 package com.baomidou.springwind.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -39,6 +40,7 @@ public class RentNeeds extends Model<RentNeeds> {
     /**
      * 发布日期
      */
+	@JSONField(format="yyyy-MM-dd hh:mm:ss")
 	@TableField("create_date")
 	private Date createDate;
     /**
