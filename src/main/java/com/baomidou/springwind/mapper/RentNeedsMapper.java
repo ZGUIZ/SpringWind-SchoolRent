@@ -3,7 +3,7 @@ package com.baomidou.springwind.mapper;
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.springwind.entity.RentNeedsExtend;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.RequestInfo;
 
 import java.util.List;
 
@@ -18,4 +18,8 @@ import java.util.List;
 public interface RentNeedsMapper extends BaseMapper<RentNeeds> {
     List<RentNeeds> queryRentNeedsByPage(RentNeedsExtend rentNeedsExtend);
     List<RentNeeds> queryMineNeedsByPage(RentNeedsExtend rentNeedsExtend);
+
+    int getCount(RentNeeds status);
+    List<RentNeeds> queryForPage(RequestInfo<RentNeeds> page);
+    List<RentNeeds> queryDel(RequestInfo<RentNeeds> page);
 }

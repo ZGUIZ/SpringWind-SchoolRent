@@ -3,6 +3,7 @@ package com.baomidou.springwind.service.impl;
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.RentNeeds;
 import com.baomidou.springwind.entity.RentNeedsExtend;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.RentNeedsMapper;
 import com.baomidou.springwind.service.IRentNeedsService;
@@ -72,5 +73,50 @@ public class RentNeedsServiceImpl extends BaseServiceImpl<RentNeedsMapper, RentN
         rentNeeds.setStatus(100);
         rentNeedsMapper.updateById(rentNeeds);
         return true;
+    }
+
+    @Override
+    public boolean delByManager(String id) {
+        RentNeeds rentNeeds = rentNeedsMapper.selectById(id);
+        rentNeeds.setStatus(101);
+        int count = rentNeedsMapper.updateById(rentNeeds);
+        if(count>0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean reShowByManager(String id) {
+        RentNeeds rentNeeds = rentNeedsMapper.selectById(id);
+        rentNeeds.setStatus(0);
+        int count = rentNeedsMapper.updateById(rentNeeds);
+        if(count>0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public List<RentNeeds> queryListByPage(RequestInfo param, String type) {
+        List<RentNeeds> rentNeedsList = null;
+
+        RentNeeds rentNeeds = new RentNeeds();
+        rentNeeds.setIdelInfo(param.getSearchString());
+
+        switch (type){
+            case COMMENT:
+                param.setAmmount(rentNeedsMapper.getCount(rentNeeds));
+                rentNeedsList = rentNeedsMapper.queryForPage(param);
+                break;
+            case DEL:
+                rentNeeds.setStatus(101);
+                param.setAmmount(rentNeedsMapper.getCount(rentNeeds));
+                rentNeedsList = rentNeedsMapper.queryDel(param);
+                break;
+        }
+        return rentNeedsList;
     }
 }

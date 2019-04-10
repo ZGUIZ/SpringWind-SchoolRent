@@ -21,6 +21,27 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.RentNeeds">
+		<id column="info_id" property="infoId" />
+		<result column="idel_info" property="idelInfo" />
+		<result column="status" property="status" />
+		<result column="create_date" property="createDate" />
+		<result column="end_date" property="endDate" />
+		<result column="title" property="title" />
+		<result column="user_id" property="userId" />
+		<result column="school_id" property="schoolId"/>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="user_name" property="userName" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
+			<association property="school" javaType="com.baomidou.springwind.entity.School">
+				<result column="school_name" property="schoolName" />
+			</association>
+		</association>
+	</resultMap>
+
 	<resultMap id="BaseMap" type="com.baomidou.springwind.entity.RentNeeds">
 		<id column="info_id" property="infoId" />
 		<result column="idel_info" property="idelInfo" />
@@ -36,7 +57,7 @@
 		select *
 		from rent_needs
 		left join student on (rent_needs.user_id = student.user_id)
-		where rent_needs.school_id = #{schoolId} and rent_needs.status != 100
+		where rent_needs.school_id = #{schoolId} and rent_needs.status not in (100,101)
 		order by rent_needs.create_date desc
 		limit #{start},#{pageSize}
 	</select>
@@ -46,5 +67,56 @@
 		where user_id = #{userId} and status != 101 and status != 100
 		order by rent_needs.create_date desc
 		limit #{start},#{pageSize}
+	</select>
+
+	<select id="queryForPage" resultType="com.baomidou.springwind.entity.IdleInfo" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select rent_needs.*,student.user_name,school.school_name
+		from rent_needs
+		left join student on (rent_needs.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
+		where 1 = 1 and rent_needs.status not in (100,101)
+		<if test="searchString !=null">
+			and (rent_needs.title like "%"#{searchString}"%" or
+			rent_needs.idel_info like "%"#{searchString}"%" or
+			student.user_name like "%"#{searchString}"%" or
+			school.school_NAME like "%"#{searchString}"%")
+		</if>
+		limit #{start},#{length}
+	</select>
+
+	<select id="queryDel" resultType="com.baomidou.springwind.entity.IdleInfo" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select rent_needs.*,student.user_name,school.school_name
+		from rent_needs
+		left join student on (rent_needs.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
+		where rent_needs.status = 101
+		<if test="searchString !=null">
+			and (rent_needs.title like "%"#{searchString}"%" or
+			rent_needs.idel_info like "%"#{searchString}"%" or
+			student.user_name like "%"#{searchString}"%" or
+			school.school_NAME like "%"#{searchString}"%")
+		</if>
+		limit #{start},#{length}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RentNeeds">
+		select count(rent_needs.info_id)
+		from rent_needs
+		left join student on (rent_needs.user_id = student.user_id)
+		left join school on (student.school_id = school.school_id)
+		where
+		<choose>
+			<when test="status == null">
+				rent_needs.status not in (100,101)
+			</when>
+			<otherwise>
+				rent_needs.status = #{status}
+			</otherwise>
+		</choose>
+		<if test="idelInfo !=null">
+			and (rent_needs.title like "%"#{idelInfo}"%" or
+			rent_needs.idel_info like "%"#{idelInfo}"%" or
+			student.user_name like "%"#{idelInfo}"%" or
+			school.school_NAME like "%"#{idelInfo}"%")
+		</if>
 	</select>
 </mapper>

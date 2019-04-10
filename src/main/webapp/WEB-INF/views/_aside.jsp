@@ -27,8 +27,8 @@
                 <dt><i class="Hui-iconfont">&#xe616;</i> 帖子管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a data-href="/SpringWind/student/toList" data-title="帖子列表" href="javascript:void(0)">帖子列表</a></li>
-                        <li><a data-href="/SpringWind/authPicture/toList" data-title="已删除" href="javascript:void(0)">已删除</a></li>
+                        <li><a data-href="/SpringWind/rentNeeds/toList" data-title="帖子列表" href="javascript:void(0)">帖子列表</a></li>
+                        <li><a data-href="/SpringWind/rentNeeds/toDel" data-title="已删除" href="javascript:void(0)">已删除</a></li>
                     </ul>
                 </dd>
             </dl>
