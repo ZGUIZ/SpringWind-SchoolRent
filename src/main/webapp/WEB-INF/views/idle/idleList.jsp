@@ -49,6 +49,7 @@
             <th width="40">租金（日）</th>
             <th width="90">发布用户</th>
             <th width="90">学校</th>
+            <th width="40">状态</th>
             <th width="90">发布日期</th>
             <th width="100">操作</th>
         </tr>
@@ -99,6 +100,38 @@
                 {data: 'retal'},
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: "status",
+                    render: function(data, type, full, meta){
+                        var str = "";
+                        switch (data){
+                            case 0:
+                                str = "未租赁";
+                                break;
+                            case 1:
+                                str = "已确认租户";
+                                break;
+                            case 2:
+                                str = "正在租赁";
+                                break;
+                            case 3:
+                                str = "已完成";
+                                break;
+                            case 4:
+                                str = "下架";
+                                break;
+                            case 8:
+                                str = "申请返回";
+                                break;
+                            case 9:
+                                str = "已评价";
+                                break;
+                        }
+                        return str;
+                    }
+                },
                 {data: 'createDate'},
                 {
                     orderable: false,
