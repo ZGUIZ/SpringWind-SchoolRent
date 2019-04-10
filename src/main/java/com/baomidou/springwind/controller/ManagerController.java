@@ -209,4 +209,15 @@ public class ManagerController {
     public String toInEntryList(){
         return "/manager/inEntryList";
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/entry/{id}")
+    public Result entry(@PathVariable("id") String id){
+        Result result = new Result();
+        Manager manager = managerService.selectById(id);
+        manager.setStatus(1);
+        boolean res = managerService.updateById(manager);
+        result.setResult(res);
+        return result;
+    }
 }

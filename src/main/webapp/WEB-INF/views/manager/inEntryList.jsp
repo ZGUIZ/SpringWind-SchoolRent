@@ -149,14 +149,14 @@
 
     function inEntry(userId){
         layer.confirm('确认允许该用户登录吗？',function(index){
-           /* AjaxUtil.ajax( APP.WEB_APP_NAME+'/manager/inEntry/'+userId,'get',true,null,function (data) {
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/manager/entry/'+userId,'get',true,null,function (data) {
                 if(data.result){
                     layer.msg('设置成功!',{icon: 6,time:1000});
                 } else{
                     layer.msg("设置失败："+data.msg,{icon:5,time:1000});
                 }
                 managerTable.ajax.reload();
-            });*/
+            });
         });
     }
 
