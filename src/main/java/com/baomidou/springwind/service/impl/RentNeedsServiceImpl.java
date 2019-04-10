@@ -1,11 +1,10 @@
 package com.baomidou.springwind.service.impl;
 
+
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
-import com.baomidou.springwind.entity.RentNeeds;
-import com.baomidou.springwind.entity.RentNeedsExtend;
-import com.baomidou.springwind.entity.RequestInfo;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.RentNeedsMapper;
+import com.baomidou.springwind.service.IMessageService;
 import com.baomidou.springwind.service.IRentNeedsService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.UUIDUtil;
@@ -30,6 +29,9 @@ public class RentNeedsServiceImpl extends BaseServiceImpl<RentNeedsMapper, RentN
 
     @Autowired
     private RentNeedsMapper rentNeedsMapper;
+
+    @Autowired
+    private IMessageService messageService;
 
     @Override
     public boolean addRentNeeds(Student student, RentNeeds rentNeeds) throws UnsupportedEncodingException {
@@ -81,6 +83,17 @@ public class RentNeedsServiceImpl extends BaseServiceImpl<RentNeedsMapper, RentN
         rentNeeds.setStatus(101);
         int count = rentNeedsMapper.updateById(rentNeeds);
         if(count>0) {
+            //消息拼接
+            StringBuffer sb = new StringBuffer("您发布的帖子《");
+            sb.append(rentNeeds.getTitle());
+            sb.append("》被管理员删除");
+
+            StringBuffer s = new StringBuffer("您发布的帖子《");
+            s.append(rentNeeds.getTitle());
+            s.append("》违规被管理员删除，请重新发布符合规范的帖子。");
+
+            messageService.pushMessage(sb.toString(),s.toString(),rentNeeds.getUserId());
+
             return true;
         } else {
             return false;

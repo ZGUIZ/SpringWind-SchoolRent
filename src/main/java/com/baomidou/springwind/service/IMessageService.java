@@ -16,4 +16,6 @@ import java.util.List;
  */
 public interface IMessageService extends IService<Message> {
 	List<Message> pushUnRead(Student student);
+
+	boolean pushMessage(String title,String content,String userId);
 }

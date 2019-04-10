@@ -1,14 +1,18 @@
 package com.baomidou.springwind.service.impl;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.springwind.entity.Message;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.MessageMapper;
 import com.baomidou.springwind.service.IMessageService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.JPushUnits;
+import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,5 +48,29 @@ public class MessageServiceImpl extends BaseServiceImpl<MessageMapper, Message> 
             }
         }
         return messages;
+    }
+
+    @Override
+    public boolean pushMessage(String title, String content, String userId) {
+        Message message = new Message();
+        message.setMsgId(UUIDUtil.getUUID());
+        message.setTitle(title);
+        message.setUserId(userId);
+        message.setContent(content);
+        message.setStatus(0);
+        message.setCreateDate(new Date());
+
+        //推送通知
+        JPushUnits jPushUnits = JPushUnits.newInstance();
+        try {
+            jPushUnits.pushForUser(userId,message.getTitle());
+            message.setStatus(1);
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIRequestException e) {
+            e.printStackTrace();
+        }
+        mapper.insert(message);
+        return true;
     }
 }
