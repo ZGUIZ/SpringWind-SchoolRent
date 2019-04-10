@@ -17,6 +17,9 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.baomidou.springwind.service.IRentNeedsService.COMMENT;
+import static com.baomidou.springwind.service.IRentNeedsService.DEL;
+
 /**
  * <p>
  * 用户发布的租赁需求 前端控制器
@@ -120,6 +123,61 @@ public class RentNeedsController {
             result.setResult(false);
             result.setMsg(e.getMessage());
         }
+        return result;
+    }
+
+    @RequestMapping("/toList")
+    public String toList(){
+        return "/rentNeeds/rentNeedsList";
+    }
+
+    @RequestMapping("/toDel")
+    public String toDel(){
+        return "/rentNeeds/unShowNeedsList";
+    }
+
+    /**
+     * 服务端
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryListByPage")
+    public DatatablesView<RentNeeds> queryList(RequestInfo requestInfo){
+        DatatablesView<RentNeeds> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<RentNeeds> idleInfos=rentNeedsService.queryListByPage(requestInfo,COMMENT);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(idleInfos);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryDelByPage")
+    public DatatablesView<RentNeeds> queryDel(RequestInfo requestInfo){
+        DatatablesView<RentNeeds> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<RentNeeds> rentNeeds=rentNeedsService.queryListByPage(requestInfo,DEL);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(rentNeeds);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @ResponseBody
+    @RequestMapping("/delByManager/{id}")
+    public Result delByManager(@PathVariable("id") String id){
+        Result result = new Result();
+        boolean res = rentNeedsService.delByManager(id);
+        result.setResult(res);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("/reShow/{id}")
+    public Result reShow(@PathVariable("id") String id){
+        Result result = new Result();
+        boolean res =rentNeedsService.reShowByManager(id);
+        result.setResult(res);
         return result;
     }
 }
