@@ -55,6 +55,31 @@
 		</association>
 	</resultMap>
 
+	<resultMap id="DailyMap" type="com.baomidou.springwind.entity.Rent">
+		<id column="rent_id" property="rentId" />
+		<result column="user_id" property="userId" />
+		<result column="idel_id" property="idelId" />
+		<result column="status" property="status" />
+		<result column="start_date" property="startDate" />
+		<result column="end_date" property="endDate" />
+		<result column="last_rental" property="lastRental"/>
+		<association property="idleInfo" javaType="com.baomidou.springwind.entity.IdleInfo">
+			<id column="info_id" property="infoId" />
+			<result column="classify_id" property="classifyId" />
+			<result column="idel_info" property="idelInfo" />
+			<result column="destory_info" property="destoryInfo" />
+			<result column="deposit" property="deposit" />
+			<result column="retal" property="retal" />
+			<result column="retal_type" property="retalType" />
+			<result column="info_status" property="status" />
+			<result column="create_date" property="createDate" />
+			<result column="title" property="title"/>
+			<result column="end_date" property="endDate" />
+			<result column="u_id" property="userId" />
+			<result column="address" property="address"/>
+		</association>
+	</resultMap>
+
 	<select id="queryList" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.IdleInfo">
 		select rent.*,student.student_id,student.user_name,student.credit,student.user_icon
 		from rent
@@ -82,6 +107,14 @@
 		<if test="rentId != null">
 			and rent_id = #{rentId}
 		</if>
+		for update
+	</select>
+
+	<select id="dailyUpdate" resultMap="DailyMap" parameterType="com.baomidou.springwind.entity.Rent">
+		select rent.*,idle_info.user_id as u_id,idle_info.retal,idle_info.info_id
+		from rent
+		left join idle_info on (rent.idel_id =  idle_info.info_id)
+		where rent.status = 4
 		for update
 	</select>
 

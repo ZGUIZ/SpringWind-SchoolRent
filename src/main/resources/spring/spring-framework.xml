@@ -16,6 +16,8 @@
 		</property>
 	</bean>
 
+	<bean init-method="addJob" class="com.baomidou.springwind.quartz.JobManager"/>
+
 	<!-- 激活自动代理功能 -->
 	<aop:aspectj-autoproxy proxy-target-class="true" /> 
 

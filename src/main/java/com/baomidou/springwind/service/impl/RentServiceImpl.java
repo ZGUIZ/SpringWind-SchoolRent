@@ -6,6 +6,7 @@ import com.baomidou.springwind.Exception.MoneyNotEnoughException;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.*;
+import com.baomidou.springwind.service.ICheckStatementService;
 import com.baomidou.springwind.service.IRentService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.RSAUtil;
@@ -47,6 +48,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
     @Autowired
     private CheckStatementMapper checkStatementMapper;
+
+    @Autowired
+    private ICheckStatementService checkStatementService;
 
     @Override
     @Transactional
@@ -528,5 +532,61 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         capitalMapper.updateById(capital);
         idleInfoMapper.updateById(idleInfo);
         return true;
+    }
+
+    /**
+     * 每天计算租赁剩余押金
+     */
+    @Transactional
+    @Override
+    public void calRentalDaily() {
+        List<Rent> rentList = rentMapper.dailyUpdate();
+        for(int i = 0;i<rentList.size();i++){
+            Rent rent = rentList.get(i);
+            IdleInfo idleInfo = rent.getIdleInfo();
+
+            //如果剩余租金小于或等于每日租金，则直接结束租赁
+            if(rent.getLastRental()<= idleInfo.getRetal()){
+                finishRent(rent);
+            } else {
+                //结算每日租金到发布者账号
+                calRental(rent);
+            }
+        }
+    }
+
+    private void calRental(Rent rent){
+        IdleInfo idleInfo = rent.getIdleInfo();
+
+        Capital capital = capitalMapper.selectForUpdate(idleInfo.getUserId());
+        capital.setCapital(capital.getCapital() + idleInfo.getRetal());
+
+        rent.setLastRental(rent.getLastRental() - idleInfo.getRetal());
+        rentMapper.updateById(rent);
+        capitalMapper.updateById(capital);
+
+        //添加到账单中
+        checkStatementService.addCheckStatement("租赁资金结算",idleInfo.getRetal(),0,idleInfo.getUserId());
+    }
+
+    private void finishRent(Rent rent){
+        float amount = rent.getLastRental();
+
+        rent.setLastRental(0f);
+        //设置为租赁完成
+        rent.setStatus(5);
+
+        //设置商品状态为租赁完成
+        IdleInfo idleInfo = idleInfoMapper.selectById(rent.getIdelId());
+        idleInfo.setStatus(3);
+
+        //设置账号余额
+        Capital capital = capitalMapper.selectForUpdate(idleInfo.getUserId());
+        capital.setCapital(capital.getCapital() + amount);
+
+        rentMapper.updateById(rent);
+        idleInfoMapper.updateById(idleInfo);
+        //添加到账单中
+        checkStatementService.addCheckStatement("租赁资金结算",amount,0,idleInfo.getUserId());
     }
 }

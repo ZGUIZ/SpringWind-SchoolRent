@@ -16,5 +16,10 @@ import java.util.List;
  * @since 2019-03-12
  */
 public interface ICheckStatementService extends IService<CheckStatement> {
+	int ADD = 0;
+	int SUB = 1;
+
 	List<CheckStatement> list(Student student,CheckStatementExtend extend);
+
+	boolean addCheckStatement(String msg,float amount,int type,String userId);
 }

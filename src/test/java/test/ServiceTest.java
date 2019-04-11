@@ -7,10 +7,7 @@ import com.baomidou.springwind.entity.School;
 import com.baomidou.springwind.entity.Select2Bean;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.SchoolMapper;
-import com.baomidou.springwind.service.ICapitalService;
-import com.baomidou.springwind.service.IClassifyService;
-import com.baomidou.springwind.service.ISchoolService;
-import com.baomidou.springwind.service.IStudentService;
+import com.baomidou.springwind.service.*;
 import com.baomidou.springwind.utils.HttpUtils;
 import com.baomidou.springwind.utils.SHA1Util;
 import com.baomidou.springwind.utils.UUIDUtil;
@@ -216,6 +213,12 @@ public class ServiceTest {
         for(String str:cities){
             System.out.println(str);
         }*/
+    }
+
+    @Test
+    public void testDailyTask(){
+        IRentService service = context.getBean(IRentService.class);
+        service.calRentalDaily();
     }
 
     @Test

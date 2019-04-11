@@ -58,4 +58,6 @@ public interface IRentService extends IService<Rent> {
     boolean disagreeRent(Student student,Rent rent) throws Exception;
 
     boolean finishRent(Student student,Rent rent) throws IllegalAuthroiyException;
+
+    void calRentalDaily();
 }
