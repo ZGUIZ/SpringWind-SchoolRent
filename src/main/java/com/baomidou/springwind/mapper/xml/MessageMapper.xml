@@ -15,4 +15,8 @@
 	<select id="unReadMessage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.Message">
 		select * from message where user_id = #{userId} and status = #{status} order by create_date desc
 	</select>
+
+	<select id="listMessage" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.Message">
+		select * from message where user_id = #{userId} and status in (0,1) order by create_date desc
+	</select>
 </mapper>

@@ -2,6 +2,7 @@ package com.baomidou.springwind.service.impl;
 
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.entity.Message;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.MessageMapper;
@@ -11,7 +12,9 @@ import com.baomidou.springwind.utils.JPushUnits;
 import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Wrapper;
 import java.util.Date;
 import java.util.List;
 
@@ -64,13 +67,28 @@ public class MessageServiceImpl extends BaseServiceImpl<MessageMapper, Message> 
         JPushUnits jPushUnits = JPushUnits.newInstance();
         try {
             jPushUnits.pushForUser(userId,message.getTitle());
-            message.setStatus(1);
+            message.setStatus(2);
         } catch (APIConnectionException e) {
             e.printStackTrace();
+            message.setStatus(1);
         } catch (APIRequestException e) {
             e.printStackTrace();
+            message.setStatus(1);
         }
         mapper.insert(message);
         return true;
+    }
+
+    @Transactional
+    @Override
+    public List<Message> listMessage(Student student) {
+        Message param  = new Message();
+        param.setUserId(student.getUserId());
+        List<Message> messages = mapper.listMessage(param);
+        for(Message msg : messages){
+            msg.setStatus(2);
+            mapper.updateById(msg);
+        }
+        return messages;
     }
 }

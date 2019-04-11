@@ -37,10 +37,23 @@ public class MessageController {
     @RequestMapping(value = "/pushUnRead")
     public Result pushUnRead(HttpServletRequest request){
         Result result = new Result();
-
         HttpSession session = request.getSession();
         Student student = (Student) session.getAttribute("student");
         List<Message> messages = messageService.pushUnRead(student);
+        result.setResult(true);
+        result.setData(messages);
+
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/list")
+    public Result list(HttpServletRequest request){
+        Result result = new Result();
+
+        HttpSession session = request.getSession();
+        Student student = (Student) session.getAttribute("student");
+        List<Message> messages = messageService.listMessage(student);
         result.setResult(true);
         result.setData(messages);
 

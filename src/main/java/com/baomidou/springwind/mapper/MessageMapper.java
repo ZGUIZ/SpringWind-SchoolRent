@@ -15,4 +15,5 @@ import java.util.List;
  */
 public interface MessageMapper extends BaseMapper<Message> {
     List<Message> unReadMessage(Message message);
+    List<Message> listMessage(Message message);
 }

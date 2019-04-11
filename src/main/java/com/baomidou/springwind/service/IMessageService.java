@@ -18,4 +18,6 @@ public interface IMessageService extends IService<Message> {
 	List<Message> pushUnRead(Student student);
 
 	boolean pushMessage(String title,String content,String userId);
+
+	List<Message> listMessage(Student student);
 }
