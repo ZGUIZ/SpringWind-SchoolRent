@@ -67,7 +67,7 @@ public class IdleInfo extends Model<IdleInfo> {
     /**
      * 发布日期
      */
-	@JSONField(format="yyyy-MM-dd hh:mm:ss")
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField("create_date")
 	private Date createDate;

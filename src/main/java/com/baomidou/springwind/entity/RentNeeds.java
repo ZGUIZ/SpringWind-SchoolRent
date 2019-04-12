@@ -40,7 +40,7 @@ public class RentNeeds extends Model<RentNeeds> {
     /**
      * 发布日期
      */
-	@JSONField(format="yyyy-MM-dd hh:mm:ss")
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("create_date")
 	private Date createDate;
     /**

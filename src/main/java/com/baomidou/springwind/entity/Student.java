@@ -100,7 +100,7 @@ public class Student extends Model<Student> {
     /**
      * 注册日期
      */
-	@JSONField(format="yyyy-MM-dd hh:mm:ss")
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("create_date")
 	private Date createDate;
 

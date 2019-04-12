@@ -80,6 +80,9 @@
 		<if test="status != null">
 			and idle.status = #{status}
 		</if>
+		<if test="classifyId !=null">
+			and idle.classify_id = #{classifyId}
+		</if>
 		<if test="search != null">
 			and (title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%")
 		</if>

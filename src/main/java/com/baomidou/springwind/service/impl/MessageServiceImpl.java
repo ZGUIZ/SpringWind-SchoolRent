@@ -67,13 +67,13 @@ public class MessageServiceImpl extends BaseServiceImpl<MessageMapper, Message> 
         JPushUnits jPushUnits = JPushUnits.newInstance();
         try {
             jPushUnits.pushForUser(userId,message.getTitle());
-            message.setStatus(2);
+            message.setStatus(1);
         } catch (APIConnectionException e) {
             e.printStackTrace();
-            message.setStatus(1);
+            message.setStatus(0);
         } catch (APIRequestException e) {
             e.printStackTrace();
-            message.setStatus(1);
+            message.setStatus(0);
         }
         mapper.insert(message);
         return true;
