@@ -443,8 +443,50 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         cs.setAmount(rental);
         cs.setType(0);
         cs.setCreateDate(now);
-        cs.setMemo("每日租金");
+        cs.setMemo("租赁资金结算");
         cs.setUserId(idleInfo.getUserId());
+        checkStatementMapper.insert(cs);
+
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean startRent(Student student, IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
+        if(info.getStatus() != 5){
+            throw new Exception("状态异常！");
+        }
+        Rent rent = new Rent();
+        rent.setIdelId(idleInfo.getInfoId());
+        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        if(rentList == null || rentList.size() != 1){
+            throw new Exception("找不到对应的数据！");
+        }
+
+        Rent r = rentList.get(0);
+        if(!info.getUserId().equals(student.getUserId())){
+            throw new IllegalAuthroiyException("您没有对应信息的操作权限！");
+        }
+        //开始时自动扣除费用到租出用户的账号上
+        Capital capital = capitalMapper.selectForUpdate(info.getUserId());
+        float rental = info.getRetal();
+        capital.setCapital(capital.getCapital()+rental);
+        r.setLastRental(r.getLastRental() - rental);
+        r.setStatus(4);
+        info.setStatus(2);
+        rentMapper.updateById(r);
+        capitalMapper.updateById(capital);
+        idleInfoMapper.updateById(info);
+
+        Date now = new Date();
+        CheckStatement cs = new CheckStatement();
+        cs.setStateId(UUIDUtil.getUUID());
+        cs.setAmount(rental);
+        cs.setType(0);
+        cs.setCreateDate(now);
+        cs.setMemo("租赁资金结算");
+        cs.setUserId(info.getUserId());
         checkStatementMapper.insert(cs);
 
         return true;

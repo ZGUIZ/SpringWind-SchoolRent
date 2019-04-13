@@ -121,7 +121,11 @@
 	<select id="selectForUpdateById" resultMap="ResultMap" parameterType="com.baomidou.springwind.entity.Rent">
 		select *
 		from rent
-		where rent_id = #{rentId} for update
+		where rent_id = #{rentId}
+		<if test="status != null">
+			status = #{status}
+		</if>
+		for update
 	</select>
 
 	<select id="selectForPage" resultMap="MineResultMap" parameterType="com.baomidou.springwind.entity.RentExtend">
@@ -131,6 +135,9 @@
 		where rent.user_id = #{userId} and rent.status not in (6,101)
 		<if test="status != null">
 			<choose>
+				<when test="status == 1">
+					and (rent.status = #{status} or rent.status = 9)
+				</when>
 				<when test="status == 2">
 					and (rent.status = #{status} or rent.status = 3)
 				</when>

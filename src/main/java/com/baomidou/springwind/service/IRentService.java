@@ -53,6 +53,15 @@ public interface IRentService extends IService<Rent> {
 
     boolean startRent(Student student,Rent rent) throws Exception;
 
+    /**
+     * 发布者开始租赁
+     * @param student
+     * @param idleInfo
+     * @return
+     * @throws Exception
+     */
+    boolean startRent(Student student,IdleInfo idleInfo) throws Exception;
+
     boolean delRent(Student student, Rent rent) throws Exception;
 
     boolean disagreeRent(Student student,Rent rent) throws Exception;

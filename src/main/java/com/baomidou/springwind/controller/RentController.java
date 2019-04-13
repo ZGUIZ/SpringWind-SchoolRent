@@ -172,6 +172,26 @@ public class RentController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/startRentPusher")
+    public Result startRentPusher(HttpServletRequest request,@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        try{
+            HttpSession session = request.getSession();
+            Student student = (Student) session.getAttribute("student");
+            boolean res = rentService.startRent(student,idleInfo);
+            result.setResult(res);
+        } catch (IllegalAuthroiyException e){
+            result.setResult(false);
+            result.setMsg(e.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "updateRent",method = RequestMethod.POST)
     public Result updateRent(@RequestBody Rent rent){
 	    Result result = new Result();

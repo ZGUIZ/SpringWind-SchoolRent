@@ -327,4 +327,20 @@ public class IdleInfoController {
         result.setResult(res);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/addDestroy",method = RequestMethod.POST)
+    public Result addDestory(@RequestBody IdleInfo idleInfo){
+        Result result = new Result();
+        try{
+            idleInfo.setDestoryInfo(URLDecoder.decode(idleInfo.getDestoryInfo(),"utf-8"));
+            boolean res = idleInfoService.addDestoryInfo(idleInfo);
+            result.setResult(res);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
 }

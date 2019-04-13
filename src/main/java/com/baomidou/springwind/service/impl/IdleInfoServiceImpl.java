@@ -1,9 +1,11 @@
 package com.baomidou.springwind.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.Exception.IllegalAuthroiyException;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.*;
 import com.baomidou.springwind.service.IIdleInfoService;
+import com.baomidou.springwind.service.IMessageService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     private CapitalMapper capitalMapper;
     @Autowired
     private CheckStatementMapper checkStatementMapper;
+    @Autowired
+    private IMessageService messageService;
 
     @Deprecated
     @Transactional
@@ -154,7 +158,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
     @Override
     public boolean cancleRent(IdleInfo idleInfo) throws Exception {
         IdleInfo info = idleInfoMapper.selectForUpdate(idleInfo);
-        if(info.getStatus() != 1 && info.getStatus() != 2 && info.getStatus() != 8){
+        if(info.getStatus() != 1 && info.getStatus() != 2 && info.getStatus() != 5 && info.getStatus() != 8){
             throw new Exception("状态异常！");
         }
         Rent rent = new Rent();
@@ -163,7 +167,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         for(int i = 0;i<rentList.size();i++){
             Rent r = rentList.get(i);
             //如果正在确认租户而没开始
-            if(r.getStatus() == 1 ){
+            if(r.getStatus() == 1 || r.getStatus() == 5 || r.getStatus() == 9){
                 info.setStatus(0);
                 r.setStatus(2);
             } else if(r.getStatus() == 2 || r.getStatus() == 8){
@@ -379,6 +383,46 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             backRental(r);
         }
 
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean addDestoryInfo(IdleInfo idleInfo) throws Exception {
+        IdleInfo info = idleInfoMapper.selectById(idleInfo.getInfoId());
+
+        //查询对应的租赁信息
+        Rent param = new Rent();
+        param.setIdelId(info.getInfoId());
+        //状态为确认的信息
+        param.setStatus(1);
+        EntityWrapper<Rent> wrapper = new EntityWrapper<>();
+        wrapper.setEntity(param);
+        List<Rent> rents = rentMapper.selectList(wrapper);
+        if(rents.size()!=1){
+            throw new Exception("找不到对应的租赁信息！");
+        }
+
+        Rent rent = rents.get(0);
+        //如果商品并非处于确定用户阶段
+        if(info.getStatus() != 1 || rent.getStatus() != 1){
+            throw new Exception("状态异常！");
+        }
+
+        info.setDestoryInfo(idleInfo.getDestoryInfo());
+        //设置状态为提交损毁信息
+        info.setStatus(5);
+        rent.setStatus(9);
+
+        idleInfoMapper.updateById(info);
+        rentMapper.updateById(rent);
+
+        StringBuffer title = new StringBuffer("您的闲置\"");
+        title.append(info.getTitle()).append("\"被填写损毁信息，请在及时处理是否开始租赁");
+        StringBuffer content =new StringBuffer("您的闲置\"");
+        content.append(info.getTitle()).append("\"被填写损毁信息，内容为：\"");
+        content.append(info.getDestoryInfo()).append("\"，请在及时处理是否开始租赁");
+        messageService.pushMessage(title.toString(),content.toString(),info.getUserId());
         return true;
     }
 

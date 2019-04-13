@@ -53,4 +53,6 @@ public interface IIdleInfoService extends IService<IdleInfo> {
     List<IdleInfo> queryListByPage(RequestInfo param,String type);
 
     boolean delByManager(String id);
+
+    boolean addDestoryInfo(IdleInfo idleInfo) throws Exception;
 }
