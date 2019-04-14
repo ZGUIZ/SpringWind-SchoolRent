@@ -69,6 +69,9 @@ public class Complain extends Model<Complain> {
 	@TableField("response_msg")
 	private String responseMsg;
 
+	@TableField("info_id")
+	private String infoId;
+
 
 	public String getComplainId() {
 		return complainId;
@@ -147,4 +150,11 @@ public class Complain extends Model<Complain> {
 		return this.complainId;
 	}
 
+	public String getInfoId() {
+		return infoId;
+	}
+
+	public void setInfoId(String infoId) {
+		this.infoId = infoId;
+	}
 }
