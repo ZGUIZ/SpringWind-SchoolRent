@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -51,10 +52,19 @@ public class OrderComplian extends Model<OrderComplian> {
     /**
      * 投诉闲置ID
      */
-	@TableField("idle_id")
-	private String idleId;
+	@TableField("info_id")
+	private String infoId;
 	@TableField("response_person")
 	private String responsePerson;
+
+	@TableField(exist = false)
+	private List<String> urls;
+
+	/**
+	 * 赔偿金额
+	 */
+	@TableField("money")
+	private Float money;
 
 
 	public String getComplainId() {
@@ -105,12 +115,20 @@ public class OrderComplian extends Model<OrderComplian> {
 		this.result = result;
 	}
 
-	public String getIdleId() {
-		return idleId;
+	public String getInfoId() {
+		return infoId;
 	}
 
-	public void setIdleId(String idleId) {
-		this.idleId = idleId;
+	public void setInfoId(String infoId) {
+		this.infoId = infoId;
+	}
+
+	public List<String> getUrls() {
+		return urls;
+	}
+
+	public void setUrls(List<String> urls) {
+		this.urls = urls;
 	}
 
 	public String getResponsePerson() {
@@ -126,4 +144,11 @@ public class OrderComplian extends Model<OrderComplian> {
 		return this.complainId;
 	}
 
+	public Float getMoney() {
+		return money;
+	}
+
+	public void setMoney(Float money) {
+		this.money = money;
+	}
 }

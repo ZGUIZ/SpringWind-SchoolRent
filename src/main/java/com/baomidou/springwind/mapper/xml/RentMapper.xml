@@ -142,7 +142,7 @@
 					and (rent.status = #{status} or rent.status = 3)
 				</when>
 				<when test="status == 4">
-					and (rent.status = #{status} or rent.status = 8)
+					and rent.status in ( #{status},8,10)
 				</when>
 				<otherwise>
 					and rent.status = #{status}

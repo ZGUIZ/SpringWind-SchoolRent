@@ -170,7 +170,7 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
             if(r.getStatus() == 1 || r.getStatus() == 5 || r.getStatus() == 9){
                 info.setStatus(0);
                 r.setStatus(2);
-            } else if(r.getStatus() == 2 || r.getStatus() == 8){
+            } else if(r.getStatus() == 4 || r.getStatus() == 8){
                 //如果正在租赁
                 info.setStatus(3);
                 r.setStatus(5);
