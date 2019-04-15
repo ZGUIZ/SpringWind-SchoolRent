@@ -43,14 +43,12 @@
         </tr>
         <tr class="text-c">
             <th  width="3" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
-            <th width="40">分类</th>
-            <th width="140">标题</th>
-            <th width="40">最低押金</th>
-            <th width="40">租金（日）</th>
-            <th width="90">发布用户</th>
-            <th width="90">学校</th>
+            <th width="90">举报帖子</th>
+            <th width="140">举报理由</th>
+            <th width="60">举报/投诉用户</th>
+            <th width="40">学校</th>
             <th width="40">状态</th>
-            <th width="90">发布日期</th>
+            <th width="60">投诉日期</th>
             <th width="100">操作</th>
         </tr>
         </thead>
@@ -76,7 +74,7 @@
 
         idleTable=$("#idleTable").DataTable({
             ajax:{
-                url: APP.WEB_APP_NAME+'/idleInfo/queryListByPage'
+                url: APP.WEB_APP_NAME+'/complain/listRentNeeds'
             },
             "serverSide": true,
             "destroy": true,
@@ -94,10 +92,8 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-                {data: 'classify.classifyName'},
-                {data: 'title'},
-                {data: 'deposit'},
-                {data: 'retal'},
+                {data: 'rentNeeds.title'},
+                {data: 'msg'},
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
                 {
@@ -108,34 +104,19 @@
                         var str = "";
                         switch (data){
                             case 0:
-                                str = "未租赁";
+                                str = "未处理";
                                 break;
                             case 1:
-                                str = "已确认租户";
+                                str = "已处理";
                                 break;
                             case 2:
-                                str = "正在租赁";
-                                break;
-                            case 3:
-                                str = "已完成";
-                                break;
-                            case 4:
-                                str = "下架";
-                                break;
-                            case 8:
-                                str = "申请返回";
-                                break;
-                            case 9:
-                                str = "已评价";
-                                break;
-                            case 10:
-                                str = "损毁赔偿";
+                                str = "不处理";
                                 break;
                         }
                         return str;
                     }
                 },
-                {data: 'createDate'},
+                {data: 'complainTime'},
                 {
                     orderable: false,
                     targets: [0],

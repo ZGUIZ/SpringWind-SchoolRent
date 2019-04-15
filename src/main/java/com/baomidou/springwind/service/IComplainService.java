@@ -2,9 +2,11 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.Complain;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +18,11 @@ import java.io.UnsupportedEncodingException;
  */
 public interface IComplainService extends IService<Complain> {
 	boolean addComplain(Student student,Complain complain) throws UnsupportedEncodingException;
+	/**
+	 * 分页查询
+	 * @param page
+	 * @return
+	 */
+	List<Complain> queryListByPage(RequestInfo<Complain> page);
+	List<Complain> rentNeedsListByPage(RequestInfo<Complain> page);
 }

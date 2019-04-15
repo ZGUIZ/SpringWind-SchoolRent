@@ -1,6 +1,7 @@
 package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.entity.Complain;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.springwind.mapper.ComplainMapper;
 import com.baomidou.springwind.service.IComplainService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -33,11 +35,24 @@ public class ComplainServiceImpl extends BaseServiceImpl<ComplainMapper, Complai
         complain.setUserId(student.getUserId());
         complain.setComplainTime(new Date());
         complain.setMsg(URLDecoder.decode(complain.getMsg(),"utf-8"));
+        complain.setStatus(0);
         int count = mapper.insert(complain);
         if(count>0) {
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public List<Complain> queryListByPage(RequestInfo<Complain> page) {
+        page.setAmmount(mapper.getCount(page));
+        return mapper.queryForPage(page);
+    }
+
+    @Override
+    public List<Complain> rentNeedsListByPage(RequestInfo<Complain> page) {
+        page.setAmmount(mapper.getCountRentNeeds(page));
+        return mapper.rentNeedsForPage(page);
     }
 }

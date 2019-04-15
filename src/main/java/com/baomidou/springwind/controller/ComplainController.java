@@ -1,17 +1,17 @@
 package com.baomidou.springwind.controller;
 
-import com.baomidou.springwind.entity.Complain;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IComplainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * <p>
@@ -43,5 +43,49 @@ public class ComplainController {
             result.setMsg(e.getMessage());
         }
         return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/listIdle")
+    public DatatablesView list(RequestInfo requestInfo){
+        DatatablesView<Complain> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+
+        Complain param = new Complain();
+        param.setComplainType(1);
+        requestInfo.setParam(param);
+
+        List<Complain> complains=complainService.queryListByPage(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(complains);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/listRentNeeds")
+    public DatatablesView listRentNeeds(RequestInfo requestInfo){
+        DatatablesView<Complain> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+
+        Complain param = new Complain();
+        param.setComplainType(2);
+        requestInfo.setParam(param);
+
+        List<Complain> complains=complainService.rentNeedsListByPage(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(complains);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @RequestMapping("/toList")
+    public String toList(){
+        return "/complain/complainList";
+    }
+
+    @RequestMapping("/toRentNeedsList")
+    public String toRentNeedsList(){
+        return "/complain/rentNeedsList";
     }
 }

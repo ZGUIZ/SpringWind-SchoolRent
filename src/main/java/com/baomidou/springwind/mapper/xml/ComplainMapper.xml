@@ -15,4 +15,202 @@
 		<result column="response_msg" property="responseMsg" />
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.Complain">
+		<id column="complain_id" property="complainId" />
+		<result column="user_id" property="userId" />
+		<result column="msg" property="msg" />
+		<result column="complain_type" property="complainType" />
+		<result column="status" property="status" />
+		<result column="response_person" property="responsePerson" />
+		<result column="complain_time" property="complainTime" />
+		<result column="response_time" property="responseTime" />
+		<result column="response_msg" property="responseMsg" />
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="school_id" property="schoolId" />
+			<result column="user_name" property="userName" />
+			<result column="real_name" property="realName" />
+			<result column="auth_level" property="authLevel" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+			<result column="sex" property="sex" />
+			<result column="create_date" property="createDate" />
+			<association property="school" column="school_id" select="getSchool">
+			</association>
+		</association>
+		<association property="idleInfo" javaType="com.baomidou.springwind.entity.IdleInfo">
+			<id column="idle_id" property="infoId" />
+			<result column="classify_id" property="classifyId" />
+			<result column="idel_info" property="idelInfo" />
+			<result column="destory_info" property="destoryInfo" />
+			<result column="deposit" property="deposit" />
+			<result column="retal" property="retal" />
+			<result column="retal_type" property="retalType" />
+			<result column="create_date" property="createDate" />
+			<result column="title" property="title"/>
+			<result column="end_date" property="endDate" />
+			<result column="address" property="address"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="BaseResultMap2" type="com.baomidou.springwind.entity.Complain">
+		<id column="complain_id" property="complainId" />
+		<result column="user_id" property="userId" />
+		<result column="msg" property="msg" />
+		<result column="complain_type" property="complainType" />
+		<result column="status" property="status" />
+		<result column="response_person" property="responsePerson" />
+		<result column="complain_time" property="complainTime" />
+		<result column="response_time" property="responseTime" />
+		<result column="response_msg" property="responseMsg" />
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="school_id" property="schoolId" />
+			<result column="user_name" property="userName" />
+			<result column="real_name" property="realName" />
+			<result column="auth_level" property="authLevel" />
+			<result column="credit" property="credit" />
+			<result column="user_icon" property="userIcon" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+			<result column="sex" property="sex" />
+			<result column="create_date" property="createDate" />
+			<association property="school" column="school_id" select="getSchool">
+			</association>
+		</association>
+		<association property="rentNeeds" javaType="com.baomidou.springwind.entity.RentNeeds">
+			<id column="needs_id" property="infoId" />
+			<result column="idel_info" property="idelInfo" />
+			<result column="status" property="status" />
+			<result column="create_date" property="createDate" />
+			<result column="end_date" property="endDate" />
+			<result column="title" property="title" />
+			<result column="user_id" property="userId" />
+			<result column="school_id" property="schoolId"/>
+		</association>
+	</resultMap>
+
+	<resultMap id="schoolMap" type="com.baomidou.springwind.entity.School">
+		<id column="school_id" property="schoolId" />
+		<result column="school_name" property="schoolName" />
+		<result column="city" property="city" />
+		<result column="province" property="province"/>
+	</resultMap>
+	<select id="getSchool" resultType="School" resultMap="schoolMap">
+		select * from school where school_id = #{schoolId}
+	</select>
+
+	<select id="queryForPage" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select *,idle_info.info_id as idle_id from complain
+		left join student on (complain.user_id = student.user_id)
+		left join school on(student.school_id = school.school_id)
+		left join idle_info on (complain.info_id = idle_info.info_id)
+		<where>
+			1 = 1
+			<if test="param != null and param.status != null">
+				and complain.status = #{param.status}
+			</if>
+			<if test="param != null and param.complainType != null">
+				and complain_type = #{param.complainType}
+			</if>
+			<if test="searchString !=null">
+				and (student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				real_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				sex like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				school.school_name like "%"#{searchString}"%" or
+				idle_info.title "%"#{searchString}"%" or
+				idle_info.idel_info "%"#{searchString}"%")
+			</if>
+		</where>
+		limit #{start},#{length}
+	</select>
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(complain_id) from complain
+		left join student on (complain.user_id = student.user_id)
+		left join school on(student.school_id = school.school_id)
+		left join idle_info on (complain.info_id = idle_info.info_id)
+		<where>
+			1 = 1
+			<if test="param != null and param.status != null">
+				and complain.status = #{param.status}
+			</if>
+			<if test="param != null and param.complainType != null">
+				and complain_type = #{param.complainType}
+			</if>
+			<if test="searchString !=null">
+				and (student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				real_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				sex like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				school.school_name like "%"#{searchString}"%" or
+				idle_info.title "%"#{searchString}"%" or
+				idle_info.idel_info "%"#{searchString}"%")
+			</if>
+		</where>
+	</select>
+
+	<!--帖子类的投诉-->
+	<select id="rentNeedsForPage" resultMap="BaseResultMap2" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select *,rent_needs.info_id as needs_id from complain
+		left join student on (complain.user_id = student.user_id)
+		left join school on(student.school_id = school.school_id)
+		left join rent_needs on (complain.info_id = rent_needs.info_id)
+		<where>
+			1 = 1
+			<if test="param != null and param.status != null">
+				and complain.status = #{param.status}
+			</if>
+			<if test="param != null and param.complainType != null">
+				and complain_type = #{param.complainType}
+			</if>
+			<if test="searchString !=null">
+				and (student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				real_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				sex like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				school.school_name like "%"#{searchString}"%" or
+				rent_needs.title "%"#{searchString}"%" or
+				rent_needs.idel_info "%"#{searchString}"%")
+			</if>
+		</where>
+		limit #{start},#{length}
+	</select>
+	<select id="getCountRentNeeds" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(complain_id) from complain
+		left join student on (complain.user_id = student.user_id)
+		left join school on(student.school_id = school.school_id)
+		left join rent_needs on (complain.info_id = rent_needs.info_id)
+		<where>
+			1 = 1
+			<if test="param != null and param.status != null">
+				and complain.status = #{param.status}
+			</if>
+			<if test="param != null and param.complainType != null">
+				and complain_type = #{param.complainType}
+			</if>
+			<if test="searchString !=null">
+				and (student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				real_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				sex like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				school.school_name like "%"#{searchString}"%" or
+				rent_needs.title "%"#{searchString}"%" or
+				rent_needs.idel_info "%"#{searchString}"%")
+			</if>
+		</where>
+		limit #{start},#{length}
+	</select>
 </mapper>

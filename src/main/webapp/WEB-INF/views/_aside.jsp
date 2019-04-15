@@ -70,8 +70,8 @@
             <dd>
                 <ul>
                     <c:if test="${sessionScope.manager.role == 1 || sessionScope.manager.role ==  2}" >
-                        <li><a data-href="" data-title="商品投诉" href="javascript:void(0)">商品投诉</a></li>
-                        <li><a data-href="" data-title="身份审核" href="javascript:void(0)">帖子投诉</a></li>
+                        <li><a data-href="/SpringWind/complain/toList" data-title="商品投诉" href="javascript:void(0)">商品投诉</a></li>
+                        <li><a data-href="/SpringWind/complain/toRentNeedsList" data-title="帖子投诉" href="javascript:void(0)">帖子投诉</a></li>
                     </c:if>
                     <c:if test="${sessionScope.manager.role == 1 || sessionScope.manager.role ==  3}" >
                         <li><a data-href="" data-title="租赁投诉" href="javascript:void(0)">租赁投诉</a></li>
