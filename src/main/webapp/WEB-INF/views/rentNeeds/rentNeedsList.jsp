@@ -90,7 +90,16 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-                {data: 'title'},
+                /*{data: 'title'},*/
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'title',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:student_edit('详细信息','/rentNeeds/toForm"+"','"+full.infoId+"') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
                 {data: 'createDate'},
@@ -100,7 +109,7 @@
                     data: "status",
                     render: function(data, type, full, meta){
                         debugger;
-                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'详细信息\',\'/idleInfo/toForm\',\''+full.infoId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>';
+                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a>';
                     }
                 }
             ],
@@ -133,7 +142,7 @@
     function student_edit(title,url,id,w,h){
         url =  APP.WEB_APP_NAME+url;
         layer_show(title,url,1000,800);
-        var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
+        var ajaxUrl =  APP.WEB_APP_NAME+'/rentNeeds/fromService/id/'+id;
         $(window.layer).attr('data-url',ajaxUrl);
     }
 

@@ -95,7 +95,16 @@
                     }
                 },
                 {data: 'classify.classifyName'},
-                {data: 'title'},
+                /*{data: 'title'},*/
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'title',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:student_edit(\'详细信息\',\'/idleInfo/toForm/"+"\',\'"+full.infoId+"\') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'deposit'},
                 {data: 'retal'},
                 {data: 'student.userName'},
@@ -122,6 +131,9 @@
                             case 4:
                                 str = "下架";
                                 break;
+                            case 5:
+                                str = "损毁确认";
+                                break;
                             case 8:
                                 str = "申请返回";
                                 break;
@@ -141,7 +153,10 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'详细信息\',\'/idleInfo/toForm\',\''+full.infoId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>';
+                        if(full.status == 3 || full.status == 4 || full.status == 9){
+                            return ''
+                        }
+                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a>';
                     }
                 }
             ],

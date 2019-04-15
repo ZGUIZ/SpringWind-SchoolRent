@@ -94,7 +94,15 @@
                     }
                 },
                 {data: 'classify.classifyName'},
-                {data: 'title'},
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'title',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:student_edit(\'详细信息\',\'/idleInfo/toForm/"+"\',\'"+full.infoId+"\') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'deposit'},
                 {data: 'retal'},
                 {data: 'student.userName'},
@@ -136,9 +144,9 @@
 
     /*管理员-编辑*/
     function student_edit(title,url,id,w,h){
-        url =  APP.WEB_APP_NAME+url+"/id/"+id;
-        layer_show(title,url,w,h);
-        var ajaxUrl =  APP.WEB_APP_NAME+'/student/id/'+id;
+        url =  APP.WEB_APP_NAME+url;
+        layer_show(title,url,1000,800);
+        var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
         $(window.layer).attr('data-url',ajaxUrl);
     }
 

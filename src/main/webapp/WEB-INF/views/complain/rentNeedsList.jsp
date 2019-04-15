@@ -92,7 +92,16 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-                {data: 'rentNeeds.title'},
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'rentNeeds.title',
+                    render: function(data, type, full, meta){
+                        debugger;
+                        var str = "<a href=javascript:rentNeedsEdit(\'详细信息\',\'/rentNeeds/toForm/"+"\',\'"+full.rentNeeds.infoId+"\') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'msg'},
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
@@ -156,6 +165,14 @@
         url =  APP.WEB_APP_NAME+url;
         layer_show(title,url,1000,800);
         var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
+        $(window.layer).attr('data-url',ajaxUrl);
+    }
+
+    /*管理员-编辑*/
+    function rentNeedsEdit(title,url,id,w,h){
+        url =  APP.WEB_APP_NAME+url;
+        layer_show(title,url,1000,800);
+        var ajaxUrl =  APP.WEB_APP_NAME+'/rentNeeds/fromService/id/'+id;
         $(window.layer).attr('data-url',ajaxUrl);
     }
 

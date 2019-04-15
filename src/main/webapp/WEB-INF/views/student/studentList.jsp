@@ -105,7 +105,16 @@
                 {data: 'school.province'},
                 {data: 'school.city'},
                 {data: 'studentId'},
-                {data: 'userName'},
+                /*{data: 'userName'},*/
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'userName',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:student_edit('详细信息','/student/toForm"+"','"+full.userId+"','','510') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'realName'},
                 {data: 'sex'},
                 {data: 'telephone'},
@@ -134,7 +143,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="studentStart(this,\''+data+'\',\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'编辑\',\'/student/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        return '<a style="text-decoration:none" onClick="studentStart(this,\''+data+'\',\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a>';
                     }
                 }
             ],

@@ -88,7 +88,16 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-                {data: 'account'},
+                /*{data: 'account'},*/
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'account',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:manager_edit('详细信息','/manager/toForm"+"','"+full.userId+"','','510') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'userName'},
                 {data: 'mail'},
                 {data: 'managerRole.roleName'},
@@ -97,7 +106,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="inEntry(\''+full.userId+'\')" href="javascript:;" title="允许登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="manager_edit(\'编辑\',\'/manager/toForm\',\''+full.userId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        return '<a style="text-decoration:none" onClick="inEntry(\''+full.userId+'\')" href="javascript:;" title="允许登陆"><i class="Hui-iconfont">&#xe631;</i></a>  <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
                     }
                 }
             ],

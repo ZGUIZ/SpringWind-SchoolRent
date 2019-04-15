@@ -125,8 +125,9 @@
 				sex like "%"#{searchString}"%" or
 				telephone like "%"#{searchString}"%" or
 				school.school_name like "%"#{searchString}"%" or
-				idle_info.title "%"#{searchString}"%" or
-				idle_info.idel_info "%"#{searchString}"%")
+				idle_info.title like "%"#{searchString}"%" or
+				idle_info.idel_info like "%"#{searchString}"%" or
+                complain.msg like "%"#{searchString}"%")
 			</if>
 		</where>
 		limit #{start},#{length}
@@ -152,8 +153,9 @@
 				sex like "%"#{searchString}"%" or
 				telephone like "%"#{searchString}"%" or
 				school.school_name like "%"#{searchString}"%" or
-				idle_info.title "%"#{searchString}"%" or
-				idle_info.idel_info "%"#{searchString}"%")
+				idle_info.title like "%"#{searchString}"%" or
+				idle_info.idel_info like "%"#{searchString}"%" or
+                complain.msg like "%"#{searchString}"%")
 			</if>
 		</where>
 	</select>
@@ -180,8 +182,9 @@
 				sex like "%"#{searchString}"%" or
 				telephone like "%"#{searchString}"%" or
 				school.school_name like "%"#{searchString}"%" or
-				rent_needs.title "%"#{searchString}"%" or
-				rent_needs.idel_info "%"#{searchString}"%")
+				rent_needs.title like "%"#{searchString}"%" or
+				rent_needs.idel_info like "%"#{searchString}"%" or
+                complain.msg like "%"#{searchString}"%")
 			</if>
 		</where>
 		limit #{start},#{length}
@@ -207,8 +210,9 @@
 				sex like "%"#{searchString}"%" or
 				telephone like "%"#{searchString}"%" or
 				school.school_name like "%"#{searchString}"%" or
-				rent_needs.title "%"#{searchString}"%" or
-				rent_needs.idel_info "%"#{searchString}"%")
+				rent_needs.title like "%"#{searchString}"%" or
+				rent_needs.idel_info like "%"#{searchString}"%" or
+                complain.msg like "%"#{searchString}"%")
 			</if>
 		</where>
 		limit #{start},#{length}

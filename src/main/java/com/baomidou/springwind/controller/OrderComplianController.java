@@ -1,8 +1,6 @@
 package com.baomidou.springwind.controller;
 
-import com.baomidou.springwind.entity.OrderComplian;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IOrderComplianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
+
+import static com.baomidou.springwind.service.IRentNeedsService.COMMENT;
 
 /**
  * <p>
@@ -43,6 +44,26 @@ public class OrderComplianController {
             result.setMsg(e.getMessage());
         }
         return result;
+    }
+
+    /**
+     * 服务端
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryListByPage")
+    public DatatablesView<OrderComplian> queryList(RequestInfo requestInfo){
+        DatatablesView<OrderComplian> datatablesView=new DatatablesView<>();
+        datatablesView.setDraw(requestInfo.getDraw());
+        List<OrderComplian> complians=complianService.queryListByPage(requestInfo);
+        datatablesView.setRecordsTotal(requestInfo.getAmmount());
+        datatablesView.setData(complians);
+        datatablesView.setRecordsFiltered(requestInfo.getAmmount());
+        return datatablesView;
+    }
+
+    @RequestMapping(value = "/toList")
+    public String toList(){
+        return "/orderComplain/orderComplainList";
     }
 
 }

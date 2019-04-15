@@ -106,4 +106,10 @@ public class OrderComplianServiceImpl extends BaseServiceImpl<OrderComplianMappe
         }
         return false;
     }
+
+    @Override
+    public List<OrderComplian> queryListByPage(RequestInfo<OrderComplian> page) {
+        page.setAmmount(mapper.getCount(page));
+        return mapper.queryForPage(page);
+    }
 }

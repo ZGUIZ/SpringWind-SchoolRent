@@ -92,7 +92,15 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-                {data: 'idleInfo.title'},
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'idleInfo.title',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:idle_edit(\'详细信息\',\'/idleInfo/toForm/"+"\',\'"+full.idleInfo.infoId+"\') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'msg'},
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
@@ -142,6 +150,14 @@
             }
         });
     })
+
+    /*管理员-编辑*/
+    function idle_edit(title,url,id,w,h){
+        url =  APP.WEB_APP_NAME+url;
+        layer_show(title,url,1000,800);
+        var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
+        $(window.layer).attr('data-url',ajaxUrl);
+    }
     /*
         参数解释：
         title	标题
@@ -153,7 +169,7 @@
 
     /*管理员-编辑*/
     function student_edit(title,url,id,w,h){
-        url =  APP.WEB_APP_NAME+url;
+        url =  APP.WEB_APP_NAME+url+id;
         layer_show(title,url,1000,800);
         var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
         $(window.layer).attr('data-url',ajaxUrl);

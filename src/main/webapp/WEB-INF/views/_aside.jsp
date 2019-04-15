@@ -74,7 +74,7 @@
                         <li><a data-href="/SpringWind/complain/toRentNeedsList" data-title="帖子投诉" href="javascript:void(0)">帖子投诉</a></li>
                     </c:if>
                     <c:if test="${sessionScope.manager.role == 1 || sessionScope.manager.role ==  3}" >
-                        <li><a data-href="" data-title="租赁投诉" href="javascript:void(0)">租赁投诉</a></li>
+                        <li><a data-href="/SpringWind/orderComplain/toList" data-title="租赁投诉" href="javascript:void(0)">租赁投诉</a></li>
                     </c:if>
                 </ul>
             </dd>

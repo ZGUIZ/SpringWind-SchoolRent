@@ -35,19 +35,21 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 禁止登陆</a>  <a href="javascript:;" onclick="manager_add('添加管理员','/manager/toForm','800','400')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span></div>
-    <table class="table table-border table-bordered table-bg display" id="student">
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span></div>
+    <table class="table table-border table-bordered table-bg display" id="idleTable">
         <thead>
         <tr>
             <th scope="col" colspan="15">商品列表</th>
         </tr>
         <tr class="text-c">
             <th  width="3" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
-            <th width="40">用户名</th>
-            <th width="40">姓名</th>
-            <th width="60">邮箱</th>
-            <th width="40">角色</th>
-            <th width="80">操作</th>
+            <th width="90">相关商品</th>
+            <th width="140">投诉理由</th>
+            <th width="60">举报/投诉用户</th>
+            <th width="40">学校</th>
+            <th width="40">状态</th>
+            <th width="60">投诉日期</th>
+            <th width="100">操作</th>
         </tr>
         </thead>
     </table>
@@ -66,12 +68,13 @@
 <script type="text/javascript" src="../lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript" src="../lib/DataTablesUtil/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-    var managerTable;
+    var host = window.location.host;
+    var idleTable;
     $(function(){
 
-        managerTable=$("#student").DataTable({
+        idleTable=$("#idleTable").DataTable({
             ajax:{
-                url: APP.WEB_APP_NAME+'/manager/queryListByPage'
+                url: APP.WEB_APP_NAME+'/orderComplain/queryListByPage'
             },
             "serverSide": true,
             "destroy": true,
@@ -89,25 +92,45 @@
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
                 },
-               /* {data: 'account'},*/
                 {
                     orderable: false,
                     targets: [0],
-                    data: 'account',
+                    data: 'idleInfo.title',
                     render: function(data, type, full, meta){
-                        var str = "<a href=javascript:manager_edit('详细信息','/manager/toForm"+"','"+full.userId+"','','510') title='"+data+"'>"+data+"</a>";
+                        var str = "<a href=javascript:idle_edit(\'详细信息\',\'/idleInfo/toForm/"+"\',\'"+full.idleInfo.infoId+"\') title='"+data+"'>"+data+"</a>";
                         return str;
                     }
                 },
-                {data: 'userName'},
-                {data: 'mail'},
-                {data: 'managerRole.roleName'},
+                {data: 'context'},
+                {data: 'student.userName'},
+                {data: 'student.school.schoolName'},
                 {
                     orderable: false,
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="inEntry(\''+full.userId+'\')" href="javascript:;" title="禁止登陆"><i class="Hui-iconfont">&#xe631;</i></a> <a style="text-decoration:none" class="ml-5" onClick="resetPassword(\''+full.userId+'\')" href="javascript:;" title="修改密码"><i class="Hui-iconfont">&#xe63f;</i></a> ';
+                        var str = "";
+                        switch (data){
+                            case 0:
+                                str = "未处理";
+                                break;
+                            case 1:
+                                str = "已处理";
+                                break;
+                            case 2:
+                                str = "不处理";
+                                break;
+                        }
+                        return str;
+                    }
+                },
+                {data: 'complainDate'},
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: "status",
+                    render: function(data, type, full, meta){
+                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="student_edit(\'详细信息\',\'/idleInfo/toForm\',\''+full.infoId+'\',\'\',\'510\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>';
                     }
                 }
             ],
@@ -127,6 +150,14 @@
             }
         });
     })
+
+    /*管理员-编辑*/
+    function idle_edit(title,url,id,w,h){
+        url =  APP.WEB_APP_NAME+url;
+        layer_show(title,url,1000,800);
+        var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
+        $(window.layer).attr('data-url',ajaxUrl);
+    }
     /*
         参数解释：
         title	标题
@@ -137,48 +168,44 @@
     */
 
     /*管理员-编辑*/
-    function manager_edit(title,url,id,w,h){
-        url =  APP.WEB_APP_NAME+url;
-        layer_show(title,url,w,h);
-        var ajaxUrl =  APP.WEB_APP_NAME+'/manager/id/'+id;
+    function student_edit(title,url,id,w,h){
+        url =  APP.WEB_APP_NAME+url+id;
+        layer_show(title,url,1000,800);
+        var ajaxUrl =  APP.WEB_APP_NAME+'/idleInfo/fromService/id/'+id;
         $(window.layer).attr('data-url',ajaxUrl);
     }
 
-    function resetPassword(id){
-        layer.confirm("确定要重置密码？",function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/resetPasssWord/id/'+id,'get',true,null,function (data) {
-                if(data.result){
-                    layer.msg('已经重置密码!',{icon: 6,time:1000});
-                } else{
-                    layer.msg("重置失败："+data.msg,{icon:5,time:1000});
-                }
-
-            });
-        });
-    }
-
-    function inEntry(userId){
-        layer.confirm('确认禁止该用户登录吗？',function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/manager/inEntry/'+userId,'get',true,null,function (data) {
+    function unShow(infoId){
+        layer.confirm('确认要禁止显示该商品吗？',function(index){
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/idleInfo/delByManager/'+infoId,'get',true,null,function (data) {
                 if(data.result){
                     layer.msg('设置成功!',{icon: 6,time:1000});
                 } else{
                     layer.msg("设置失败："+data.msg,{icon:5,time:1000});
                 }
-                managerTable.ajax.reload();
+                idleTable.ajax.reload();
             });
         });
     }
 
     function delStudent() {
+        var studentList = new Array();
+        var selected =$("input:checkbox[name='userId']:checked");
+        for(var i=0;i<selected.length;i++){
+            var student = {};
+            student.userId = $(selected[i]).val();
+            student.status = 100;
+            studentList.push(student);
+        }
 
-    }
-
-    function manager_add(title,url,w,h) {
-        url =  APP.WEB_APP_NAME + url;
-        layer_show(title,url,w,h);
-        var ajaxUrl =  APP.WEB_APP_NAME+ '/manager/toAdd';
-        $(window.layer).attr('data-url',ajaxUrl);
+        AjaxUtil.ajax( APP.WEB_APP_NAME+'/student/del','POST',true,studentList,function (data) {
+            if(data.result){
+                layer.msg('删除成功!',{icon: 6,time:1000});
+            } else{
+                layer.msg("删除失败:"+data.msg,{icon:5,time:1000});
+            }
+            studentTable.ajax.reload();
+        });
     }
 </script>
 </body>

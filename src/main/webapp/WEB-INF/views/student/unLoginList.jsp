@@ -105,7 +105,16 @@
                 {data: 'school.province'},
                 {data: 'school.city'},
                 {data: 'studentId'},
-                {data: 'userName'},
+                /*{data: 'userName'},*/
+                {
+                    orderable: false,
+                    targets: [0],
+                    data: 'userName',
+                    render: function(data, type, full, meta){
+                        var str = "<a href=javascript:student_edit('详细信息','/student/toForm"+"','"+full.userId+"','','510') title='"+data+"'>"+data+"</a>";
+                        return str;
+                    }
+                },
                 {data: 'realName'},
                 {data: 'sex'},
                 {data: 'telephone'},

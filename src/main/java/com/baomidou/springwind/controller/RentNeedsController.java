@@ -180,4 +180,19 @@ public class RentNeedsController {
         result.setResult(res);
         return result;
     }
+
+    @RequestMapping("/toForm")
+    public String toFrom(){
+        return "/rentNeeds/rentNeedsForm";
+    }
+
+    @ResponseBody
+    @RequestMapping("/fromService/id/{id}")
+    public Result queryFromService(@PathVariable("id") String id){
+        Result result = new Result();
+        RentNeeds rentNeeds = rentNeedsService.selectById(id);
+        result.setResult(true);
+        result.setData(rentNeeds);
+        return result;
+    }
 }
