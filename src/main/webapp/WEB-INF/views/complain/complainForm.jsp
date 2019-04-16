@@ -36,34 +36,43 @@
 <article class="page-container">
     <form class="form form-horizontal" id="idle-form">
 
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">标题：</label>
+        <div class="row cl" v-if="isIdle()">
+            <label class="form-label col-xs-4 col-sm-3">举报商品：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="rentNeeds.title" name="rentNeeds.title" v-model="rentNeeds.title" />
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="complain.idleInfo.title" name="complain.idleInfo.title" v-model="complain.idleInfo.title" />
+                </div>
+            </div>
+        </div>
+        <div class="row cl" v-if="isRentNeeds()">
+            <label class="form-label col-xs-4 col-sm-3">举报帖子：</label>
+            <div class="formControls col-xs-7 col-sm-8">
+                <div class="select-inline">
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="complain.rentNeeds.title" name="complain.rentNeeds.title" v-model="complain.rentNeeds.title" />
                 </div>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">内容：</label>
+            <label class="form-label col-xs-4 col-sm-3">举报内容：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
                     <%--<input type="text" class="input-text disabled" readonly value="" placeholder="" id="idle.idelInfo" name="idle.idelInfo" v-model="idle.idelInfo" />--%>
-                    <textarea name="" cols="" rows="" class="textarea radius" readonly>{{rentNeeds.idelInfo}}</textarea>
+                    <textarea name="" cols="" rows="" class="textarea radius" readonly>{{complain.msg}}</textarea>
                 </div>
             </div>
         </div>
+
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">发布日期：</label>
+            <label class="form-label col-xs-4 col-sm-3">举报日期：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="rentNeeds.createDate" name="rentNeeds.createDate" v-model="rentNeeds.createDate" />
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="complain.complainTime" name="complain.complainTime" v-model="complain.complainTime" />
                 </div>
             </div>
         </div>
-        <div class="row cl" style="text-align: center">
-            <input class="btn btn-danger radius" type="button" onclick="unShow()" v-if="!isShow()" value="禁止显示">
-            <input class="btn btn-primary radius" type="button" onclick="reShow()" v-if="isShow()" value="恢复显示">
+        <div class="row cl" v-if="isShow()" style="text-align: center">
+            <input class="btn btn-primary radius" type="button" onclick="deal(1)" value="已经处理">
+            <input class="btn btn-danger radius" type="button" onclick="deal(2)" value="不处理">
         </div>
     </form>
 
@@ -73,6 +82,21 @@
         </div>
     </div>
 </article>
+
+<style>
+    .rollpic .prev,.rollpic .next{display:block; height:38px; width:38px; cursor:pointer; float:left; background:url(static/img/unslider-arrow.png) no-repeat 0 0; margin-top:205px}
+    .rollpic .prev{background-position:0 0; margin-right:5px}
+    .rollpic .prev:hover{background-position:0 -38px}
+    .rollpic .next{background-position:0 -76px;margin-left:5px}
+    .rollpic .next:hover{background-position:0 -114px}
+    .rollpicshow{float:left; border:solid 1px #ddd}
+    .rollpicshow li{padding:10px}
+
+    .alignCenter{
+        display:inline-block;
+        margin:0 auto !important;
+    }
+</style>
 
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="lib/jquery/2.1.1/jquery.min.js"></script>
@@ -92,19 +116,39 @@
 <script type="text/javascript" src="lib/jcarousellite.min.js"></script>
 <script type="text/javascript">
 
-    var rentNeedsVue;
+    var complainVue;
     $(function(){
-        rentNeedsVue = new Vue({
+        complainVue = new Vue({
             el: '#idle-form',
             data: {
-                rentNeeds : {}
+                complain : {}
             },
             methods: {
                 isShow: function(){
-                    if(typeof rentNeedsVue == 'undefined' || typeof rentNeedsVue.rentNeeds == 'undefined'){
-                        return true;
+                    if(typeof complainVue == 'undefined' || typeof complainVue.complain == 'undefined'){
+                        return false;
                     }
-                    if(rentNeedsVue.rentNeeds.status == 101){
+                    if(complainVue.complain.status == 0){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                isIdle: function(){
+                    if(typeof complainVue == 'undefined' || typeof complainVue.complain == 'undefined'){
+                        return false;
+                    }
+                    if(complainVue.complain.complainType == 1){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                isRentNeeds:function(){
+                    if(typeof complainVue == 'undefined' || typeof complainVue.complain == 'undefined'){
+                        return false;
+                    }
+                    if(complainVue.complain.complainType == 2){
                         return true;
                     } else {
                         return false;
@@ -114,13 +158,21 @@
         });
         var url = $(parent.layer).attr('data-url');
         AjaxUtil.ajax(url,'get',false,null,function (data) {
-            rentNeedsVue.rentNeeds = data.data;
+            complainVue.complain = data.data;
+            debugger;
+            loadInfo(complainVue.complain);
         });
     });
 
-    function reShow(){
-        layer.confirm('确认要恢复显示该帖子吗？',function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/rentNeeds/reShow/'+rentNeedsVue.rentNeeds.infoId,'get',true,null,function (data) {
+    function deal(type){
+        var str;
+        if(type == 1){
+            str = "确定已经处理？"
+        } else {
+            str = "确定不处理？";
+        }
+        layer.confirm(str,function(index){
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/complain/deal?id='+complainVue.complain.complainId+'&type='+type,'get',true,null,function (data) {
                 if(data.result){
                     layer.msg('设置成功!',{icon: 6,time:1000});
                 } else{
@@ -131,18 +183,6 @@
         });
     }
 
-    function unShow(){
-        layer.confirm('确认要禁止显示该商品吗？',function(index){
-            AjaxUtil.ajax( APP.WEB_APP_NAME+'/rentNeeds/delByManager/'+rentNeedsVue.rentNeeds.infoId,'get',true,null,function (data) {
-                if(data.result){
-                    layer.msg('设置成功!',{icon: 6,time:1000});
-                } else{
-                    layer.msg("设置失败："+data.msg,{icon:5,time:1000});
-                }
-                idleTable.ajax.reload();
-            });
-        });
-    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
 <script type="text/row">

@@ -2,6 +2,7 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.Complain;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.Manager;
 import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 
@@ -25,4 +26,8 @@ public interface IComplainService extends IService<Complain> {
 	 */
 	List<Complain> queryListByPage(RequestInfo<Complain> page);
 	List<Complain> rentNeedsListByPage(RequestInfo<Complain> page);
+
+	Complain queryById(String id);
+
+	boolean deal(Manager manager, String id, int status);
 }

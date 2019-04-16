@@ -98,7 +98,10 @@
                 </div>
             </div>
         </div>
-
+        <div class="row cl" style="text-align: center">
+            <input class="btn btn-danger radius" type="button" onclick="unShow()" v-if="!isShow()" value="禁止显示">
+            <input class="btn btn-primary radius" type="button" onclick="reShow()" v-if="isShow()" value="恢复显示">
+        </div>
     </form>
 
     <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
@@ -147,6 +150,18 @@
             el: '#idle-form',
             data: {
                 idle : {}
+            },
+            methods: {
+                isShow: function(){
+                    if(typeof idleVue == 'undefined' || typeof idleVue.idle == 'undefined'){
+                        return true;
+                    }
+                    if(idleVue.idle.status == 100){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
             }
         });
         var url = $(parent.layer).attr('data-url');
@@ -215,6 +230,32 @@
 
         $(outerdiv).click(function(){//再次点击淡出消失弹出层
             $(this).fadeOut("fast");
+        });
+    }
+
+    function unShow(){
+        layer.confirm('确认要禁止显示该商品吗？',function(index){
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/idleInfo/delByManager/'+idleVue.idle.infoId,'get',true,null,function (data) {
+                if(data.result){
+                    layer.msg('设置成功!',{icon: 6,time:1000});
+                } else{
+                    layer.msg("设置失败："+data.msg,{icon:5,time:1000});
+                }
+                idleTable.ajax.reload();
+            });
+        });
+    }
+
+    function reShow(){
+        layer.confirm('确认要恢复该信息正常显示吗？',function(index){
+            AjaxUtil.ajax( APP.WEB_APP_NAME+'/idleInfo/reShow/'+idleVue.idle.infoId,'get',true,null,function (data) {
+                if(data.result){
+                    layer.msg('设置成功!',{icon: 6,time:1000});
+                } else{
+                    layer.msg("设置失败："+data.msg,{icon:5,time:1000});
+                }
+                idleTable.ajax.reload();
+            });
         });
     }
 

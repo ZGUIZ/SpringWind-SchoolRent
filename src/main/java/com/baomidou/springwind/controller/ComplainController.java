@@ -63,6 +63,33 @@ public class ComplainController {
     }
 
     @ResponseBody
+    @RequestMapping("/id/{id}")
+    public Result queryById(@PathVariable("id") String id){
+        Result result = new Result();
+        Complain complain = complainService.queryById(id);
+        result.setResult(true);
+        result.setData(complain);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("/deal")
+    public Result deal(HttpServletRequest request,String id,int type){
+        Result result = new Result();
+        try {
+            HttpSession session = request.getSession();
+            Manager manager = (Manager) session.getAttribute("manager");
+            boolean res = complainService.deal(manager,id,type);
+            result.setResult(res);
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return  result;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/listRentNeeds")
     public DatatablesView listRentNeeds(RequestInfo requestInfo){
         DatatablesView<Complain> datatablesView=new DatatablesView<>();
@@ -87,5 +114,10 @@ public class ComplainController {
     @RequestMapping("/toRentNeedsList")
     public String toRentNeedsList(){
         return "/complain/rentNeedsList";
+    }
+
+    @RequestMapping("/toForm")
+    public String toForm(){
+        return "/complain/complainForm";
     }
 }
