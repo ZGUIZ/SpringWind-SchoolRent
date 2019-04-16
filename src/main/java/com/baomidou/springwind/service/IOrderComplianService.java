@@ -1,10 +1,7 @@
 package com.baomidou.springwind.service;
 
-import com.baomidou.springwind.entity.Complain;
-import com.baomidou.springwind.entity.OrderComplian;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.springwind.entity.RequestInfo;
-import com.baomidou.springwind.entity.Student;
 
 import java.util.List;
 
@@ -20,4 +17,21 @@ public interface IOrderComplianService extends IService<OrderComplian> {
 	boolean addComplain(OrderComplian complian, Student student) throws Exception;
 
 	List<OrderComplian> queryListByPage(RequestInfo<OrderComplian> page);
+
+	OrderComplian queryById(String id);
+
+	/**
+	 * 同意赔偿请求
+	 * @param manager
+	 * @param id
+	 * @param money
+	 * @return
+	 * @throws Exception
+	 */
+	boolean agree(Manager manager,String id, float money) throws Exception;
+
+	/**
+	 * 不同意赔偿请求
+	 */
+	boolean disagree(Manager manager,String id,float money) throws Exception;
 }

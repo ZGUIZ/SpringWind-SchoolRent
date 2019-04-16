@@ -60,7 +60,7 @@ public class OrderComplian extends Model<OrderComplian> {
 	private String responsePerson;
 
 	@TableField(exist = false)
-	private List<String> urls;
+	private List<IdelPic> urls;
 
 	/**
 	 * 赔偿金额
@@ -131,11 +131,11 @@ public class OrderComplian extends Model<OrderComplian> {
 		this.infoId = infoId;
 	}
 
-	public List<String> getUrls() {
+	public List<IdelPic> getUrls() {
 		return urls;
 	}
 
-	public void setUrls(List<String> urls) {
+	public void setUrls(List<IdelPic> urls) {
 		this.urls = urls;
 	}
 

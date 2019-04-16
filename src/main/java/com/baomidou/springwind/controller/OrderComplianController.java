@@ -4,6 +4,7 @@ import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IOrderComplianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,4 +67,58 @@ public class OrderComplianController {
         return "/orderComplain/orderComplainList";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/queryById/{id}")
+    public Result queryById(@PathVariable("id") String id){
+        Result result = new Result();
+        OrderComplian complain = complianService.queryById(id);
+        result.setResult(true);
+        result.setData(complain);
+        return result;
+    }
+
+    @RequestMapping(value = "/toForm")
+    public String toForm(){
+        return "/orderComplain/orderComplainForm";
+    }
+
+    /**
+     * 同意赔偿
+     * @param id
+     * @param money
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/agree")
+    public Result agree(HttpServletRequest request,String id,float money){
+        Result result = new Result();
+        try {
+            HttpSession session = request.getSession();
+            Manager manager = (Manager) session.getAttribute("manager");
+            boolean res = complianService.agree(manager,id,money);
+            result.setResult(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/disagree")
+    public Result disagree(HttpServletRequest request,String id){
+        Result result = new Result();
+        try {
+            HttpSession session = request.getSession();
+            Manager manager = (Manager) session.getAttribute("manager");
+            boolean res = complianService.disagree(manager,id,0);
+            result.setResult(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
 }
