@@ -49,7 +49,6 @@
             <th width="40">学校</th>
             <th width="40">状态</th>
             <th width="60">投诉日期</th>
-            <th width="100">操作</th>
         </tr>
         </thead>
     </table>
@@ -133,15 +132,7 @@
                         return str;
                     }
                 },
-                {data: 'complainDate'},
-                {
-                    orderable: false,
-                    targets: [0],
-                    data: "status",
-                    render: function(data, type, full, meta){
-                        return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a>';
-                    }
-                }
+                {data: 'complainDate'}
             ],
             "language": {
                 "lengthMenu": "每页 _MENU_ 条记录",
