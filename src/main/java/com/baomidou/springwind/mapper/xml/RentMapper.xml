@@ -84,7 +84,7 @@
 		select rent.*,student.student_id,student.user_name,student.credit,student.user_icon
 		from rent
 		left join student on (rent.user_id = student.user_id)
-		where idel_id = #{infoId} and rent.status != 6
+		where idel_id = #{infoId} and rent.status not in  (2,3,6,101)
 	</select>
 
 	<select id="getCountOfRequest" resultType="Integer" parameterType="com.baomidou.springwind.entity.Rent">

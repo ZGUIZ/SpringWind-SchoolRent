@@ -399,16 +399,17 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         if(r.getStatus() == 0) {
             r.setStatus(6);
             cs.setMemo("完成租赁返还押金");
+            idleInfo.setStatus(3);
         } else {
             r.setStatus(3);
             cs.setMemo("拒绝租赁返还押金");
+            idleInfo.setStatus(0);
         }
 
         cs.setAmount(r.getLastRental());
 
         capital.setCapital(capital.getCapital()+r.getLastRental());
         r.setLastRental(0f);
-        idleInfo.setStatus(0);
 
         Date now = new Date();
         cs.setStateId(UUIDUtil.getUUID());

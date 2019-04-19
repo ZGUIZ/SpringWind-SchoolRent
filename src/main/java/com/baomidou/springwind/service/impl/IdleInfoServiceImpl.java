@@ -164,20 +164,26 @@ public class IdleInfoServiceImpl extends BaseServiceImpl<IdleInfoMapper, IdleInf
         Rent rent = new Rent();
         rent.setIdelId(idleInfo.getInfoId());
         List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        //如果正在确认租户而没开始
+        if(info.getStatus() == 1 || info.getStatus() == 5){
+            info.setStatus(0);
+        } else if(info.getStatus() == 2 || info.getStatus() == 8){
+            info.setStatus(3);
+        }
+        idleInfoMapper.updateById(info);
         for(int i = 0;i<rentList.size();i++){
             Rent r = rentList.get(i);
             //如果正在确认租户而没开始
             if(r.getStatus() == 1 || r.getStatus() == 5 || r.getStatus() == 9){
-                info.setStatus(0);
+                //info.setStatus(0);
                 r.setStatus(2);
             } else if(r.getStatus() == 4 || r.getStatus() == 8){
                 //如果正在租赁
-                info.setStatus(3);
+                //info.setStatus(3);
                 r.setStatus(5);
             } else{
                 continue;
             }
-            idleInfoMapper.updateById(info);
             //归还押金
             Capital capital = capitalMapper.selectForUpdate(r.getUserId());
             capital.setCapital(capital.getCapital() + r.getLastRental());
