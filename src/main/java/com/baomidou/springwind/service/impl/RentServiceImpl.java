@@ -95,10 +95,15 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rent.setRentId(UUIDUtil.getUUID());
         rent.setCreateTime(now);
         rentMapper.insert(rent);
+        addRentMessage(student,idleInfo);
         return true;
     }
 
-
+    private void addRentMessage(Student student,IdleInfo idleInfo){
+        StringBuffer sb = new StringBuffer("@");
+        sb.append(student.getUserName()).append("想要租您发布的\"").append(idleInfo.getTitle()).append("\"。");
+        messageService.pushMessage("您发布的商品有人请求了租赁",sb.toString(),idleInfo.getUserId());
+    }
 
     @Deprecated
     @Transactional
@@ -396,14 +401,14 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         }
 
         CheckStatement cs = new CheckStatement();
-        if(r.getStatus() == 0) {
+        if(r.getStatus() == 0 || r.getStatus() == 1) {
             r.setStatus(6);
-            cs.setMemo("完成租赁返还押金");
-            idleInfo.setStatus(3);
+            cs.setMemo("取消租赁返还押金");
+            idleInfo.setStatus(0);
         } else {
+            //好像没有意义？忘记当时写的目的了
             r.setStatus(3);
             cs.setMemo("拒绝租赁返还押金");
-            idleInfo.setStatus(0);
         }
 
         cs.setAmount(r.getLastRental());
