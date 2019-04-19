@@ -7,6 +7,7 @@ import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.mapper.*;
 import com.baomidou.springwind.service.ICheckStatementService;
+import com.baomidou.springwind.service.IMessageService;
 import com.baomidou.springwind.service.IRentService;
 import com.baomidou.springwind.service.support.BaseServiceImpl;
 import com.baomidou.springwind.utils.RSAUtil;
@@ -51,6 +52,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
     @Autowired
     private ICheckStatementService checkStatementService;
+
+    @Autowired
+    private IMessageService messageService;
 
     @Override
     @Transactional
@@ -295,7 +299,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         }
         idleInfo.setStatus(1);
         idleInfoMapper.updateById(idleInfo);
-        List<Rent> rentList = rentMapper.selectForUpdate(rent);
+        Rent rentParam = new Rent();
+        rentParam.setIdelId(rent.getIdelId());
+        List<Rent> rentList = rentMapper.selectForUpdate(rentParam);
         Date now = new Date();
         for(int i = 0;i<rentList.size();i++){
             Rent r = rentList.get(i);
@@ -303,8 +309,12 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
             if(r.getRentId().equals(rent.getRentId())){
                 r.setStatus(1);
                 r.setStartDate(now);
+                StringBuffer sb = new StringBuffer("您想租的\"");
+                sb.append(idleInfo.getTitle()).append("\"发布者已经同意您的请求，请等待发布者和您的联系。");
+                messageService.pushMessage("发布者同意您的租赁请求",sb.toString(),r.getUserId());
             } else {
                 //如果不同的话修改状态为拒绝并返还押金
+                float last = r.getLastRental();
                 r.setStatus(2);
                 Capital capital = capitalMapper.selectForUpdate(r.getUserId());
                 capital.setCapital(capital.getCapital() + r.getLastRental());
@@ -313,12 +323,16 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
                 CheckStatement cs = new CheckStatement();
                 cs.setStateId(UUIDUtil.getUUID());
-                cs.setAmount(r.getLastRental());
+                cs.setAmount(last);
                 cs.setType(0);
                 cs.setCreateDate(now);
                 cs.setMemo("拒绝返还押金");
                 cs.setUserId(r.getUserId());
                 checkStatementMapper.insert(cs);
+
+                StringBuffer sb = new StringBuffer("您想租的\"");
+                sb.append(idleInfo.getTitle()).append("\"发布者拒绝了您的请求，您支付的押金已经返回，请及时确认，感谢您对校园租的支持。");
+                messageService.pushMessage("发布者拒绝了您的请求",sb.toString(),r.getUserId());
             }
             rentMapper.updateById(r);
         }

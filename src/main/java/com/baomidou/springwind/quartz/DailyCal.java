@@ -18,6 +18,7 @@ public class DailyCal implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         System.out.println("统计任务-->"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
+        //计算每日租金
         service.calRentalDaily();
         System.out.println("统计任务结束-->"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()));
     }

@@ -22,6 +22,7 @@ public class JobManager {
     }
 
     public void addJob() throws Exception{
+        //从数据库中查询定时任务
         List<SysTask> sysTaskList = sysTaskService.selectList(new EntityWrapper<>());
 
         if(sysTaskList == null || sysTaskList.size() <= 0){
@@ -30,6 +31,7 @@ public class JobManager {
 
         Scheduler scheduler = getScheduler();
 
+        //创建定时任务
         for(SysTask sysTask : sysTaskList){
             int i = 0;
             Class cls = Class.forName(sysTask.getBeanClass());
