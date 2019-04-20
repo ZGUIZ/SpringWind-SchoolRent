@@ -1,6 +1,7 @@
 package com.baomidou.springwind.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.Exception.PasswordErrorException;
 import com.baomidou.springwind.entity.*;
@@ -200,6 +201,8 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
         student.setUserId(userId);
         student.setCreateDate(now);
 
+
+
         int row=studentMapper.insert(student);
         //初始化账号资金信息
         initCaption(row,userId);
@@ -296,5 +299,37 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
     @Override
     public Student getCurrentUser(Student student){
         return studentMapper.getCurrentUser(student);
+    }
+
+    @Override
+    public boolean modifyPassword(PassWord passWord) {
+        Student student = new Student();
+        student.setEmail(passWord.getMail());
+        EntityWrapper entityWrapper = new EntityWrapper(student);
+        List<Student> students = studentMapper.selectList(entityWrapper);
+        if(students.size()!=1){
+            return false;
+        } else {
+            PrivateKey privateKey=RSAUtil.restorePrivateKey(RSAUtil.getKeys().get(RSAUtil.PRIVATE_KEY));
+            String newPassword = RSAUtil.RSADecode(privateKey, Base64.decodeBase64(passWord.getNewPassword()));
+            String confirmPassword = RSAUtil.RSADecode(privateKey,Base64.decodeBase64(passWord.getConfirmPaswword()));
+
+            if(newPassword == null){
+                throw new PassWordNotSameException();
+            }
+
+            //比较密码和确认密码是否一致
+            if(!newPassword.equals(confirmPassword)){
+                throw new PassWordNotSameException();
+            }
+            student = students.get(0);
+            String np = SHA1Util.encode(newPassword);
+            student.setPassword(np);
+            int count = studentMapper.updateById(student);
+            if(count>0){
+                return true;
+            }
+            return false;
+        }
     }
 }

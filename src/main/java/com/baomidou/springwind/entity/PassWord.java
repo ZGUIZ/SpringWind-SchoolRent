@@ -5,6 +5,12 @@ public class PassWord {
     private String newPassword;
     private String confirmPaswword;
 
+    /**
+     * 验证码
+     */
+    private String code;
+    private String mail;
+
     public String getOldPassword() {
         return oldPassword;
     }
@@ -27,5 +33,21 @@ public class PassWord {
 
     public void setConfirmPaswword(String confirmPaswword) {
         this.confirmPaswword = confirmPaswword;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 }

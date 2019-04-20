@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.kisso.annotation.Action;
 import com.baomidou.kisso.annotation.Login;
 import com.baomidou.kisso.annotation.Permission;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.springwind.Exception.PassWordNotSameException;
 import com.baomidou.springwind.Exception.PasswordErrorException;
 import com.baomidou.springwind.common.EhcacheHelper;
@@ -18,6 +19,7 @@ import com.baomidou.springwind.utils.PassWordUtil;
 import com.baomidou.springwind.utils.RSAUtil;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.ibatis.annotations.ResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
@@ -549,6 +551,103 @@ public class StudentController {
             result.setMsg("两次输入的密码不一致");
         } catch (Exception e){
             e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 此方法用于发送验证邮件到绑定的邮箱
+     * @param address
+     * @return
+     */
+    @Login(action = Action.Skip)
+    @Permission(action = Action.Skip)
+    @ResponseBody
+    @RequestMapping(value="/sendForgotMessage")
+    public Result sendForgotMessage(@RequestBody Student param){
+
+        Result result = new Result();
+        String str = PassWordUtil.getRandomPassword(6);
+
+        //查询该邮箱是否注册
+        String address= param.getEmail();
+        Student student = new Student();
+        student.setEmail(param.getEmail());
+        List<Student> students = studentService.selectList(new EntityWrapper<>(student));
+        if(students == null || students.size()<=0){
+            result.setResult(false);
+            result.setMsg("该邮箱未注册");
+            return  result;
+        }
+
+        try {
+            //address = URLDecoder.decode(address,"utf-8");
+            MailUtil.sendMail(address,"您的校园租账号正在找回密码","您的校园租账号正在找回密码，若非本人申请请忽略此信息。验证码："+str);
+            EhcacheHelper.put(MAIL_VALI_CACHE_NAME,address,str);
+            result.setResult(true);
+            result.setMsg("发送成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("邮件发送异常:"+e.getMessage());
+        }
+        return result;
+    }
+
+    @Login(action = Action.Skip)
+    @Permission(action = Action.Skip)
+    @ResponseBody
+    @RequestMapping(value = "/validateForgot")
+    public Result validateForgot(@RequestBody KeyValue keyValue){
+        Result result = new Result();
+        try {
+            Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, keyValue.getKey());
+            if (keyValue.getValue().equals(object)) {
+                EhcacheHelper.remove(MAIL_VALI_CACHE_NAME,keyValue.getKey());
+                result.setResult(true);
+                PassWord passWord = new PassWord();
+                String code = PassWordUtil.getRandomPassword(6);
+                passWord.setCode(code);
+                passWord.setMail(keyValue.getKey());
+                result.setData(passWord);
+                EhcacheHelper.put(MAIL_VALI_CACHE_NAME,keyValue.getKey(),code);
+                result.setMsg("验证信息正确");
+            } else{
+                result.setResult(false);
+                result.setMsg("验证信息错误！");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg("验证信息错误！");
+        }
+        return result;
+    }
+
+    @Login(action = Action.Skip)
+    @Permission(action = Action.Skip)
+    @ResponseBody
+    @RequestMapping(value = "/modifyForgotPass")
+    public Result modifyForgotPass(@RequestBody PassWord passWord){
+        Result result = new Result();
+        Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, passWord.getMail());
+        if (passWord.getCode().equals(object)) {
+            try {
+                boolean res = studentService.modifyPassword(passWord);
+                result.setResult(res);
+                EhcacheHelper.remove(MAIL_VALI_CACHE_NAME,passWord.getMail());
+            } catch (PassWordNotSameException e){
+                result.setResult(false);
+                result.setMsg("两次输入的密码不一致。");
+                //将验证码重新放入
+            } catch (Exception e){
+                e.printStackTrace();
+                result.setResult(false);
+                result.setMsg(e.getMessage());
+            }
+        } else{
+            result.setResult(false);
+            result.setMsg("验证信息错误！");
         }
         return result;
     }

@@ -81,4 +81,6 @@ public interface IStudentService extends IService<Student> {
 
     Student getCurrentUser(Student student);
 
+    boolean modifyPassword(PassWord passWord);
+
 }
