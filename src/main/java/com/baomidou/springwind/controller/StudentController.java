@@ -13,10 +13,7 @@ import com.baomidou.springwind.common.EhcacheHelper;
 import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.ISchoolService;
 import com.baomidou.springwind.service.IStudentService;
-import com.baomidou.springwind.utils.DataTablesUtilJson;
-import com.baomidou.springwind.utils.MailUtil;
-import com.baomidou.springwind.utils.PassWordUtil;
-import com.baomidou.springwind.utils.RSAUtil;
+import com.baomidou.springwind.utils.*;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.ibatis.annotations.ResultMap;
@@ -568,7 +565,6 @@ public class StudentController {
 
     /**
      * 此方法用于发送验证邮件到绑定的邮箱
-     * @param address
      * @return
      */
     @Login(action = Action.Skip)
@@ -687,4 +683,41 @@ public class StudentController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping("/sendMobileCode/{telephone}")
+    public Result sendMobileCode(@PathVariable("telephone") String telephone){
+        Result result = new Result();
+        Student student = new Student();
+        student.setTelephone(telephone);
+        List<Student> students = studentService.selectList(new EntityWrapper<>(student));
+        if(students.size()>0){
+            result.setResult(false);
+            result.setMsg("该手机号已经绑定其他用户");
+            return result;
+        }
+        String code = SMSUtil.sendSMS(telephone);
+        EhcacheHelper.put(MAIL_VALI_CACHE_NAME,telephone,code);
+        result.setResult(true);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("/updateMobile")
+    public Result updatePhone(HttpServletRequest request,@RequestBody Student param){
+        Result result = new Result();
+        Student s = (Student) request.getSession().getAttribute("student");
+        param.setUserId(s.getUserId());
+        Student student = studentService.selectById(param.getUserId());
+        Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, param.getTelephone());
+        if (param.getCode().equals(object)) {
+            student.setTelephone(param.getTelephone());
+            studentService.updateById(student);
+            EhcacheHelper.remove(MAIL_VALI_CACHE_NAME,param.getEmail());
+            result.setResult(true);
+        } else{
+            result.setResult(false);
+            result.setMsg("验证码错误");
+        }
+        return result;
+    }
 }
