@@ -375,6 +375,17 @@ public class StudentController {
     public String sendMailMessage(String address){
 
         Result result = new Result();
+
+        //查询该邮箱是否注册
+        Student student = new Student();
+        student.setEmail(address);
+        List<Student> students = studentService.selectList(new EntityWrapper<>(student));
+        if(students != null && students.size()>0){
+            result.setResult(false);
+            result.setMsg("该邮箱已被注册");
+            return  JSONObject.toJSONString(result);
+        }
+
         String str = PassWordUtil.getRandomPassword(6);
         try {
             //address = URLDecoder.decode(address,"utf-8");
@@ -651,4 +662,29 @@ public class StudentController {
         }
         return result;
     }
+
+    /**
+     * 更改邮箱
+     * @param param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/updateMail")
+    public Result updateMail(@RequestBody Student param){
+        Result result= new Result();
+
+        Student student = studentService.selectById(param.getUserId());
+        Object object = EhcacheHelper.get(MAIL_VALI_CACHE_NAME, param.getEmail());
+        if (param.getCode().equals(object)) {
+            student.setEmail(param.getEmail());
+            studentService.updateById(student);
+            EhcacheHelper.remove(MAIL_VALI_CACHE_NAME,param.getEmail());
+            result.setResult(true);
+        } else{
+            result.setResult(false);
+            result.setMsg("验证码错误");
+        }
+        return result;
+    }
+
 }

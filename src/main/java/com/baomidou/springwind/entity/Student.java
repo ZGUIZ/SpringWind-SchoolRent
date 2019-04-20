@@ -113,6 +113,12 @@ public class Student extends Model<Student> {
 	@TableField(exist = false)
 	private List<AuthPicture> authPictureList;
 
+	/**
+	 * 验证码
+	 */
+	@TableField(exist = false)
+	private String code;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -279,6 +285,14 @@ public class Student extends Model<Student> {
 
 	public void setAuthPictureList(List<AuthPicture> authPictureList) {
 		this.authPictureList = authPictureList;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	/**
