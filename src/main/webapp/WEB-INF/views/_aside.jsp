@@ -48,7 +48,7 @@
                 <dt><i class="Hui-iconfont">&#xe616;</i> 财务管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a data-href="" data-title="充值列表" href="javascript:void(0)">充值列表</a></li>
+                        <li><a data-href="/SpringWind/charge/toList" data-title="充值列表" href="javascript:void(0)">充值列表</a></li>
                         <li><a data-href="" data-title="提现列表" href="javascript:void(0)">提现列表</a></li>
                     </ul>
                 </dd>

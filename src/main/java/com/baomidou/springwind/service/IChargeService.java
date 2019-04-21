@@ -2,7 +2,11 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.Charge;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.Manager;
+import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +18,11 @@ import com.baomidou.springwind.entity.Student;
  */
 public interface IChargeService extends IService<Charge> {
 	boolean addCharge(Student student,Charge charge);
+
+	List<Charge> queryListByPage(RequestInfo<Charge> page);
+
+	Charge queryById(String id);
+
+	boolean pass(String id,float money,Manager manager);
+	boolean unPass(String id, Manager manager);
 }

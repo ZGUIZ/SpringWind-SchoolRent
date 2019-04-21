@@ -13,6 +13,72 @@
 		<result column="request_date" property="requestDate" />
 		<result column="response_date" property="responseDate" />
 		<result column="response_person" property="responsePerson" />
+		<result column="money" property="money"/>
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.Charge">
+		<id column="charge_id" property="chargeId" />
+		<result column="user_id" property="userId" />
+		<result column="source" property="source" />
+		<result column="code" property="code" />
+		<result column="pic" property="pic" />
+		<result column="status" property="status" />
+		<result column="request_date" property="requestDate" />
+		<result column="response_date" property="responseDate" />
+		<result column="response_person" property="responsePerson" />
+		<result column="money" property="money"/>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="school_id" property="schoolId" />
+			<result column="user_name" property="userName" />
+			<result column="user_icon" property="userIcon" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+		</association>
+	</resultMap>
+
+	<select id="queryForPage" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select *
+		from charge
+		left join student on (charge.user_id = student.user_id)
+		<where>
+			<if test="searchString !=null">
+				(student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				money like "%"#{searchString}"%")
+			</if>
+		</where>
+		order by charge.status asc,charge.request_date desc
+		limit #{start},#{length}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(charge.charge_id)
+		from charge
+		left join student on (charge.user_id = student.user_id)
+		where 1 = 1
+		<where>
+			<if test="searchString != null">
+				(student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				money like "%"#{searchString}"%")
+			</if>
+		</where>
+	</select>
+
+	<select id="queryById" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.Charge">
+		select *
+		from charge
+		left join student on (charge.user_id = student.user_id)
+		where charge_id = #{chargeId}
+	</select>
+
+	<select id="queryByIdForUpdate" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.Charge">
+		select * from charge where charge_id = #{chargeId} for update
+	</select>
 </mapper>

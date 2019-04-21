@@ -1,5 +1,6 @@
 package com.baomidou.springwind.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -44,11 +45,13 @@ public class Charge extends Model<Charge> {
     /**
      * 请求日期
      */
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("request_date")
 	private Date requestDate;
     /**
      * 响应日期
      */
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("response_date")
 	private Date responseDate;
     /**
@@ -59,6 +62,9 @@ public class Charge extends Model<Charge> {
 
 	@TableField("money")
 	private float money;
+
+	@TableField(exist = false)
+	private Student student;
 
 
 	public String getChargeId() {
@@ -131,6 +137,14 @@ public class Charge extends Model<Charge> {
 
 	public void setMoney(float money) {
 		this.money = money;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	@Override
