@@ -34,10 +34,6 @@ public class Charge extends Model<Charge> {
      */
 	private Integer source;
     /**
-     * 单号
-     */
-	private String code;
-    /**
      * 凭证截图
      */
 	private String pic;
@@ -60,6 +56,9 @@ public class Charge extends Model<Charge> {
      */
 	@TableField("response_person")
 	private String responsePerson;
+
+	@TableField("money")
+	private float money;
 
 
 	public String getChargeId() {
@@ -84,14 +83,6 @@ public class Charge extends Model<Charge> {
 
 	public void setSource(Integer source) {
 		this.source = source;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public String getPic() {
@@ -132,6 +123,14 @@ public class Charge extends Model<Charge> {
 
 	public void setResponsePerson(String responsePerson) {
 		this.responsePerson = responsePerson;
+	}
+
+	public float getMoney() {
+		return money;
+	}
+
+	public void setMoney(float money) {
+		this.money = money;
 	}
 
 	@Override

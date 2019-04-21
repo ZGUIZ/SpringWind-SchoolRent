@@ -61,6 +61,9 @@ public class CapitalCash extends Model<CapitalCash> {
 	@TableField("response_person")
 	private String responsePerson;
 
+	@TableField("account")
+	private String account;
+
 
 	public String getCashId() {
 		return cashId;
@@ -124,6 +127,14 @@ public class CapitalCash extends Model<CapitalCash> {
 
 	public void setResponsePerson(String responsePerson) {
 		this.responsePerson = responsePerson;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	@Override
