@@ -1,8 +1,9 @@
 package com.baomidou.springwind.service;
 
-import com.baomidou.springwind.entity.CapitalCash;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.springwind.entity.Student;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +15,11 @@ import com.baomidou.springwind.entity.Student;
  */
 public interface ICapitalCashService extends IService<CapitalCash> {
 	boolean addCapitalCash(Student student,CapitalCash capitalCash);
+
+	List<CapitalCash> queryListByPage(RequestInfo<CapitalCash> page);
+
+	CapitalCash queryById(String id);
+
+	boolean pass(String id, Manager manager,float money);
+	boolean unPass(String id,Manager manager);
 }

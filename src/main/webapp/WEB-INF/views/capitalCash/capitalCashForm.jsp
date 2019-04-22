@@ -40,16 +40,16 @@
             <label class="form-label col-xs-4 col-sm-3">用户：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="charge.student.userName" name="charge.student.userName" v-model="charge.student.userName" />
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="capitalCash.student.userName" name="capitalCash.student.userName" v-model="capitalCash.student.userName" />
                 </div>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">充值平台：</label>
+            <label class="form-label col-xs-4 col-sm-3">提现平台：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly placeholder="" value="支付宝" v-if="charge.source == 0" />
-                    <input type="text" class="input-text disabled" readonly placeholder="" value="微信" v-if="charge.source == 1" />
+                    <input type="text" class="input-text disabled" readonly placeholder="" value="支付宝" v-if="capitalCash.source == 0" />
+                    <input type="text" class="input-text disabled" readonly placeholder="" value="微信" v-if="capitalCash.source == 1" />
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
             <label class="form-label col-xs-4 col-sm-3">金额（元）：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="charge.money" name="charge.money" v-model="charge.money" />
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="capitalCash.capital" name="capitalCash.capital" v-model="capitalCash.capital" />
                 </div>
             </div>
         </div>
@@ -65,11 +65,10 @@
             <label class="form-label col-xs-4 col-sm-3">日期：</label>
             <div class="formControls col-xs-7 col-sm-8">
                 <div class="select-inline">
-                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="charge.requestDate" name="charge.requestDate" v-model="charge.requestDate" />
+                    <input type="text" class="input-text disabled" readonly value="" placeholder="" id="capitalCash.requestTime" name="capitalCash.requestTime" v-model="capitalCash.requestTime" />
                 </div>
             </div>
         </div>
-        <ul  id="picContainer" class="alignCenter imagePadding"></ul>
 
         <div class="row cl" v-if="isShow()">
             <input class="btn btn-primary radius" type="button" onclick="showAgree()" value="通过">
@@ -109,17 +108,17 @@
 <script type="text/javascript" src="lib/jcarousellite.min.js"></script>
 <script type="text/javascript">
 
-    var charge;
+    var capitalCash;
     var $con = $("#picContainer");
     $(function(){
-        charge = new Vue({
+        capitalCash = new Vue({
             el: '#idle-form',
             data: {
-                charge : {}
+                capitalCash : {}
             },
             methods: {
                 isShow: function(){
-                    if(charge.charge.status == 0){
+                    if(capitalCash.capitalCash.status == 0){
                         return true;
                     } else {
                         return false;
@@ -129,71 +128,22 @@
         });
         var url = $(parent.layer).attr('data-url');
         AjaxUtil.ajax(url,'get',false,null,function (data) {
-            charge.charge = data.data;
-            setTimeout("loadInfo(charge.charge)",400);
+            capitalCash.capitalCash = data.data;
         });
     });
 
-    function loadInfo(charge){
-        var html = '<li><a><img src="'+charge.pic+'" width="500" height="400" /></a></li>';
-        $("#picContainer").append(html);
-
-        $("img").click(function(){
-            imgShow("#outerdiv", "#innerdiv", "#bigimg", $(this));
-        })
-    }
-
-    function imgShow(outerdiv, innerdiv, bigimg, _this){
-        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
-        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
-
-        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
-        $("<img/>").attr("src", src).load(function(){
-            var windowW = $(window).width();//获取当前窗口宽度
-            var windowH = $(window).height();//获取当前窗口高度
-            var realWidth = this.width;//获取图片真实宽度
-            var realHeight = this.height;//获取图片真实高度
-            var imgWidth, imgHeight;
-            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
-
-            if(realHeight>windowH*scale) {//判断图片高度
-                imgHeight = windowH*scale;//如大于窗口高度，图片高度进行缩放
-                imgWidth = imgHeight/realHeight*realWidth;//等比例缩放宽度
-                if(imgWidth>windowW*scale) {//如宽度扔大于窗口宽度
-                    imgWidth = windowW*scale;//再对宽度进行缩放
-                }
-            } else if(realWidth>windowW*scale) {//如图片高度合适，判断图片宽度
-                imgWidth = windowW*scale;//如大于窗口宽度，图片宽度进行缩放
-                imgHeight = imgWidth/realWidth*realHeight;//等比例缩放高度
-            } else {//如果图片真实高度和宽度都符合要求，高宽不变
-                imgWidth = realWidth;
-                imgHeight = realHeight;
-            }
-            $(bigimg).css("width",imgWidth);//以最终的宽度对图片缩放
-
-            var w = (windowW-imgWidth)/2;//计算图片与窗口左边距
-            var h = (windowH-imgHeight)/2;//计算图片与窗口上边距
-            $(innerdiv).css({"top":h, "left":w});//设置#innerdiv的top和left属性
-            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
-        });
-
-        $(outerdiv).click(function(){//再次点击淡出消失弹出层
-            $(this).fadeOut("fast");
-        });
-    }
-
     function showAgree() {
-        layer.prompt({title: '输入充值金额金额', formType: 3, value: charge.charge.money}, function(pass, index){
+        layer.prompt({title: '输入提现金额金额', formType: 3, value: capitalCash.capitalCash.capital}, function(pass, index){
             agree(pass);
             layer.close(index);
         });
     }
 
     function agree(money) {
-        var url = APP.WEB_APP_NAME + "/charge/pass?id=" + charge.charge.chargeId + "&money="+money;
+        var url = APP.WEB_APP_NAME + "/capitalCash/pass?id=" + capitalCash.capitalCash.cashId + "&money="+money;
         AjaxUtil.ajax(url,'get',false,null,function (data) {
             if(data.result){
-                charge.charge.status = 1;
+                capitalCash.capitalCash.status = 1;
                 layer.msg('充值成功!',{icon: 6,time:1000});
             } else {
                 layer.msg("充值失败："+data.msg,{icon:5,time:1000});
@@ -202,10 +152,10 @@
     }
 
     function disagree() {
-        var url = APP.WEB_APP_NAME + "/charge/unPass?id=" + charge.charge.chargeId;
+        var url = APP.WEB_APP_NAME + "/capitalCash/unPass?id=" + capitalCash.capitalCash.cashId;
         AjaxUtil.ajax(url,'get',false,null,function (data) {
             if(data.result){
-                charge.charge.status = 2;
+                capitalCash.capitalCash.status = 2;
                 layer.msg('拒绝成功!',{icon: 6,time:1000});
             } else {
                 layer.msg("拒绝失败："+data.msg,{icon:5,time:1000});

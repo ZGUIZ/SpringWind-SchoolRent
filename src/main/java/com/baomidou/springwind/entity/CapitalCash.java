@@ -1,5 +1,6 @@
 package com.baomidou.springwind.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -36,7 +37,7 @@ public class CapitalCash extends Model<CapitalCash> {
 	/**
 	 * 请求提现的金额
 	 */
-	private BigDecimal capital;
+	private Float capital;
 	/**
 	 * 提现状态：
 	 0，请求提交
@@ -48,11 +49,13 @@ public class CapitalCash extends Model<CapitalCash> {
 	/**
 	 * 请求提现时间
 	 */
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("request_time")
 	private Date requestTime;
 	/**
 	 * 管理员审批时间
 	 */
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@TableField("response_time")
 	private Date responseTime;
 	/**
@@ -63,6 +66,9 @@ public class CapitalCash extends Model<CapitalCash> {
 
 	@TableField("account")
 	private String account;
+
+	@TableField(exist = false)
+	private Student student;
 
 
 	public String getCashId() {
@@ -89,11 +95,11 @@ public class CapitalCash extends Model<CapitalCash> {
 		this.source = source;
 	}
 
-	public BigDecimal getCapital() {
+	public Float getCapital() {
 		return capital;
 	}
 
-	public void setCapital(BigDecimal capital) {
+	public void setCapital(Float capital) {
 		this.capital = capital;
 	}
 
@@ -135,6 +141,14 @@ public class CapitalCash extends Model<CapitalCash> {
 
 	public void setAccount(String account) {
 		this.account = account;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 	@Override

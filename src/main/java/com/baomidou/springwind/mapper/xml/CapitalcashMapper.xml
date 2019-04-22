@@ -8,9 +8,74 @@
 		<result column="user_id" property="userId" />
 		<result column="capital" property="capital" />
 		<result column="status" property="status" />
+		<result column="source" property="source"/>
 		<result column="request_time" property="requestTime" />
 		<result column="response_time" property="responseTime" />
 		<result column="reponse_person" property="reponsePerson" />
+		<result column="account" property="account"/>
 	</resultMap>
 
+	<resultMap id="BaseResultMap1" type="com.baomidou.springwind.entity.CapitalCash">
+		<id column="cash_id" property="cashId" />
+		<result column="user_id" property="userId" />
+		<result column="capital" property="capital" />
+		<result column="status" property="status" />
+		<result column="source" property="source"/>
+		<result column="request_time" property="requestTime" />
+		<result column="response_time" property="responseTime" />
+		<result column="reponse_person" property="reponsePerson" />
+		<result column="account" property="account"/>
+		<association property="student" javaType="com.baomidou.springwind.entity.Student">
+			<id column="user_id" property="userId" />
+			<result column="student_id" property="studentId" />
+			<result column="school_id" property="schoolId" />
+			<result column="user_name" property="userName" />
+			<result column="user_icon" property="userIcon" />
+			<result column="telephone" property="telephone" />
+			<result column="email" property="email" />
+		</association>
+	</resultMap>
+
+	<select id="queryForPage" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select *
+		from capital_cash
+		left join student on (capital_cash.user_id = student.user_id)
+		<where>
+			<if test="searchString !=null">
+				(student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				capital like "%"#{searchString}"%")
+			</if>
+		</where>
+		order by capital_cash.status asc,capital_cash.request_time asc
+		limit #{start},#{length}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.RequestInfo">
+		select count(cash_id)
+		from capital_cash
+		left join student on (capital_cash.user_id = student.user_id)
+		<where>
+			<if test="searchString != null">
+				(student_id like "%"#{searchString}"%" or
+				user_name like "%"#{searchString}"%" or
+				email like "%"#{searchString}"%" or
+				telephone like "%"#{searchString}"%" or
+				capital like "%"#{searchString}"%")
+			</if>
+		</where>
+	</select>
+
+	<select id="queryById" resultMap="BaseResultMap1" parameterType="com.baomidou.springwind.entity.CapitalCash">
+		select *
+		from capital_cash
+		left join student on (capital_cash.user_id = student.user_id)
+		where cash_id = #{cashId}
+	</select>
+
+	<select id="queryByIdForUpdate" resultMap="BaseResultMap" parameterType="com.baomidou.springwind.entity.CapitalCash">
+		select * from capital_cash where cash_id = #{cashId} for update
+	</select>
 </mapper>
