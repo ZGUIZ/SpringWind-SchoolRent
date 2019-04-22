@@ -48,50 +48,12 @@
 </header>
 <script>
 
-    <c:if test="${sessionScope.user.userType.key == 1}">
-        $(function () {
-            getApplyInfo();
-            setInterval("getApplyInfo()", 10000);
-        });
-
-        function getApplyInfo() {
-            $.ajax({
-                url: "exam/applyCourse/getApplyCourseNumber",
-                type: "POST",
-                dataType: "json",
-                success: function (datas) {
-                    var s = $("#Hui-msg").find("span");
-                    if (datas.applyNumber == 0)
-                        $(s).text("");
-                    else
-                        $(s).text(datas.applyNumber);
-                }
-            });
-        }
-
-        function showApply() {
-            layer.open({
-                type: 2,
-                shade: false,
-                area: ['60%','70%'],
-                maxmin: true,
-                content: "exam/applyCourse/toApplyCourse",
-                success: function (layero) {
-                    layer.setTop(layero);
-                },
-                error: function (layero) {
-                    console.log("asd");
-                }
-            });
-        }
-    </c:if>
-
     function myselfinfo() {
-        var url = "exam/student/myselfInfo";
+        var url = "/SpringWind/manager/toMine";
         layer.open({
             type: 2,
             shade: false,
-            area: ['40%','55%'],
+            area: ['20%','30%'],
             maxmin: true,
             title: "个人信息",
             content: url,
@@ -108,10 +70,10 @@
         layer.open({
             type: 2,
             shade: false,
-            area: ['40%','55%'],
+            area: ['20%','30%'],
             maxmin: true,
-            title: "个人信息",
-            content: "exam/student/toUpdatePassword",
+            title: "修改密码",
+            content: "/SpringWind/manager/toUpdatePass",
             success: function (layero) {
                 layer.setTop(layero);
             },

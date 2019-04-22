@@ -2,6 +2,7 @@ package com.baomidou.springwind.service.impl;
 
 import com.baomidou.springwind.common.EhcacheHelper;
 import com.baomidou.springwind.entity.Manager;
+import com.baomidou.springwind.entity.PassWord;
 import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.mapper.ManagerMapper;
 import com.baomidou.springwind.service.IManagerService;
@@ -81,6 +82,22 @@ public class ManagerServiceImpl extends BaseServiceImpl<ManagerMapper, Manager> 
         String str = PassWordUtil.getRandomPassword(6);
         MailUtil.sendMail(mail,MAIL_MESSAGE_TITLE,MAIL_VAIL_MSG+str);
         EhcacheHelper.put(MANAGER_CACHE,mail,str);
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(PassWord passWord, Manager param) throws Exception {
+        Manager manager = managerMapper.selectById(param.getUserId());
+        String oldPass = SHA1Util.encode(passWord.getOldPassword());
+        if(!oldPass.equals(manager.getPassword())){
+            throw new Exception("密码错误！");
+        }
+        if(!passWord.getNewPassword().equals(passWord.getConfirmPaswword())){
+            throw new Exception("两次输入的密码不一致！");
+        }
+        String newPass = SHA1Util.encode(passWord.getNewPassword());
+        manager.setPassword(newPass);
+        managerMapper.updateById(manager);
         return true;
     }
 }

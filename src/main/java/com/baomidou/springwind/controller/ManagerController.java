@@ -220,4 +220,42 @@ public class ManagerController {
         result.setResult(res);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/updatePassword")
+    public Result updatePassword(HttpServletRequest request,@RequestBody PassWord passWord){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Manager manager = (Manager) session.getAttribute("manager");
+        try {
+            boolean res = managerService.updatePassword(passWord,manager);
+            result.setResult(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setResult(false);
+            result.setMsg(e.getMessage());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/toUpdatePass")
+    public String toUpdatePass(){
+        return "/manager/passwordForm";
+    }
+
+    @RequestMapping("/toMine")
+    public String toMine(){
+        return "/manager/mineForm";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/mine")
+    public Result getMine(HttpServletRequest request){
+        Result result = new Result();
+        HttpSession session = request.getSession();
+        Manager manager = (Manager) session.getAttribute("manager");
+        result.setResult(true);
+        result.setData(manager);
+        return result;
+    }
 }

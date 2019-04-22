@@ -27,7 +27,7 @@
 	</resultMap>
 
 	<select id="login" parameterType="com.baomidou.springwind.entity.Manager" resultMap="BaseResultMap">
-		select user_id,account,role
+		select user_id,account,role,user_name,mail
 		from manager
 		where account = #{account} and password = #{password}
 	</select>

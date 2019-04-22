@@ -2,6 +2,7 @@ package com.baomidou.springwind.service;
 
 import com.baomidou.springwind.entity.Manager;
 import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.springwind.entity.PassWord;
 import com.baomidou.springwind.entity.RequestInfo;
 
 import javax.mail.MessagingException;
@@ -23,4 +24,6 @@ public interface IManagerService extends IService<Manager> {
 
 	boolean add(Manager manager) throws Exception;
 	boolean getValidate(String mail) throws UnsupportedEncodingException, MessagingException;
+
+	boolean updatePassword(PassWord passWord,Manager manager) throws Exception;
 }
