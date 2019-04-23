@@ -69,4 +69,6 @@ public interface IRentService extends IService<Rent> {
     boolean finishRent(Student student,Rent rent) throws IllegalAuthroiyException;
 
     void calRentalDaily();
+
+    int getRentCount(String id);
 }

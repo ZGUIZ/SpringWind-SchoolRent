@@ -28,4 +28,6 @@ public interface RentMapper extends BaseMapper<Rent> {
     Rent selectForUpdateById(Rent rent);
 
     List<Rent> dailyUpdate();
+
+    Integer getRentCount(Rent rent);
 }

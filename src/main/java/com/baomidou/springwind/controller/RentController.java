@@ -254,4 +254,14 @@ public class RentController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/getRentCount/{id}")
+    public Result getRentCount(@PathVariable("id") String id){
+	    Result result = new Result();
+	    int count = rentService.getRentCount(id);
+	    result.setResult(true);
+	    result.setData(count);
+	    return result;
+    }
 }

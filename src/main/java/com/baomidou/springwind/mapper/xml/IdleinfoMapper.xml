@@ -86,9 +86,6 @@
 		<if test="search != null">
 			and (title like "%"#{search}"%" or idel_info like "%"#{search}"%" or classify.classify_name like "%"#{search}"%")
 		</if>
-		<!--<if test="userId != null">
-			and idle.user_id = #{userId}
-		</if>-->
 		<choose>
 			<when test="userId != null">
 				and idle.user_id = #{userId} and idle.status != 101
@@ -126,7 +123,7 @@
 			student.user_name like "%"#{searchString}"%" or
 			school.school_NAME like "%"#{searchString}"%")
 		</if>
-		order by idle.create_date desc
+		order by idle_info.create_date desc
 		limit #{start},#{length}
 	</select>
 

@@ -617,6 +617,13 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         }
     }
 
+    @Override
+    public int getRentCount(String id) {
+        Rent rent = new Rent();
+        rent.setIdelId(id);
+        return rentMapper.getRentCount(rent);
+    }
+
     private void calRental(Rent rent){
         IdleInfo idleInfo = rent.getIdleInfo();
 

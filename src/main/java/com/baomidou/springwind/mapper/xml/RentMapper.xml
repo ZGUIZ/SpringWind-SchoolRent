@@ -152,4 +152,12 @@
 		limit #{start},#{pageSize}
 	</select>
 
+	<select id="getRentCount" resultType="java.lang.Integer" parameterType="com.baomidou.springwind.entity.Rent">
+		select count(*) from (
+			select user_id
+			from rent
+			where idel_Id = #{idelId}
+			group by user_id
+		) a
+	</select>
 </mapper>
