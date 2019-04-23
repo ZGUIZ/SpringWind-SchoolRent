@@ -9,7 +9,6 @@
 		<result column="info_id" property="infoId" />
 		<result column="response_info" property="responseInfo" />
 		<result column="response_date" property="responseDate" />
-		<result column="alert_user" property="alertUser" />
 		<association property="student" javaType="com.baomidou.springwind.entity.Student">
 			<id column="user_id" property="userId" />
 			<result column="user_name" property="userName" />

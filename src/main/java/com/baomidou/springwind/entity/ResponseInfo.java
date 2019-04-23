@@ -1,6 +1,7 @@
 package com.baomidou.springwind.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -48,14 +49,10 @@ public class ResponseInfo extends Model<ResponseInfo> {
     /**
      * 回复日期
      */
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField("response_date")
 	private Date responseDate;
-    /**
-     * 回复某个用户并推送给对方
-     */
-	@TableField("alert_user")
-	private String alertUser;
 
 	/**
 	 * 状态
@@ -65,6 +62,7 @@ public class ResponseInfo extends Model<ResponseInfo> {
 	@TableField(exist = false)
 	private Student student;
 
+	@TableField(exist = false)
 	private List<SecondResponseInfo> secondResponseInfos;
 
 	public String getResponseId() {
@@ -105,14 +103,6 @@ public class ResponseInfo extends Model<ResponseInfo> {
 
 	public void setResponseDate(Date responseDate) {
 		this.responseDate = responseDate;
-	}
-
-	public String getAlertUser() {
-		return alertUser;
-	}
-
-	public void setAlertUser(String alertUser) {
-		this.alertUser = alertUser;
 	}
 
 	public Integer getStatus() {
@@ -156,7 +146,6 @@ public class ResponseInfo extends Model<ResponseInfo> {
 		info.setResponseInfo(object.getString("responseInfo"));
 		info.setResponseDate(object.getDate("responseDate"));
 		info.setInfoId(object.getString("infoId"));
-		info.setAlertUser(object.getString("alertUser"));
 		info.setStatus(object.getInteger("status"));
 		return info;
 	}

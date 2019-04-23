@@ -30,9 +30,6 @@ public class ResponseInfoServiceImpl extends BaseServiceImpl<ResponseInfoMapper,
         responseInfo.setResponseId(UUIDUtil.getUUID());
         responseInfo.setResponseDate(new Date());
         responseInfo.setStatus(1);
-        if("".equals(responseInfo.getAlertUser())){
-            responseInfo.setAlertUser(null);
-        }
         int i = responseInfoMapper.insert(responseInfo);
         return i;
     }

@@ -3,17 +3,12 @@ package com.baomidou.springwind.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.springwind.entity.ResponseInfo;
-import com.baomidou.springwind.entity.ResponseInfoExtend;
-import com.baomidou.springwind.entity.Result;
-import com.baomidou.springwind.entity.Student;
+import com.baomidou.springwind.entity.*;
 import com.baomidou.springwind.service.IResponseInfoService;
+import com.baomidou.springwind.service.ISecondResponseInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,6 +29,9 @@ public class ResponseInfoController {
 
     @Autowired
     private IResponseInfoService responseInfoService;
+
+    @Autowired
+    private ISecondResponseInfoService secondResponseInfoService;
 
     /**
      * 添加
@@ -90,6 +88,26 @@ public class ResponseInfoController {
             e.printStackTrace();
             result.setResult(false);
         }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/del/{id}")
+    public Result del(@PathVariable("id") String id){
+        Result result = new Result();
+        result.setResult(false);
+        ResponseInfo responseInfo = responseInfoService.selectById(id);
+        if(responseInfo == null){
+            SecondResponseInfo secondResponseInfo = secondResponseInfoService.selectById(id);
+            secondResponseInfo.setStatus(100);
+            secondResponseInfoService.updateById(secondResponseInfo);
+            result.setResult(true);
+        } else {
+            responseInfo.setStatus(100);
+            responseInfoService.updateById(responseInfo);
+            result.setResult(true);
+        }
+
         return result;
     }
 }
