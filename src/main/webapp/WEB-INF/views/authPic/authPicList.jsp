@@ -41,7 +41,6 @@
             <th scope="col" colspan="15">商品列表</th>
         </tr>
         <tr class="text-c">
-            <th  width="3" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
             <th width="40">用户名</th>
             <th width="40">学校</th>
             <th width="40">学号</th>
@@ -88,14 +87,6 @@
             "stateSave": false,//保持翻页状态，和comTable.fnDraw(false);结合使用
             "searching": true,//datatables默认搜索
             columns:[
-                {
-                    orderable: false,
-                    targets: [0],
-                    data: "userId",
-                    render: function(data, type, full, meta){
-                        return '<input type="checkbox" name="userId" value="'+data+'"/>';
-                    }
-                },
                 {data: 'student.userName'},
                 {data: 'student.school.schoolName'},
                 {data: 'student.studentId'},

@@ -30,16 +30,16 @@
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="../static/css/TableStyle.css">
-    <title>商品列表</title>
+    <title>管理员列表</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 商品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 禁止登陆</a>  <a href="javascript:;" onclick="manager_add('添加管理员','/manager/toForm','800','400')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span></div>
     <table class="table table-border table-bordered table-bg display" id="student">
         <thead>
         <tr>
-            <th scope="col" colspan="15">商品列表</th>
+            <th scope="col" colspan="15">管理员列表</th>
         </tr>
         <tr class="text-c">
             <th  width="3" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
