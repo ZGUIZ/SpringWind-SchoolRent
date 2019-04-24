@@ -467,6 +467,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         cs.setUserId(idleInfo.getUserId());
         checkStatementMapper.insert(cs);
 
+        StringBuffer sb = new StringBuffer("@");
+        sb.append(student.getUserName()).append("已经确认收到租赁物品，租赁开始");
+        messageService.pushMessage("租赁方已经确认租赁开始",sb.toString(),idleInfo.getUserId());
         return true;
     }
 
@@ -509,6 +512,9 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         cs.setUserId(info.getUserId());
         checkStatementMapper.insert(cs);
 
+        StringBuffer sb = new StringBuffer("@");
+        sb.append(student.getUserName()).append("已经确认收到租赁物品，租赁开始");
+        messageService.pushMessage("租赁方已经确认租赁开始",sb.toString(),info.getUserId());
         return true;
     }
 
@@ -554,6 +560,11 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
 
         r.setLastRental(0f);
         rentMapper.updateById(r);
+
+        StringBuffer sb = new StringBuffer("@");
+        sb.append(student.getUserName()).append("拒绝了您对\"").append(idleInfo.getTitle()).append("\"");
+        sb.append("的租赁请求。您的押金已经退还。");
+        messageService.pushMessage("发布者拒绝了您的租赁请求",sb.toString(),r.getUserId());
         return true;
     }
 
@@ -593,6 +604,11 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         rentMapper.updateById(r);
         capitalMapper.updateById(capital);
         idleInfoMapper.updateById(idleInfo);
+
+        StringBuffer sb = new StringBuffer("@");
+        sb.append(student.getUserName()).append("已经确定结束\"").append(idleInfo.getTitle()).append("\"");
+        sb.append("的租赁。您的剩余押金已经退还。");
+        messageService.pushMessage("租赁完成",sb.toString(),r.getUserId());
         return true;
     }
 
