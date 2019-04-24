@@ -51,11 +51,12 @@ public class ResponseInfoServiceImpl extends BaseServiceImpl<ResponseInfoMapper,
         responseInfo.setStatus(1);
         int i = responseInfoMapper.insert(responseInfo);
 
+        Student from = studentMapper.selectById(responseInfo.getUserId());
         IdleInfo idleInfo = idleInfoMapper.selectById(responseInfo.getInfoId());
         if(idleInfo != null){
-            Student to = studentMapper.selectById(idleInfo.getInfoId());
+            Student to = studentMapper.selectById(idleInfo.getUserId());
             StringBuffer sb = new StringBuffer("@");
-            sb.append(responseInfo.getStudent().getUserName()).append("提问了您的商品\"").append(idleInfo.getTitle()).append("\"");
+            sb.append(from.getUserName()).append("提问了您的商品\"").append(idleInfo.getTitle()).append("\"");
             sb.append("：").append(responseInfo.getResponseInfo());
             messageService.pushMessage("有人对您的商品信息提问了",sb.toString(),to.getUserId());
         } else {
@@ -63,7 +64,7 @@ public class ResponseInfoServiceImpl extends BaseServiceImpl<ResponseInfoMapper,
             if(rentNeeds!=null) {
                 Student to = studentMapper.selectById(rentNeeds.getUserId());
                 StringBuffer sb = new StringBuffer("@");
-                sb.append(responseInfo.getStudent().getUserName()).append("回复了您的帖子\"").append(rentNeeds.getTitle()).append("\"");
+                sb.append(from.getUserName()).append("回复了您的帖子\"").append(rentNeeds.getTitle()).append("\"");
                 sb.append("：").append(responseInfo.getResponseInfo());
                 messageService.pushMessage("有人回复了您的帖子", sb.toString(), to.getUserId());
             }

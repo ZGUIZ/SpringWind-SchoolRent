@@ -390,6 +390,11 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
             idleInfo.setStatus(8);
             rentMapper.updateById(r);
             idleInfoMapper.updateById(idleInfo);
+
+            StringBuffer sb = new StringBuffer("@");
+            sb.append(student.getUserName()).append("想返还您的\"").append(idleInfo.getTitle()).append("\"");
+            sb.append("。请及时联系租赁方");
+            messageService.pushMessage("返回申请",sb.toString(),idleInfo.getUserId());
             return true;
         }
 
