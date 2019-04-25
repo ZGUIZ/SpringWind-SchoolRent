@@ -138,4 +138,10 @@
 	<select id="selectForUpdate" resultType="com.baomidou.springwind.entity.Student" resultMap="BaseResultMap">
 		select * from student where user_id = #{userId} for update
 	</select>
+
+	<select id="selectUserCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(student_id)
+		from student
+		where year(create_date) &lt; #{year} or (year(create_date) = #{year} and month(create_date) &lt;= #{month})
+	</select>
 </mapper>

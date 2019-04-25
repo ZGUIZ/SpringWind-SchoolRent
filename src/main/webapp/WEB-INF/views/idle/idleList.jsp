@@ -153,7 +153,7 @@
                     targets: [0],
                     data: "status",
                     render: function(data, type, full, meta){
-                        if(full.status == 3 || full.status == 4 || full.status == 9){
+                        if(full.status != 0){
                             return ''
                         }
                         return '<a style="text-decoration:none" onClick="unShow(\''+full.infoId+'\')" href="javascript:;" title="禁止显示"><i class="Hui-iconfont">&#xe631;</i></a>';

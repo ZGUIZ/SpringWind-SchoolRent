@@ -83,4 +83,6 @@ public interface IStudentService extends IService<Student> {
 
     boolean modifyPassword(PassWord passWord);
 
+    List<Integer> getUserCount();
+
 }

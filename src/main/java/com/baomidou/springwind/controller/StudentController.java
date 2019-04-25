@@ -720,4 +720,14 @@ public class StudentController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("/userCount")
+    public Result getUserCount(){
+        Result result = new Result();
+        List<Integer> counts = studentService.getUserCount();
+        result.setResult(true);
+        result.setData(counts);
+        return result;
+    }
 }

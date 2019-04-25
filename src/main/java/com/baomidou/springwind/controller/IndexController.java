@@ -32,6 +32,11 @@ public class IndexController extends BaseController {
 		return "/index";
 	}
 
+	@RequestMapping("/toIndex")
+	public String toIndex(){
+		return "/index/index";
+	}
+
 	/**
 	 * 主页
 	 */

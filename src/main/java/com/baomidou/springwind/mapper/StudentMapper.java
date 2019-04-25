@@ -3,6 +3,7 @@ package com.baomidou.springwind.mapper;
 import com.baomidou.springwind.entity.RequestInfo;
 import com.baomidou.springwind.entity.Student;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -38,4 +39,6 @@ public interface StudentMapper extends BaseMapper<Student> {
     Student getCurrentUser(Student student);
 
     Student selectForUpdate(Student student);
+
+    Integer selectUserCount(@Param("year")int year,@Param("month")int month);
 }

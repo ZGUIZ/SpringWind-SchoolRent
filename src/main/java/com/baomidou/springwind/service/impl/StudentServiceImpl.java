@@ -21,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -331,5 +328,21 @@ public class StudentServiceImpl extends BaseServiceImpl<StudentMapper, Student> 
             }
             return false;
         }
+    }
+
+    @Override
+    public List<Integer> getUserCount() {
+        List<Integer> counts = new ArrayList<>();
+        Calendar date = Calendar.getInstance();
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH) + 1;
+        for(int i = 1;i<=month;i++){
+            Integer count = studentMapper.selectUserCount(year,i);
+            if(count == null){
+                count = 0;
+            }
+            counts.add(count);
+        }
+        return counts;
     }
 }
