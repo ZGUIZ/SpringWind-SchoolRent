@@ -140,7 +140,7 @@
 	</select>
 
 	<select id="selectUserCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-		select count(student_id)
+		select count(user_id)
 		from student
 		where year(create_date) &lt; #{year} or (year(create_date) = #{year} and month(create_date) &lt;= #{month})
 	</select>
