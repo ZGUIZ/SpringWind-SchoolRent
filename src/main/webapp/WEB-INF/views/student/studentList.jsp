@@ -36,14 +36,18 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户管理 <span class="c-gray en">&gt;</span> 用户列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
+<%--
     <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delStudent()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="student_add('添加学生','/student/toForm','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加学生</a></span></div>
+--%>
     <table class="table table-border table-bordered table-bg display" id="student">
         <thead>
         <tr>
             <th scope="col" colspan="15">用户列表</th>
         </tr>
         <tr class="text-c">
+<%--
             <th  width="3px" orderable="false" text-align="center"><input type="checkbox" name="allChecked"/></th>
+--%>
             <th width="100">学校</th>
             <th width="40">省份</th>
             <th width="40">城市</th>
@@ -93,14 +97,14 @@
             "stateSave": false,//保持翻页状态，和comTable.fnDraw(false);结合使用
             "searching": true,//datatables默认搜索
             columns:[
-                {
+                /*{
                     orderable: false,
                     targets: [0],
                     data: "userId",
                     render: function(data, type, full, meta){
                         return '<input type="checkbox" name="userId" value="'+data+'"/>';
                     }
-                },
+                },*/
                 {data: 'school.schoolName'},
                 {data: 'school.province'},
                 {data: 'school.city'},

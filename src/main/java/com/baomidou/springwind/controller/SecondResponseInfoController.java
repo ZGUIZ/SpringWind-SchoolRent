@@ -73,7 +73,7 @@ public class SecondResponseInfoController {
             ResponseInfo responseInfo = responseInfoService.selectById(secondResponseInfo.getParentId());
             if(responseInfo!=null){
                 StringBuffer sb = new StringBuffer("@");
-                sb.append(student.getUserId()).append("回复了您的消息\"").append(responseInfo.getResponseInfo()).append("\"");
+                sb.append(student.getUserName()).append("回复了您的消息\"").append(responseInfo.getResponseInfo()).append("\"");
                 sb.append("内容为：").append(secondResponseInfo.getResponseInfo());
                 messageService.pushMessage("有人回复了您",sb.toString(),responseInfo.getUserId());
             }

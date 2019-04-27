@@ -398,7 +398,7 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
             return true;
         }
 
-        if(r == null || (r.getStatus()!=0 && r.getStatus()!=1)){
+        if(r == null || (r.getStatus()!=0 && r.getStatus()!=1 && r.getStatus()!= 9)){
             throw new IllegalStateException("当前状态不支持取消！");
         }
         if (!r.getUserId().equals(r.getUserId())) {
@@ -406,15 +406,15 @@ public class RentServiceImpl extends BaseServiceImpl<RentMapper, Rent> implement
         }
 
         CheckStatement cs = new CheckStatement();
-        if(r.getStatus() == 0 || r.getStatus() == 1) {
-            r.setStatus(6);
-            cs.setMemo("取消租赁返还押金");
-            idleInfo.setStatus(0);
-        } else {
+        /*if(r.getStatus() == 0 || r.getStatus() == 1 || r.getStatus()!= 9) {*/
+        r.setStatus(6);
+        cs.setMemo("取消租赁返还押金");
+        idleInfo.setStatus(0);
+        /*} else {
             //好像没有意义？忘记当时写的目的了
             r.setStatus(3);
             cs.setMemo("拒绝租赁返还押金");
-        }
+        }*/
 
         cs.setAmount(r.getLastRental());
 
